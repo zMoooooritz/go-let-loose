@@ -32,7 +32,7 @@ type Gamemode string
 const (
 	GmWarfare   Gamemode = "Warfare"
 	GmOffensive Gamemode = "Offensive"
-	GmSkrimish  Gamemode = "Skrimish"
+	GmSkirmish  Gamemode = "Skirmish"
 )
 
 type Team string
@@ -125,16 +125,16 @@ var layers = map[string]Layer{
 	"stmereeglise_warfare_night":     {ID: "stmereeglise_warfare_night", GameMap: maps[MP_STMEREEGLISE], Environment: EnvNight},
 	"stmereeglise_offensive_us":      {ID: "stmereeglise_offensive_us", GameMap: maps[MP_STMEREEGLISE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"stmereeglise_offensive_ger":     {ID: "stmereeglise_offensive_ger", GameMap: maps[MP_STMEREEGLISE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"SME_S_1944_Day_P_Skirmish":      {ID: "SME_S_1944_Day_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkrimish, Environment: EnvDay},
-	"SME_S_1944_Morning_P_Skirmish":  {ID: "SME_S_1944_Morning_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkrimish, Environment: EnvDawn},
-	"SME_S_1944_Night_P_Skirmish":    {ID: "SME_S_1944_Night_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkrimish, Environment: EnvNight},
+	"SME_S_1944_Day_P_Skirmish":      {ID: "SME_S_1944_Day_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvDay},
+	"SME_S_1944_Morning_P_Skirmish":  {ID: "SME_S_1944_Morning_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvDawn},
+	"SME_S_1944_Night_P_Skirmish":    {ID: "SME_S_1944_Night_P_Skirmish", GameMap: maps[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvNight},
 	"stmariedumont_warfare":          {ID: "stmariedumont_warfare", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmWarfare, Environment: EnvDay},
 	"stmariedumont_warfare_night":    {ID: "stmariedumont_warfare_night", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmWarfare, Environment: EnvNight},
 	"stmariedumont_off_us":           {ID: "stmariedumont_off_us", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"stmariedumont_off_ger":          {ID: "stmariedumont_off_ger", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"SMDM_S_1944_Day_P_Skirmish":     {ID: "SMDM_S_1944_Day_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkrimish, Environment: EnvDay},
-	"SMDM_S_1944_Night_P_Skirmish":   {ID: "SMDM_S_1944_Night_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkrimish, Environment: EnvNight},
-	"SMDM_S_1944_Rain_P_Skirmish":    {ID: "SMDM_S_1944_Rain_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkrimish, Environment: EnvRain},
+	"SMDM_S_1944_Day_P_Skirmish":     {ID: "SMDM_S_1944_Day_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvDay},
+	"SMDM_S_1944_Night_P_Skirmish":   {ID: "SMDM_S_1944_Night_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvNight},
+	"SMDM_S_1944_Rain_P_Skirmish":    {ID: "SMDM_S_1944_Rain_P_Skirmish", GameMap: maps[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvRain},
 	"utahbeach_warfare":              {ID: "utahbeach_warfare", GameMap: maps[MP_UTAHBEACH], GameMode: GmWarfare, Environment: EnvDay},
 	"utahbeach_warfare_night":        {ID: "utahbeach_warfare_night", GameMap: maps[MP_UTAHBEACH], GameMode: GmWarfare, Environment: EnvNight},
 	"utahbeach_offensive_us":         {ID: "utahbeach_offensive_us", GameMap: maps[MP_UTAHBEACH], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
@@ -151,9 +151,9 @@ var layers = map[string]Layer{
 	"carentan_warfare_night":         {ID: "carentan_warfare_night", GameMap: maps[MP_CARENTAN], GameMode: GmWarfare, Environment: EnvNight},
 	"carentan_offensive_us":          {ID: "carentan_offensive_us", GameMap: maps[MP_CARENTAN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"carentan_offensive_ger":         {ID: "carentan_offensive_ger", GameMap: maps[MP_CARENTAN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"CAR_S_1944_Day_P_Skirmish":      {ID: "CAR_S_1944_Day_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkrimish, Environment: EnvDay},
-	"CAR_S_1944_Rain_P_Skirmish":     {ID: "CAR_S_1944_Rain_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkrimish, Environment: EnvRain},
-	"CAR_S_1944_Dusk_P_Skirmish":     {ID: "CAR_S_1944_Dusk_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkrimish, Environment: EnvDusk},
+	"CAR_S_1944_Day_P_Skirmish":      {ID: "CAR_S_1944_Day_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvDay},
+	"CAR_S_1944_Rain_P_Skirmish":     {ID: "CAR_S_1944_Rain_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvRain},
+	"CAR_S_1944_Dusk_P_Skirmish":     {ID: "CAR_S_1944_Dusk_P_Skirmish", GameMap: maps[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvDusk},
 	"hurtgenforest_warfare_V2":       {ID: "hurtgenforest_warfare_V2", GameMap: maps[MP_HURTGENFOREST], GameMode: GmWarfare, Environment: EnvDay},
 	"hurtgenforest_warfare_V2_night": {ID: "hurtgenforest_warfare_V2_night", GameMap: maps[MP_HURTGENFOREST], GameMode: GmWarfare, Environment: EnvNight},
 	"hurtgenforest_offensive_US":     {ID: "hurtgenforest_offensive_US", GameMap: maps[MP_HURTGENFOREST], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
@@ -186,15 +186,15 @@ var layers = map[string]Layer{
 	"driel_warfare_night":            {ID: "driel_warfare_night", GameMap: maps[MP_DRIEL], GameMode: GmWarfare, Environment: EnvNight},
 	"driel_offensive_us":             {ID: "driel_offensive_us", GameMap: maps[MP_DRIEL], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"driel_offensive_ger":            {ID: "driel_offensive_ger", GameMap: maps[MP_DRIEL], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"DRL_S_1944_P_Skirmish":          {ID: "DRL_S_1944_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkrimish, Environment: EnvDawn},
-	"DRL_S_1944_Night_P_Skirmish":    {ID: "DRL_S_1944_Night_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkrimish, Environment: EnvNight},
-	"DRL_S_1944_Day_P_Skirmish":      {ID: "DRL_S_1944_Day_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkrimish, Environment: EnvDay},
+	"DRL_S_1944_P_Skirmish":          {ID: "DRL_S_1944_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvDawn},
+	"DRL_S_1944_Night_P_Skirmish":    {ID: "DRL_S_1944_Night_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvNight},
+	"DRL_S_1944_Day_P_Skirmish":      {ID: "DRL_S_1944_Day_P_Skirmish", GameMap: maps[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvDay},
 	"elalamein_warfare":              {ID: "elalamein_warfare", GameMap: maps[MP_ELALAMEIN], GameMode: GmWarfare, Environment: EnvDay},
 	"elalamein_warfare_night":        {ID: "elalamein_warfare_night", GameMap: maps[MP_ELALAMEIN], GameMode: GmWarfare, Environment: EnvDusk},
 	"elalamein_offensive_CW":         {ID: "elalamein_offensive_CW", GameMap: maps[MP_ELALAMEIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"elalamein_offensive_ger":        {ID: "elalamein_offensive_ger", GameMap: maps[MP_ELALAMEIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"ELA_S_1942_P_Skirmish":          {ID: "ELA_S_1942_P_Skirmish", GameMap: maps[MP_ELALAMEIN], GameMode: GmSkrimish, Environment: EnvDay},
-	"ELA_S_1942_Night_P_Skirmish":    {ID: "ELA_S_1942_Night_P_Skirmish", GameMap: maps[MP_ELALAMEIN], GameMode: GmSkrimish, Environment: EnvDusk},
+	"ELA_S_1942_P_Skirmish":          {ID: "ELA_S_1942_P_Skirmish", GameMap: maps[MP_ELALAMEIN], GameMode: GmSkirmish, Environment: EnvDay},
+	"ELA_S_1942_Night_P_Skirmish":    {ID: "ELA_S_1942_Night_P_Skirmish", GameMap: maps[MP_ELALAMEIN], GameMode: GmSkirmish, Environment: EnvDusk},
 	"mortain_warfare_day":            {ID: "mortain_warfare_day", GameMap: maps[MP_MORTAIN], GameMode: GmWarfare, Environment: EnvDay},
 	"mortain_warfare_overcast":       {ID: "mortain_warfare_overcast", GameMap: maps[MP_MORTAIN], GameMode: GmOffensive, Environment: EnvOvercast},
 	"mortain_warfare_evening":        {ID: "mortain_warfare_evening", GameMap: maps[MP_MORTAIN], GameMode: GmWarfare, Environment: EnvDawn},
@@ -204,9 +204,9 @@ var layers = map[string]Layer{
 	"mortain_offensiveger_overcast":  {ID: "mortain_offensiveger_overcast", GameMap: maps[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvOvercast},
 	"mortain_offensiveUS_evening":    {ID: "mortain_offensiveUS_evening", GameMap: maps[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDawn},
 	"mortain_offensiveger_evening":   {ID: "mortain_offensiveger_evening", GameMap: maps[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDawn},
-	"mortain_skirmish_day":           {ID: "mortain_skirmish_day", GameMap: maps[MP_MORTAIN], GameMode: GmSkrimish, Environment: EnvDay},
-	"mortain_skirmish_overcast":      {ID: "mortain_skirmish_overcast", GameMap: maps[MP_MORTAIN], GameMode: GmSkrimish, Environment: EnvOvercast},
-	"mortain_skirmish_evening":       {ID: "mortain_skirmish_evening", GameMap: maps[MP_MORTAIN], GameMode: GmSkrimish, Environment: EnvDawn},
+	"mortain_skirmish_day":           {ID: "mortain_skirmish_day", GameMap: maps[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvDay},
+	"mortain_skirmish_overcast":      {ID: "mortain_skirmish_overcast", GameMap: maps[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvOvercast},
+	"mortain_skirmish_evening":       {ID: "mortain_skirmish_evening", GameMap: maps[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvDawn},
 }
 
 var fallback_layer = Layer{ID: "invalid", GameMap: fallback_gamemap, GameMode: GmWarfare, Environment: EnvDay}

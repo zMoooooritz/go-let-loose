@@ -208,7 +208,7 @@ const (
 	WcSniperRifle
 	WcPistol
 	WcFlamethrower
-	WcMelee
+	WcMeele
 	WcGrenade
 	WcSatchel
 	WcAntiPersonnelMine
@@ -243,7 +243,7 @@ var weapons = map[WeaponIdentifier]Weapon{
 	WI_M1903_SPRINGFIELD:               {ID: WI_M1903_SPRINGFIELD, Name: "M1903 Springfield (4x)", Factions: []Faction{FctUS}, Category: WcSniperRifle},
 	WI_M97_TRENCH_GUN:                  {ID: WI_M97_TRENCH_GUN, Name: "M97 Trench Gun", Factions: []Faction{FctUS}, Category: WcShotgun},
 	WI_COLT_M1911:                      {ID: WI_COLT_M1911, Name: "Colt M1911", Factions: []Faction{FctUS}, Category: WcPistol},
-	WI_M3_KNIFE:                        {ID: WI_M3_KNIFE, Name: "US Melee", Factions: []Faction{FctUS}, Category: WcMelee},
+	WI_M3_KNIFE:                        {ID: WI_M3_KNIFE, Name: "US Melee", Factions: []Faction{FctUS}, Category: WcMeele},
 	WI_SATCHEL:                         {ID: WI_SATCHEL, Name: "Satchel Charge", Factions: []Faction{FctUS}, Category: WcSatchel},
 	WI_MK2_GRENADE:                     {ID: WI_MK2_GRENADE, Name: "US Grenade", Factions: []Faction{FctUS}, Category: WcGrenade},
 	WI_M2_FLAMETHROWER:                 {ID: WI_M2_FLAMETHROWER, Name: "US Flamethrower", Factions: []Faction{FctUS}, Category: WcFlamethrower},
@@ -293,7 +293,7 @@ var weapons = map[WeaponIdentifier]Weapon{
 	WI_FG42_x4:                           {ID: WI_FG42_x4, Name: "FG42 (4x)", Factions: []Faction{FctGER}, Category: WcSniperRifle},
 	WI_LUGER_P08:                         {ID: WI_LUGER_P08, Name: "Luger P08", Factions: []Faction{FctGER}, Category: WcPistol},
 	WI_WALTHER_P38:                       {ID: WI_WALTHER_P38, Name: "Walther P38", Factions: []Faction{FctGER}, Category: WcPistol},
-	WI_FELDSPATEN:                        {ID: WI_FELDSPATEN, Name: "GER Melee", Factions: []Faction{FctGER}, Category: WcMelee},
+	WI_FELDSPATEN:                        {ID: WI_FELDSPATEN, Name: "GER Melee", Factions: []Faction{FctGER}, Category: WcMeele},
 	WI_M24_STIELHANDGRANATE:              {ID: WI_M24_STIELHANDGRANATE, Name: "GER Grenade", Factions: []Faction{FctGER}, Category: WcGrenade},
 	WI_M43_STIELHANDGRANATE:              {ID: WI_M43_STIELHANDGRANATE, Name: "GER Grenade", Factions: []Faction{FctGER}, Category: WcGrenade},
 	WI_PANZERSCHRECK:                     {ID: WI_PANZERSCHRECK, Name: "Panzerschreck", Factions: []Faction{FctGER}, Category: WcAntiTankRifle},
@@ -336,7 +336,7 @@ var weapons = map[WeaponIdentifier]Weapon{
 	WI_SCOPED_SVT40:              {ID: WI_SCOPED_SVT40, Name: "SVT40 (4x)", Factions: []Faction{FctRUS}, Category: WcSniperRifle},
 	WI_NAGANT_M1895:              {ID: WI_NAGANT_M1895, Name: "Nagant M1895", Factions: []Faction{FctRUS}, Category: WcPistol},
 	WI_TOKAREV_TT33:              {ID: WI_TOKAREV_TT33, Name: "Tokarev TT33", Factions: []Faction{FctRUS}, Category: WcPistol},
-	WI_MPL_50_SPADE:              {ID: WI_MPL_50_SPADE, Name: "RUS Melee", Factions: []Faction{FctRUS}, Category: WcMelee},
+	WI_MPL_50_SPADE:              {ID: WI_MPL_50_SPADE, Name: "RUS Melee", Factions: []Faction{FctRUS}, Category: WcMeele},
 	WI_SATCHEL_CHARGE:            {ID: WI_SATCHEL_CHARGE, Name: "Satchel Charge", Factions: []Faction{FctRUS}, Category: WcSatchel},
 	WI_RG_42_GRENADE:             {ID: WI_RG_42_GRENADE, Name: "RUS Grenade", Factions: []Faction{FctRUS}, Category: WcGrenade},
 	WI_MOLOTOV:                   {ID: WI_MOLOTOV, Name: "Molotov", Factions: []Faction{FctRUS}, Category: WcGrenade},
@@ -376,7 +376,7 @@ var weapons = map[WeaponIdentifier]Weapon{
 	WI_Lee_Enfield_Pattern_1914_Sniper:      {ID: WI_Lee_Enfield_Pattern_1914_Sniper, Name: "P14 Enfield (8x)", Factions: []Faction{FctGB}, Category: WcSniperRifle},
 	WI_Rifle_No_4_Mk_I_Sniper:               {ID: WI_Rifle_No_4_Mk_I_Sniper, Name: "No.4 Mk I Sniper", Factions: []Faction{FctGB}, Category: WcSniperRifle},
 	WI_Webley_MK_VI:                         {ID: WI_Webley_MK_VI, Name: "Webley Mk IV", Factions: []Faction{FctGB}, Category: WcPistol},
-	WI_Fairbairn_Sykes:                      {ID: WI_Fairbairn_Sykes, Name: "GB Melee", Factions: []Faction{FctGB}, Category: WcMelee},
+	WI_Fairbairn_Sykes:                      {ID: WI_Fairbairn_Sykes, Name: "GB Melee", Factions: []Faction{FctGB}, Category: WcMeele},
 	WI_Satchel:                              {ID: WI_Satchel, Name: "Satchel Charge", Factions: []Faction{FctGB}, Category: WcSatchel},
 	WI_Mills_Bomb:                           {ID: WI_Mills_Bomb, Name: "GB Grenade", Factions: []Faction{FctGB}, Category: WcGrenade},
 	WI_NO_82_Grenade:                        {ID: WI_NO_82_Grenade, Name: "GB Grenade", Factions: []Faction{FctGB}, Category: WcGrenade},

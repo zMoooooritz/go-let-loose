@@ -75,6 +75,20 @@ type Score struct {
 	Support int
 }
 
+func (s Score) GetScoreValue(scoreCategory ScoreCategory) int {
+	switch scoreCategory {
+	case ScCombat:
+		return s.Combat
+	case ScOffense:
+		return s.Offense
+	case ScDefense:
+		return s.Defense
+	case ScSupport:
+		return s.Support
+	}
+	return 0
+}
+
 type TeamData struct {
 	Allies int
 	Axis   int

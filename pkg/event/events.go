@@ -250,7 +250,7 @@ func logToTeamSwitchEvent(time time.Time, eventdata string) TeamSwitchEvent {
 type ChatEvent struct {
 	GenericEvent
 	Player  hll.PlayerInfo
-	message string
+	Message string
 }
 
 func logToChatEvent(time time.Time, eventdata string) ChatEvent {
@@ -271,7 +271,7 @@ func logToChatEvent(time time.Time, eventdata string) ChatEvent {
 type BanEvent struct {
 	GenericEvent
 	Player hll.PlayerInfo
-	reason string
+	Reason string
 }
 
 func logToBanEvent(time time.Time, eventdata string) BanEvent {
@@ -292,7 +292,7 @@ func logToBanEvent(time time.Time, eventdata string) BanEvent {
 type KickEvent struct {
 	GenericEvent
 	Player hll.PlayerInfo
-	reason string
+	Reason string
 }
 
 func logToKickEvent(time time.Time, eventdata string) KickEvent {
@@ -313,7 +313,7 @@ func logToKickEvent(time time.Time, eventdata string) KickEvent {
 type MessageEvent struct {
 	GenericEvent
 	Player  hll.PlayerInfo
-	message string
+	Message string
 }
 
 func logToMessageEvent(time time.Time, eventdata string) MessageEvent {
@@ -371,7 +371,7 @@ func logToMatchEndEvent(time time.Time, eventdata string) MatchEndEvent {
 type AdminCamEvent struct {
 	GenericEvent
 	Player  hll.PlayerInfo
-	content string
+	Content string
 }
 
 func logToAdminCamEvent(time time.Time, eventdata string) AdminCamEvent {
