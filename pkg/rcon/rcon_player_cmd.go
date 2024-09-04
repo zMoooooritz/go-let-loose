@@ -12,30 +12,40 @@ import (
 
 func (r *Rcon) GetPlayers() ([]hll.PlayerInfo, error) {
 	players := []hll.PlayerInfo{}
-	data, err := r.runListCommand("get players")
+	data, err := r.runListCommand("get playerids")
 	if err != nil {
 		return players, err
 	}
+	nameIdSeparator := " : "
 	for _, entry := range data {
-		splitIndex := strings.LastIndex(entry, " : ")
-		if splitIndex != -1 {
-			players = append(players, hll.PlayerInfo{
-				Name: entry[:splitIndex],
-				ID:   entry[splitIndex+1:],
-			})
+		splitIndex := strings.LastIndex(entry, nameIdSeparator)
+		if splitIndex == -1 {
+			continue
 		}
+		players = append(players, hll.PlayerInfo{
+			Name: entry[:splitIndex],
+			ID:   entry[splitIndex+len(nameIdSeparator):],
+		})
 	}
 	return players, nil
 }
 
-func (r *Rcon) GetPlayerIDs() ([]int, error) {
-	playerIDs := []int{}
-	data, err := r.runListCommand("get playerids")
+func (r *Rcon) GetPlayerNames() ([]string, error) {
+	data, err := r.runListCommand("get players")
+	if err != nil {
+		return []string{}, err
+	}
+	return data, nil
+}
+
+func (r *Rcon) GetPlayerIDs() ([]string, error) {
+	playerIDs := []string{}
+	players, err := r.GetPlayers()
 	if err != nil {
 		return playerIDs, err
 	}
-	for _, entry := range data {
-		playerIDs = append(playerIDs, util.ToInt(entry))
+	for _, player := range players {
+		playerIDs = append(playerIDs, player.ID)
 	}
 	return playerIDs, nil
 }
