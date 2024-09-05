@@ -5,9 +5,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 

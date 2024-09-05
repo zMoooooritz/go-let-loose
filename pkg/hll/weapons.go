@@ -3,7 +3,7 @@ package hll
 import (
 	"strings"
 
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 type WeaponIdentifier string

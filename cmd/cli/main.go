@@ -12,9 +12,9 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 func (r *Rcon) GetTempBans() ([]hll.ServerBan, error) {

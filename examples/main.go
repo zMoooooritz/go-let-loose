@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/event"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 

@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/internal/socket"
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 const (
@@ -157,7 +157,7 @@ func (r *Rcon) RunCommand(command string, format config.ResponseFormat) ([]strin
 		return data, nil
 	case <-ctx.Done():
 		command = strings.ReplaceAll(command, config.NEWLINE, config.ESCAPED_NEWLINE)
-		logger.Debug("command: " + command + " timed out")
+		logger.Info("command: " + command + " timed out")
 		return nil, timeoutErr
 	}
 }
