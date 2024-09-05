@@ -48,7 +48,7 @@ func main() {
 
 	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
-		logger.Fatal(err)
+		log.Fatal(err)
 	}
 
 	serverName, err := rcn.GetServerName()

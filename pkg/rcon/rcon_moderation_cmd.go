@@ -53,7 +53,7 @@ func ParseBans(banLogs []string) []hll.ServerBan {
 		// Parse the timestamp
 		timestamp, err := time.Parse("2006.01.02-15.04.05", result["Date"])
 		if err != nil {
-			logger.Error("error parsing date: %v", err)
+			logger.Error("error parsing date:", err)
 			continue
 		}
 
@@ -65,7 +65,7 @@ func ParseBans(banLogs []string) []hll.ServerBan {
 			hours := strings.Split(result["Duration"], " ")[0]
 			durationHours, err := time.ParseDuration(fmt.Sprintf("%sh", hours))
 			if err != nil {
-				logger.Error("error parsing duration: %v", err)
+				logger.Error("error parsing duration:", err)
 				continue
 			}
 			duration = durationHours

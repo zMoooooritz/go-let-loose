@@ -81,30 +81,30 @@ func SetLogger(l Logger) {
 
 func Debug(v ...interface{}) {
 	if logger != nil {
-		logger.Debug(fmt.Sprint(v))
+		logger.Debug(fmt.Sprint(v...))
 	}
 }
 
 func Info(v ...interface{}) {
 	if logger != nil {
-		logger.Info(fmt.Sprint(v))
+		logger.Info(fmt.Sprint(v...))
 	}
 }
 
 func Warn(v ...interface{}) {
 	if logger != nil {
-		logger.Warn(fmt.Sprint(v))
+		logger.Warn(fmt.Sprint(v...))
 	}
 }
 
 func Error(v ...interface{}) {
 	if logger != nil {
-		logger.Error(fmt.Sprint(v))
+		logger.Error(fmt.Sprint(v...))
 	}
 }
 
 func Fatal(v ...interface{}) {
 	if logger != nil {
-		logger.Fatal(fmt.Sprint(v))
+		logger.Fatal(fmt.Sprint(v...))
 	}
 }
