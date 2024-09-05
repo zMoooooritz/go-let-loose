@@ -3,11 +3,11 @@ package rcon
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/internal/socket"
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
@@ -104,12 +104,12 @@ func (r *Rcon) worker() {
 				continue
 			}
 
-			log.Println("worker: recreating connection")
-			log.Println(job.Data.Command[:min(30, len(job.Data.Command)-1)], err)
+			logger.Warn("worker: recreating connection")
+			logger.Warn(job.Data.Command[:min(30, len(job.Data.Command)-1)], err)
 			time.Sleep(sleepTimeout)
 			err = sc.Reconnect()
 			if err != nil {
-				log.Println("worker: creating new connection failed", err)
+				logger.Warn("worker: creating new connection failed", err)
 			}
 			time.Sleep(sleepTimeout)
 
@@ -157,7 +157,7 @@ func (r *Rcon) RunCommand(command string, format config.ResponseFormat) ([]strin
 		return data, nil
 	case <-ctx.Done():
 		command = strings.ReplaceAll(command, config.NEWLINE, config.ESCAPED_NEWLINE)
-		log.Println("command:", command, "timed out")
+		logger.Debug("command: " + command + " timed out")
 		return nil, timeoutErr
 	}
 }

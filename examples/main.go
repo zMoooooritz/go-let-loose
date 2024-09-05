@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/event"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
@@ -25,6 +25,8 @@ func (p *Printer) Notify(e event.Event) {
 }
 
 func main() {
+	logger.DefaultLogger()
+
 	cfg := rcon.ServerConfig{
 		Host:     "123.123.123.123",
 		Port:     "12345",
@@ -33,7 +35,7 @@ func main() {
 
 	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	serverName, err := rcn.GetServerName()

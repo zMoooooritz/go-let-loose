@@ -1,8 +1,9 @@
 package hll
 
 import (
-	"log"
 	"strings"
+
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 )
 
 type WeaponIdentifier string
@@ -434,10 +435,10 @@ func ParseWeapon(weaponIdentifier string) Weapon {
 	}
 	for _, v := range weapons {
 		if strings.HasPrefix(string(v.ID), weaponIdentifier) {
-			log.Println("Using", v.ID, "as fallback for", weaponIdentifier)
+			logger.Info("Using", v.ID, "as fallback for", weaponIdentifier)
 			return v
 		}
 	}
-	log.Println("Weapon unparseable:", weaponIdentifier)
+	logger.Error("Weapon unparseable:", weaponIdentifier)
 	return fallback_weapon
 }

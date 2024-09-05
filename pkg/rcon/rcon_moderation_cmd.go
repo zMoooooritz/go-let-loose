@@ -2,11 +2,11 @@ package rcon
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
@@ -38,7 +38,7 @@ func ParseBans(banLogs []string) []hll.ServerBan {
 
 		matches := regex.FindStringSubmatch(line)
 		if matches == nil {
-			log.Printf("no match found for line: %s", line)
+			logger.Error("no match found for line:", line)
 			continue
 		}
 
@@ -53,7 +53,7 @@ func ParseBans(banLogs []string) []hll.ServerBan {
 		// Parse the timestamp
 		timestamp, err := time.Parse("2006.01.02-15.04.05", result["Date"])
 		if err != nil {
-			log.Printf("error parsing date: %v", err)
+			logger.Error("error parsing date: %v", err)
 			continue
 		}
 
@@ -65,7 +65,7 @@ func ParseBans(banLogs []string) []hll.ServerBan {
 			hours := strings.Split(result["Duration"], " ")[0]
 			durationHours, err := time.ParseDuration(fmt.Sprintf("%sh", hours))
 			if err != nil {
-				log.Printf("error parsing duration: %v", err)
+				logger.Error("error parsing duration: %v", err)
 				continue
 			}
 			duration = durationHours

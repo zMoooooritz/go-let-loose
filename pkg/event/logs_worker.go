@@ -3,10 +3,10 @@ package event
 import (
 	"context"
 	"errors"
-	"log"
 	"sync"
 	"time"
 
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/internal/socket"
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
@@ -31,16 +31,16 @@ func LogsFetcher(cfg rcon.ServerConfig, events chan<- Event, ctx context.Context
 		default:
 			loglines, err := sc.Execute("showlog 1", config.RF_UNINDEXEDLIST)
 			if errors.Is(err, socket.InvalidRconCommand) {
-				log.Println("showlog 1", err, "this should not happen")
+				logger.Error("showlog 1", err, "this should not happen")
 				continue
 			}
 
 			if err != nil {
-				log.Println("showlog 1", err, "recreating connection")
+				logger.Error("showlog 1", err, "recreating connection")
 				time.Sleep(time.Second)
 				err = sc.Reconnect()
 				if err != nil {
-					log.Println("showlog: creating new connection failed", err)
+					logger.Error("showlog: creating new connection failed", err)
 				}
 				time.Sleep(time.Second)
 				continue

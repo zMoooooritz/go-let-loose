@@ -38,6 +38,8 @@ func (p *Printer) Notify(e event.Event) {
 }
 
 func main() {
+	logger.DefaultLogger()
+
 	cfg := rcon.ServerConfig{
 		Host:     "123.123.123.123",
 		Port:     "12345",
@@ -46,7 +48,7 @@ func main() {
 
 	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	serverName, err := rcn.GetServerName()

@@ -1,8 +1,9 @@
 package hll
 
 import (
-	"log"
 	"strings"
+
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 )
 
 type Map string
@@ -106,7 +107,7 @@ func MapToGameMap(mapName Map) GameMap {
 	if gameMap, ok := maps[mapName]; ok {
 		return gameMap
 	}
-	log.Println("Map not found:", mapName)
+	logger.Warn("Map not found:", mapName)
 	return fallback_gamemap
 }
 
@@ -116,7 +117,7 @@ func LogMapNameToMap(logMapName string) GameMap {
 			return v
 		}
 	}
-	log.Println("LogMapName not found:", logMapName)
+	logger.Warn("LogMapName not found:", logMapName)
 	return fallback_gamemap
 }
 
@@ -229,6 +230,6 @@ func ParseLayer(layerName string) Layer {
 		previousLayer = lay
 		return lay
 	}
-	log.Println("Layer not found:", layerName)
+	logger.Warn("Layer not found:", layerName)
 	return fallback_layer
 }

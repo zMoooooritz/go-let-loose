@@ -2,10 +2,10 @@ package event
 
 import (
 	"context"
-	"log"
 	"sync"
 	"time"
 
+	"github.com/zMoooooritz/go-let-loose/internal/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
@@ -64,7 +64,7 @@ func ServerInfoFetcher(rcn *rcon.Rcon, cache *Cache, events chan<- Event, ctx co
 					playerData := data[0]
 					detailedPlayer, err := rcon.ParsePlayerInfo(playerData)
 					if err != nil {
-						log.Println("parsing player data failed", err, playerData)
+						logger.Error("parsing player data failed", err, playerData)
 						continue
 					}
 					players = append(players, detailedPlayer)
