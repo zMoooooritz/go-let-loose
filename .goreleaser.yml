@@ -1,0 +1,53 @@
+# .goreleaser.yml
+project_name: go-let-loose
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    main: ./cmd/cli_bubble/main.go
+    ldflags:
+      - -s -w
+
+nfpms:
+  - builds:
+      - go-let-loose
+    vendor: Moooooritz
+    homepage: "https://moritz.biering.dev/"
+    maintainer: "Moritz Biering <moritzbiering.mb@gmail.com>"
+    description: "Go bindings and interface for the remote console of Hell Let Loose"
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
+    bindir: /usr/bin
+
+archive:
+  format: tar.gz
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  files:
+    - LICENSE
+    - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
