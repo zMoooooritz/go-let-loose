@@ -13,7 +13,7 @@ builds:
     goarch:
       - amd64
       - arm64
-    main: ./cmd/cli_bubble/main.go
+    main: ./cmd/cli/main.go
     ldflags:
       - -s -w
 
