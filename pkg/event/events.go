@@ -465,7 +465,7 @@ func GameStateDiffToEvents(oldData hll.GameState, newData hll.GameState) []Event
 	}
 
 	if oldData.GameScore != newData.GameScore {
-		if newData.GameScore.Axis == newData.PlayerCount.Allies { // game just started
+		if newData.GameScore.Axis == newData.GameScore.Allies { // game just started
 			return events
 		}
 		events = append(events, ObjectiveCaptureEvent{GenericEvent{EVENT_OBJECTIVE_CAPPED, time.Now()}, oldData.GameScore, newData.GameScore})
