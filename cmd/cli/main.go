@@ -31,6 +31,7 @@ var (
 		"get tempbans",
 		"get permabans",
 		"get profanities",
+		"get objectiverow_",
 		"banprofanity",
 		"unbanprofanity",
 	}
@@ -179,9 +180,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.viewport.SetContent(strings.Join(m.history, "\n"))
 			m.viewport.GotoBottom()
 			m.textInput.SetValue("")
-		case "ctrl+l":
-			m.history = []string{}
-			m.viewport.SetContent(strings.Join(m.history, "\n"))
 		case "ctrl+c", "esc":
 			if m.rcon != nil {
 				m.rcon.Close()

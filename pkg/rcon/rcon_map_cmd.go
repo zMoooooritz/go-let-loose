@@ -1,7 +1,10 @@
 package rcon
 
 import (
+	"errors"
 	"fmt"
+	"math/rand"
+	"strconv"
 	"strings"
 
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
@@ -60,6 +63,56 @@ func (r *Rcon) GetCurrentMapSequence() ([]hll.Layer, error) {
 		return []hll.Layer{}, err
 	}
 	return toLayers(strings.Split(resp, config.NEWLINE)), nil
+}
+
+func (r *Rcon) GetCurrentMapObjectives() ([][]string, error) {
+	baseCommand := "get objectiverow_"
+	objectiveNames := [][]string{}
+	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+		resp, err := r.runListCommand(baseCommand + strconv.Itoa(i))
+		if err != nil {
+			return [][]string{}, err
+		}
+		objectiveNames = append(objectiveNames, resp)
+	}
+	return objectiveNames, nil
+}
+
+// 0    => random objective in that row
+// 1-3  => specific objective
+func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
+	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+		return errors.New("Incorrect number of objectives provided")
+	}
+
+	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+		if objs[i] < 0 || objs[i] > hll.OptionsPerObjective[hll.GmWarfare] {
+			return errors.New("Provided index is invalid (0 (random) and 1-3 are valid)")
+		}
+	}
+
+	allObjNames, err := r.GetCurrentMapObjectives()
+	if err != nil {
+		return err
+	}
+
+	objNames := []string{}
+	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+		objectiveIndex := objs[i]
+		if objectiveIndex == 0 {
+			objectiveIndex = rand.Intn(3) + 1
+		}
+
+		objNames = append(objNames, allObjNames[i][objectiveIndex-1])
+	}
+	return r.SetGameLayout(objNames)
+}
+
+func (r *Rcon) SetGameLayout(objs []string) error {
+	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+		return errors.New("Incorrect number of objectives provided")
+	}
+	return runSetCommand(r, fmt.Sprintf("gamelayout %s %s %s %s %s", objs[0], objs[1], objs[2], objs[3], objs[4]))
 }
 
 func toLayers(mapStrings []string) []hll.Layer {

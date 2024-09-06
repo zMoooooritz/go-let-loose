@@ -76,7 +76,7 @@ func (sc *ServerConnection) Execute(command string, format config.ResponseFormat
 		return []string{}, err
 	}
 	data = string(resp)
-	if data == RESP_FAIL {
+	if isInvalidCommand(command, data) {
 		return []string{}, InvalidRconCommand
 	}
 	if data == RESP_EMPTY || data == RESP_SUCCESS {
@@ -139,6 +139,17 @@ func (sc *ServerConnection) Execute(command string, format config.ResponseFormat
 		lines = append(lines, strings.TrimSuffix(data, config.NEWLINE))
 	}
 	return lines, nil
+}
+
+func isInvalidCommand(command, resp string) bool {
+	if resp == RESP_FAIL {
+		return true
+	}
+	if resp == "Cannot execute command for this gamemode." {
+		return true
+	}
+
+	return false
 }
 
 func (sc *ServerConnection) EnableFastUnsafeLogsFetching() {
