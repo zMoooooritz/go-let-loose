@@ -14,9 +14,9 @@ import (
 )
 
 func LogsFetcher(cfg rcon.ServerConfig, events chan<- Event, ctx context.Context, wg *sync.WaitGroup) {
-	lastSeenLine := ""
-	lastSeenTime := 0
 	initialRun := true
+	lastSeenTime := 0
+	processedLogs := make(map[string]bool)
 
 	defer wg.Done()
 
@@ -46,28 +46,20 @@ func LogsFetcher(cfg rcon.ServerConfig, events chan<- Event, ctx context.Context
 				continue
 			}
 
-			foundLastSeen := false
-			timestamp := 0
-			currentLine := ""
 			for _, line := range loglines {
 				match := logPattern.FindStringSubmatch(line)
 				if len(match) < 3 {
 					continue
 				}
-				timestamp = util.ToInt(match[1])
-				currentLine = match[2]
+				timestamp := util.ToInt(match[1])
+				currentLine := match[2]
 
 				if timestamp < lastSeenTime {
 					continue
 				}
-				if timestamp == lastSeenTime {
-					if currentLine == lastSeenLine {
-						foundLastSeen = true
-						continue
-					}
-					if !foundLastSeen {
-						continue
-					}
+
+				if timestamp == lastSeenTime && processedLogs[currentLine] {
+					continue
 				}
 
 				if !initialRun { // ignore past events on startup
@@ -75,12 +67,15 @@ func LogsFetcher(cfg rcon.ServerConfig, events chan<- Event, ctx context.Context
 						events <- event
 					}
 				}
+
+				if timestamp > lastSeenTime {
+					lastSeenTime = timestamp
+					processedLogs = make(map[string]bool)
+				}
+
+				processedLogs[currentLine] = true
 			}
 
-			if timestamp != 0 {
-				lastSeenTime = timestamp
-				lastSeenLine = currentLine
-			}
 			initialRun = false
 
 			time.Sleep(400 * time.Millisecond)

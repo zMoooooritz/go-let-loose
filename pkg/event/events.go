@@ -7,6 +7,7 @@ import (
 
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 const (
@@ -475,6 +476,7 @@ func GameStateDiffToEvents(oldData hll.GameState, newData hll.GameState) []Event
 func logToEvents(logline string) []Event {
 	match := logPattern.FindStringSubmatch(logline)
 	if len(match) < 3 {
+		logger.Error("Logline invalid format:", logline)
 		return []Event{GenericEvent{EVENT_GENERIC, time.Now()}}
 	}
 	time := time.Unix(util.ToInt64(match[1]), 0)
@@ -510,6 +512,7 @@ func logToEvents(logline string) []Event {
 		return []Event{logToAdminCamEvent(time, data)}
 	}
 
+	logger.Error("Logline unparseable:", logline)
 	return []Event{GenericEvent{EVENT_GENERIC, time}}
 }
 

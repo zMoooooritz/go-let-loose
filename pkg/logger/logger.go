@@ -27,23 +27,23 @@ func newDefaultLogger() *defaultLogger {
 }
 
 func (l *defaultLogger) Debug(msg string) {
-	l.logger.Println("[DEBUG] " + msg)
+	l.logger.Print("[DEBUG] " + msg)
 }
 
 func (l *defaultLogger) Info(msg string) {
-	l.logger.Println("[INFO] " + msg)
+	l.logger.Print("[INFO] " + msg)
 }
 
 func (l *defaultLogger) Warn(msg string) {
-	l.logger.Println("[WARN] " + msg)
+	l.logger.Print("[WARN] " + msg)
 }
 
 func (l *defaultLogger) Error(msg string) {
-	l.logger.Println("[ERROR] " + msg)
+	l.logger.Print("[ERROR] " + msg)
 }
 
 func (l *defaultLogger) Fatal(msg string) {
-	l.logger.Println("[FATAL] " + msg)
+	l.logger.Print("[FATAL] " + msg)
 }
 
 type nopLogger struct{}
@@ -81,30 +81,30 @@ func SetLogger(l Logger) {
 
 func Debug(v ...interface{}) {
 	if logger != nil {
-		logger.Debug(fmt.Sprint(v...))
+		logger.Debug(fmt.Sprintln(v...))
 	}
 }
 
 func Info(v ...interface{}) {
 	if logger != nil {
-		logger.Info(fmt.Sprint(v...))
+		logger.Info(fmt.Sprintln(v...))
 	}
 }
 
 func Warn(v ...interface{}) {
 	if logger != nil {
-		logger.Warn(fmt.Sprint(v...))
+		logger.Warn(fmt.Sprintln(v...))
 	}
 }
 
 func Error(v ...interface{}) {
 	if logger != nil {
-		logger.Error(fmt.Sprint(v...))
+		logger.Error(fmt.Sprintln(v...))
 	}
 }
 
 func Fatal(v ...interface{}) {
 	if logger != nil {
-		logger.Fatal(fmt.Sprint(v...))
+		logger.Fatal(fmt.Sprintln(v...))
 	}
 }
