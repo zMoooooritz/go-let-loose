@@ -8,6 +8,12 @@ import (
 	"github.com/zMoooooritz/go-let-loose/internal/util"
 	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+)
+
+var (
+	caser = cases.Title(language.AmericanEnglish)
 )
 
 func (r *Rcon) GetPlayers() ([]hll.PlayerInfo, error) {
@@ -119,14 +125,14 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 	for _, line := range lines {
 		split := strings.SplitN(line, ": ", 2)
 		if len(split) >= 2 {
-			valueMap[strings.ToLower(split[0])] = strings.ToLower(split[1])
+			valueMap[strings.ToLower(split[0])] = split[1]
 		}
 	}
 
 	detailedPlayer.Name = valueMap["name"]
 	detailedPlayer.ID = valueMap["steamid64"]
-	detailedPlayer.Team = hll.Team(valueMap["team"])
-	detailedPlayer.Role = hll.Role(valueMap["role"])
+	detailedPlayer.Team = teamStringToTeam(valueMap["team"])
+	detailedPlayer.Role = roleStringToRole(valueMap["role"])
 	if detailedPlayer.Role == hll.ArmyCommander {
 		detailedPlayer.Unit = hll.CommandUnit
 	} else {
@@ -134,7 +140,7 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 			unitSplit := strings.Split(value, " - ")
 			if len(unitSplit) == 2 {
 				detailedPlayer.Unit = hll.Unit{
-					Name: unitSplit[1],
+					Name: caser.String(unitSplit[1]),
 					ID:   util.ToInt(unitSplit[0]),
 				}
 			} else {
@@ -151,7 +157,7 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 		detailedPlayer.Loadout = "none"
 	}
 
-	kd := strings.Split(valueMap["kills"], " - deaths: ")
+	kd := strings.Split(valueMap["kills"], " - Deaths: ")
 	if len(kd) == 2 {
 		detailedPlayer.Kills = util.ToInt(kd[0])
 		detailedPlayer.Deaths = util.ToInt(kd[1])
@@ -176,6 +182,26 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 	detailedPlayer.Level = util.ToInt(valueMap["level"])
 
 	return detailedPlayer, nil
+}
+
+func teamStringToTeam(name string) hll.Team {
+	typed := hll.Team(name)
+	switch typed {
+	case hll.TmAllies, hll.TmAxis:
+		return typed
+	default:
+		return hll.TmNone
+	}
+}
+
+func roleStringToRole(name string) hll.Role {
+	typed := hll.Role(name)
+	switch typed {
+	case hll.ArmyCommander, hll.Officer, hll.Rifleman, hll.Assault, hll.AutomaticRifleman, hll.Medic, hll.Support, hll.HeavyMachinegunner, hll.AntiTank, hll.Engineer, hll.TankCommander, hll.Crewman, hll.Spotter, hll.Sniper:
+		return typed
+	default:
+		return hll.NoRole
+	}
 }
 
 func (r *Rcon) AddAdmin(id, name string, role hll.AdminRole) error {

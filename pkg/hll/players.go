@@ -9,21 +9,21 @@ import (
 type Role string
 
 const (
-	ArmyCommander      Role = "armycommander"
-	Officer            Role = "officer"
-	Rifleman           Role = "rifleman"
-	Assault            Role = "assault"
-	AutomaticRifleman  Role = "automaticrifleman"
-	Medic              Role = "medic"
-	Support            Role = "support"
-	HeavyMachinegunner Role = "heavymachinegunner"
-	AntiTank           Role = "antitank"
-	Engineer           Role = "engineer"
-	TankCommander      Role = "tankcommander"
-	Crewman            Role = "crewman"
-	Spotter            Role = "spotter"
-	Sniper             Role = "sniper"
-	NoRole             Role = "none"
+	ArmyCommander      Role = "ArmyCommander"
+	Officer            Role = "Officer"
+	Rifleman           Role = "Rifleman"
+	Assault            Role = "Assault"
+	AutomaticRifleman  Role = "AutomaticRifleman"
+	Medic              Role = "Medic"
+	Support            Role = "Support"
+	HeavyMachinegunner Role = "HeavyMachineGunner"
+	AntiTank           Role = "AntiTank"
+	Engineer           Role = "Engineer"
+	TankCommander      Role = "TankCommander"
+	Crewman            Role = "Crewman"
+	Spotter            Role = "Spotter"
+	Sniper             Role = "Sniper"
+	NoRole             Role = "None"
 )
 
 type SquadType string
