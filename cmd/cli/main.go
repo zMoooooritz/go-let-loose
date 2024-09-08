@@ -19,6 +19,10 @@ import (
 )
 
 var (
+	// Set via ldflags when building
+	Version   = ""
+	CommitSHA = ""
+
 	logsCmd = "showlog"
 
 	indexedListCommands = []string{
@@ -261,11 +265,30 @@ func main() {
 	logger.NOPLogger()
 
 	var cfg rcon.ServerConfig
+	var version bool
 
 	flag.StringVar(&cfg.Host, "host", "", "hostname of server")
 	flag.StringVar(&cfg.Port, "port", "", "port on the server")
 	flag.StringVar(&cfg.Password, "password", "", "password of the rcon")
+	flag.BoolVar(&version, "version", false, "display version")
 	flag.Parse()
+
+	if version {
+		if len(CommitSHA) > 7 {
+			CommitSHA = CommitSHA[:7]
+		}
+		if Version == "" {
+			Version = "(built from source)"
+		}
+
+		fmt.Printf("go-let-loose-cli %s", Version)
+		if len(CommitSHA) > 0 {
+			fmt.Printf(" (%s)", CommitSHA)
+		}
+
+		fmt.Println()
+		os.Exit(0)
+	}
 
 	p := tea.NewProgram(initialModel(cfg),
 		tea.WithAltScreen(),

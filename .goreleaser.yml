@@ -8,20 +8,23 @@ before:
     - go mod tidy
 
 builds:
-  - goos:
+  - id: cli
+    main: ./cmd/cli/main.go
+    binary: "go-let-loose-cli"
+    flags:
+      - -trimpath
+    ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
+    goos:
       - darwin
       - linux
       - windows
     goarch:
       - amd64
       - arm64
-    main: ./cmd/cli/main.go
-    ldflags:
-      - -s -w
 
 nfpms:
   - builds:
-      - go-let-loose
+      - cli
     vendor: Moooooritz
     homepage: "https://moritz.biering.dev/"
     maintainer: "Moritz Biering <moritzbiering.mb@gmail.com>"
