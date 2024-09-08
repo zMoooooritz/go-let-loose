@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,14 +29,19 @@ func main() {
 	logger.DefaultLogger()
 
 	cfg := rcon.ServerConfig{
-		Host:     "123.123.123.123",
-		Port:     "12345",
-		Password: "password",
+		Host:     "176.57.153.41",
+		Port:     "28116",
+		Password: "nixzuessen",
 	}
+	// cfg := rcon.ServerConfig{
+	// 	Host:     "208.115.226.2",
+	// 	Port:     "7819",
+	// 	Password: "61534hrehdfh",
+	// }
 
 	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 	serverName, err := rcn.GetServerName()
@@ -48,13 +53,45 @@ func main() {
 
 	infoCache := event.NewCache()
 	eventListener := event.NewEventListener(rcn, infoCache)
-	printer := Printer{}
+	// printer := Printer{}
+	//
+	// eventListener.Register(&printer)
 
-	eventListener.Register(&printer)
+	time.Sleep(5 * time.Second)
 
-	time.Sleep(time.Second)
+	sv := infoCache.GetServerView()
+	fmt.Printf("%#v\n", sv)
+	// Open or create the file
+	file, err := os.Create("output.json")
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	defer file.Close()
 
-	fmt.Printf("%+v\n", infoCache.GetGameState())
+	// Convert the structure to JSON with indentation for readability
+	jsonData, err := json.MarshalIndent(sv, "", "  ")
+	if err != nil {
+		fmt.Println("Error marshalling to JSON:", err)
+		return
+	}
+
+	// Write the JSON data to the file
+	_, err = file.Write(jsonData)
+	if err != nil {
+		fmt.Println("Error writing to file:", err)
+		return
+	}
+
+	// playerinfo, _ := rcn.GetPlayerInfo("EV3NT")
+	// fmt.Printf("%#v\n", playerinfo)
+
+	// objs, err := rcn.GetCurrentMapObjectives()
+	// if err == nil {
+	// 	for _, row := range objs {
+	// 		fmt.Println(strings.Join(row, " | "))
+	// 	}
+	// }
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)

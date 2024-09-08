@@ -9,8 +9,8 @@ before:
 
 builds:
   - id: cli
-    main: ./cmd/cli/main.go
-    binary: "go-let-loose-cli"
+    main: ./cmd/go-let-loose-cli/main.go
+    binary: go-let-loose-cli
     flags:
       - -trimpath
     ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
