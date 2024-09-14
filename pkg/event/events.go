@@ -119,6 +119,7 @@ type ConnectEvent struct {
 func logToConnectEvent(time time.Time, eventdata string) ConnectEvent {
 	match := connPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
+		logger.Error("Event data unparseable:", eventdata)
 		return ConnectEvent{}
 	}
 	return ConnectEvent{
@@ -138,6 +139,7 @@ type DisconnectEvent struct {
 func logToDisconnectEvent(time time.Time, eventdata string) DisconnectEvent {
 	match := connPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
+		logger.Error("Event data unparseable:", eventdata)
 		return DisconnectEvent{}
 	}
 	return DisconnectEvent{
@@ -159,6 +161,7 @@ type KillEvent struct {
 func logToKillEvent(time time.Time, eventdata string) KillEvent {
 	match := killPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
+		logger.Error("Event data unparseable:", eventdata)
 		return KillEvent{}
 	}
 	return KillEvent{
@@ -201,6 +204,7 @@ type TeamKillEvent struct {
 func logToTeamKillEvent(time time.Time, eventdata string) TeamKillEvent {
 	match := killPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
+		logger.Error("Event data unparseable:", eventdata)
 		return TeamKillEvent{}
 	}
 	return TeamKillEvent{
@@ -243,6 +247,7 @@ type TeamSwitchEvent struct {
 func logToTeamSwitchEvent(time time.Time, eventdata string) TeamSwitchEvent {
 	match := switchPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
+		logger.Error("Event data unparseable:", eventdata)
 		return TeamSwitchEvent{}
 	}
 	return TeamSwitchEvent{
@@ -267,6 +272,7 @@ type ChatEvent struct {
 func logToChatEvent(time time.Time, eventdata string) ChatEvent {
 	match := chatPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
+		logger.Error("Event data unparseable:", eventdata)
 		return ChatEvent{}
 	}
 	return ChatEvent{
@@ -290,6 +296,7 @@ type BanEvent struct {
 func logToBanEvent(time time.Time, eventdata string) BanEvent {
 	match := banPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
+		logger.Error("Event data unparseable:", eventdata)
 		return BanEvent{}
 	}
 	return BanEvent{
@@ -311,6 +318,7 @@ type KickEvent struct {
 func logToKickEvent(time time.Time, eventdata string) KickEvent {
 	match := kickPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
+		logger.Error("Event data unparseable:", eventdata)
 		return KickEvent{}
 	}
 	return KickEvent{
@@ -332,6 +340,7 @@ type MessageEvent struct {
 func logToMessageEvent(time time.Time, eventdata string) MessageEvent {
 	match := msgPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
+		logger.Error("Event data unparseable:", eventdata)
 		return MessageEvent{}
 	}
 	return MessageEvent{
@@ -352,6 +361,7 @@ type MatchStartEvent struct {
 func logToMatchStartEvent(time time.Time, eventdata string) MatchStartEvent {
 	match := startPattern.FindStringSubmatch(eventdata)
 	if len(match) < 2 {
+		logger.Error("Event data unparseable:", eventdata)
 		return MatchStartEvent{}
 	}
 	return MatchStartEvent{
@@ -369,6 +379,7 @@ type MatchEndEvent struct {
 func logToMatchEndEvent(time time.Time, eventdata string) MatchEndEvent {
 	match := endPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
+		logger.Error("Event data unparseable:", eventdata)
 		return MatchEndEvent{}
 	}
 	return MatchEndEvent{
@@ -390,6 +401,7 @@ type AdminCamEvent struct {
 func logToAdminCamEvent(time time.Time, eventdata string) AdminCamEvent {
 	match := camPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
+		logger.Error("Event data unparseable:", eventdata)
 		return AdminCamEvent{}
 	}
 	return AdminCamEvent{
@@ -430,7 +442,7 @@ type VoteCompletedEvent struct {
 
 func logToVoteEvents(time time.Time, eventdata string) []Event {
 	events := []Event{}
-	if match := voteSubmittedPattern.FindStringSubmatch(eventdata); match != nil && len(match) > 3 {
+	if match := voteSubmittedPattern.FindStringSubmatch(eventdata); len(match) > 3 {
 		events = append(events,
 			VoteSubmittedEvent{
 				GenericEvent: GenericEvent{EVENT_VOTE_SUBMITTED, time},
@@ -442,7 +454,7 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 				Vote: match[2],
 			},
 		)
-	} else if match := voteStartedPattern.FindStringSubmatch(eventdata); match != nil && len(match) > 4 {
+	} else if match := voteStartedPattern.FindStringSubmatch(eventdata); len(match) > 4 {
 		voteStartEvent := VoteStartedEvent{
 			GenericEvent: GenericEvent{EVENT_VOTE_STARTED, time},
 			Reason:       match[2],
@@ -459,7 +471,7 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 
 		openVotesMap[voteStartEvent.ID] = voteStartEvent
 		events = append(events, voteStartEvent)
-	} else if match := voteCompletePattern.FindStringSubmatch(eventdata); match != nil && len(match) > 2 {
+	} else if match := voteCompletePattern.FindStringSubmatch(eventdata); len(match) > 2 {
 		voteID := util.ToInt(match[1])
 
 		if voteStartEvent, ok := openVotesMap[voteID]; ok {
