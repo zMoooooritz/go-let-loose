@@ -26,6 +26,16 @@ const (
 	NoRole             Role = "None"
 )
 
+func RoleFromString(name string) Role {
+	typed := Role(name)
+	switch typed {
+	case ArmyCommander, Officer, Rifleman, Assault, AutomaticRifleman, Medic, Support, HeavyMachinegunner, AntiTank, Engineer, TankCommander, Crewman, Spotter, Sniper:
+		return typed
+	default:
+		return NoRole
+	}
+}
+
 type SquadType string
 
 const (
@@ -119,6 +129,24 @@ const (
 type Admin struct {
 	PlayerInfo
 	Role AdminRole
+}
+
+type ChatScope string
+
+const (
+	CsTeam ChatScope = "Team"
+	CsUnit ChatScope = "Unit"
+	CsNone ChatScope = "None"
+)
+
+func ChatScopeFromString(name string) ChatScope {
+	typed := ChatScope(name)
+	switch typed {
+	case CsTeam, CsUnit:
+		return typed
+	default:
+		return CsNone
+	}
 }
 
 type BanType int

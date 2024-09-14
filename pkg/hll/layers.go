@@ -63,6 +63,16 @@ const (
 	TmNone   Team = "None"
 )
 
+func TeamFromString(name string) Team {
+	typed := Team(name)
+	switch typed {
+	case TmAllies, TmAxis:
+		return typed
+	default:
+		return TmNone
+	}
+}
+
 type Environment string
 
 const (

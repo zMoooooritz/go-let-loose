@@ -131,8 +131,8 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 
 	detailedPlayer.Name = valueMap["name"]
 	detailedPlayer.ID = valueMap["steamid64"]
-	detailedPlayer.Team = teamStringToTeam(valueMap["team"])
-	detailedPlayer.Role = roleStringToRole(valueMap["role"])
+	detailedPlayer.Team = hll.TeamFromString(valueMap["team"])
+	detailedPlayer.Role = hll.RoleFromString(valueMap["role"])
 	if detailedPlayer.Role == hll.ArmyCommander {
 		detailedPlayer.Unit = hll.CommandUnit
 	} else {
@@ -182,26 +182,6 @@ func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
 	detailedPlayer.Level = util.ToInt(valueMap["level"])
 
 	return detailedPlayer, nil
-}
-
-func teamStringToTeam(name string) hll.Team {
-	typed := hll.Team(name)
-	switch typed {
-	case hll.TmAllies, hll.TmAxis:
-		return typed
-	default:
-		return hll.TmNone
-	}
-}
-
-func roleStringToRole(name string) hll.Role {
-	typed := hll.Role(name)
-	switch typed {
-	case hll.ArmyCommander, hll.Officer, hll.Rifleman, hll.Assault, hll.AutomaticRifleman, hll.Medic, hll.Support, hll.HeavyMachinegunner, hll.AntiTank, hll.Engineer, hll.TankCommander, hll.Crewman, hll.Spotter, hll.Sniper:
-		return typed
-	default:
-		return hll.NoRole
-	}
 }
 
 func (r *Rcon) AddAdmin(id, name string, role hll.AdminRole) error {

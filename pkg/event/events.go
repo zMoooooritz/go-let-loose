@@ -15,17 +15,20 @@ const (
 )
 
 var (
-	logPattern    = regexp.MustCompile(`^\[.+? \((\d+)\)] (.*)`)
-	connPattern   = regexp.MustCompile(`CONNECTED (.+) \((.+)\)`)
-	killPattern   = regexp.MustCompile(`KILL: (.+)\(.+/(.+)\) -> (.+)\(.+/(.+)\) with (.+)`)
-	switchPattern = regexp.MustCompile(`TEAMSWITCH (.+) \((.+) > (.+)\)`)
-	chatPattern   = regexp.MustCompile(`CHAT\[.+\]\[(.+)\(.+/(.+)\)\]: (.+)`)
-	banPattern    = regexp.MustCompile(`BAN: \[(.+)\].+\[(.+.+)\]`)
-	kickPattern   = regexp.MustCompile(`KICK: \[(.+)\].+\[(.+.+)\]`)
-	msgPattern    = regexp.MustCompile(`MESSAGE: player \[(.+)\((.+)\)\], content \[(.*)\]`)
-	startPattern  = regexp.MustCompile(`MATCH START (.+)`)
-	endPattern    = regexp.MustCompile(`MATCH ENDED \x60(.+)\x60.+\((\d) - (\d)\) AXIS`)
-	camPattern    = regexp.MustCompile(`Player \[(.+) \((.+)\)\] (.+)`)
+	logPattern           = regexp.MustCompile(`^\[.+? \((\d+)\)] (.*)`)
+	connPattern          = regexp.MustCompile(`CONNECTED (.+) \((.+)\)`)
+	killPattern          = regexp.MustCompile(`KILL: (.+)\(.+/(.+)\) -> (.+)\(.+/(.+)\) with (.+)`)
+	switchPattern        = regexp.MustCompile(`TEAMSWITCH (.+) \((.+) > (.+)\)`)
+	chatPattern          = regexp.MustCompile(`CHAT\[(.+)\]\[(.+)\((.+)/(.+)\)\]: (.+)`)
+	banPattern           = regexp.MustCompile(`BAN: \[(.+)\].+\[(.+.+)\]`)
+	kickPattern          = regexp.MustCompile(`KICK: \[(.+)\].+\[(.+.+)\]`)
+	msgPattern           = regexp.MustCompile(`MESSAGE: player \[(.+)\((.+)\)\], content \[(.*)\]`)
+	startPattern         = regexp.MustCompile(`MATCH START (.+)`)
+	endPattern           = regexp.MustCompile(`MATCH ENDED \x60(.+)\x60.+\((\d) - (\d)\) AXIS`)
+	camPattern           = regexp.MustCompile(`Player \[(.+) \((.+)\)\] (.+)`)
+	voteStartedPattern   = regexp.MustCompile(`VOTESYS: Player \[(.*)\] Started a vote of type \((.*)\) against \[(.*)\]. VoteID: \[(\d+)\]`)
+	voteSubmittedPattern = regexp.MustCompile(`VOTESYS: Player \[(.*)\] voted \[(.*)\] for VoteID\[(\d+)\]`)
+	voteCompletePattern  = regexp.MustCompile(`VOTESYS: Vote \[(\d+)\] completed. Result: (.*)`)
 )
 
 type EventType string
@@ -45,6 +48,9 @@ const (
 	EVENT_MATCHSTART       EventType = "MATCH START"
 	EVENT_MATCHEND         EventType = "MATCH END"
 	EVENT_ADMINCAM         EventType = "Player"
+	EVENT_VOTE_STARTED     EventType = "VOTE STARTED"
+	EVENT_VOTE_SUBMITTED   EventType = "VOTE SUBMITTED"
+	EVENT_VOTE_COMPLETED   EventType = "VOTE COMPLETED"
 	EVENT_TEAM_SWITCHED    EventType = "TEAM SWITCHED" // WARN: custom event; this event does have the player id
 	EVENT_SQUAD_SWITCHED   EventType = "SQUAD SWITCHED"
 	EVENT_SCORE_UPDATE     EventType = "SCORE UPDATE"
@@ -52,6 +58,8 @@ const (
 	EVENT_LOADOUT_CHANGED  EventType = "LOADOUT_CHANGED"
 	EVENT_OBJECTIVE_CAPPED EventType = "OBJECTIVE_CAPPED"
 	EVENT_GENERIC          EventType = "GENERIC"
+
+	event_vote EventType = "VOTESYS"
 )
 
 type Event interface {
@@ -251,21 +259,25 @@ func logToTeamSwitchEvent(time time.Time, eventdata string) TeamSwitchEvent {
 type ChatEvent struct {
 	GenericEvent
 	Player  hll.PlayerInfo
+	Team    hll.Team
+	Scope   hll.ChatScope
 	Message string
 }
 
 func logToChatEvent(time time.Time, eventdata string) ChatEvent {
 	match := chatPattern.FindStringSubmatch(eventdata)
-	if len(match) < 4 {
+	if len(match) < 6 {
 		return ChatEvent{}
 	}
 	return ChatEvent{
 		GenericEvent{EVENT_CHAT, time},
 		hll.PlayerInfo{
-			Name: match[1],
-			ID:   match[2],
+			Name: match[2],
+			ID:   match[4],
 		},
-		match[3],
+		hll.TeamFromString(match[3]),
+		hll.ChatScopeFromString(match[1]),
+		match[5],
 	}
 }
 
@@ -390,6 +402,83 @@ func logToAdminCamEvent(time time.Time, eventdata string) AdminCamEvent {
 	}
 }
 
+type VoteStartedEvent struct {
+	GenericEvent
+	Reason    string
+	ID        int
+	Initiator hll.PlayerInfo
+	Target    hll.PlayerInfo
+}
+
+type VoteSubmittedEvent struct {
+	GenericEvent
+	Submitter hll.PlayerInfo
+	ID        int
+	Vote      string
+}
+
+var openVotesMap = make(map[int]VoteStartedEvent)
+
+type VoteCompletedEvent struct {
+	GenericEvent
+	Reason    string
+	Result    string
+	ID        int
+	Initiator hll.PlayerInfo
+	Target    hll.PlayerInfo
+}
+
+func logToVoteEvents(time time.Time, eventdata string) []Event {
+	events := []Event{}
+	if match := voteSubmittedPattern.FindStringSubmatch(eventdata); match != nil && len(match) > 3 {
+		events = append(events,
+			VoteSubmittedEvent{
+				GenericEvent: GenericEvent{EVENT_VOTE_SUBMITTED, time},
+				Submitter: hll.PlayerInfo{
+					Name: match[1],
+					ID:   hll.NoPlayerID,
+				},
+				ID:   util.ToInt(match[3]),
+				Vote: match[2],
+			},
+		)
+	} else if match := voteStartedPattern.FindStringSubmatch(eventdata); match != nil && len(match) > 4 {
+		voteStartEvent := VoteStartedEvent{
+			GenericEvent: GenericEvent{EVENT_VOTE_STARTED, time},
+			Reason:       match[2],
+			ID:           util.ToInt(match[4]),
+			Initiator: hll.PlayerInfo{
+				Name: match[1],
+				ID:   hll.NoPlayerID,
+			},
+			Target: hll.PlayerInfo{
+				Name: match[3],
+				ID:   hll.NoPlayerID,
+			},
+		}
+
+		openVotesMap[voteStartEvent.ID] = voteStartEvent
+		events = append(events, voteStartEvent)
+	} else if match := voteCompletePattern.FindStringSubmatch(eventdata); match != nil && len(match) > 2 {
+		voteID := util.ToInt(match[1])
+
+		if voteStartEvent, ok := openVotesMap[voteID]; ok {
+			events = append(events,
+				VoteCompletedEvent{
+					GenericEvent: GenericEvent{EVENT_VOTE_COMPLETED, time},
+					Reason:       voteStartEvent.Reason,
+					Result:       match[2],
+					ID:           voteStartEvent.ID,
+					Initiator:    voteStartEvent.Initiator,
+					Target:       voteStartEvent.Target,
+				},
+			)
+		}
+		delete(openVotesMap, voteID)
+	}
+	return events
+}
+
 type ObjectiveCaptureEvent struct {
 	GenericEvent
 	OldScore hll.TeamData
@@ -510,6 +599,8 @@ func logToEvents(logline string) []Event {
 		return []Event{logToMatchEndEvent(time, data)}
 	} else if strings.HasPrefix(data, string(EVENT_ADMINCAM)) {
 		return []Event{logToAdminCamEvent(time, data)}
+	} else if strings.HasPrefix(data, string(event_vote)) {
+		return logToVoteEvents(time, data)
 	}
 
 	logger.Error("Logline unparseable:", logline)
@@ -542,6 +633,12 @@ func GetAffectedPlayer(e Event) (hll.PlayerInfo, bool) {
 		return e.Player, true
 	case AdminCamEvent:
 		return e.Player, true
+	case VoteStartedEvent:
+		return e.Initiator, true
+	case VoteSubmittedEvent:
+		return e.Submitter, true
+	case VoteCompletedEvent:
+		return e.Target, true
 	case PlayerSwitchTeamEvent:
 		return e.Player, true
 	case PlayerSwitchSquadEvent:
