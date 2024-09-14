@@ -9,24 +9,45 @@ go-let-loose
 [![Build Status](https://img.shields.io/github/actions/workflow/status/zMoooooritz/go-let-loose/build.yml?branch=master&style=for-the-badge)](https://github.com/zMoooooritz/go-let-loose/actions)
 [![Go ReportCard](https://goreportcard.com/badge/github.com/zMoooooritz/go-let-loose?style=for-the-badge)](https://goreportcard.com/report/zMoooooritz/go-let-loose)
 
+Go bindings and interface for the remote console of **Hell Let Loose**.
 
-Go bindings and interface for the remote console of Hell Let Loose
+---
 
-## ⇁ Features
+## 🚀 Features
 
-- Bindings for all supported RCON opeartions
-- Proper typing for all maps, armaments, squads and more
-- Event system that expands on the provided logs
+- Bindings for all supported RCON operations.
+- Proper typing for maps, armaments, squads, and more.
+- Event system that expands on the HLL provided logs.
 
-## ⇁ Installation 
+---
+
+## 📦 Installation
+
+### Install the Go package:
+
+To install the Go package, simply run:
+
 ```bash
 go get github.com/zMoooooritz/go-let-loose
 ```
 
-## ⇁ Usage
-```go
-const workerCount = 10
+### Install the CLI:
 
+For those who want to install and use the **CLI** version of `go-let-loose`, download the latest release from the [releases page](https://github.com/zMoooooritz/go-let-loose/releases) or use the following command:
+
+```bash
+go install github.com/zMoooooritz/go-let-loose/cmd/go-let-loose-cli@latest
+```
+
+This will install `go-let-loose-cli` globally on your system, allowing you to interact with the HLL server directly from the command line.
+
+---
+
+## 📖 Usage
+
+Below is an example of how to use the `go-let-loose` module in a Go project:
+
+```go
 type Printer struct{}
 
 func (p *Printer) IsSubscribed(e event.Event) bool {
@@ -46,6 +67,7 @@ func main() {
 		Password: "password",
 	}
 
+    const workerCount = 10
 	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
 		log.Fatal(err)
@@ -53,15 +75,14 @@ func main() {
 
 	serverName, err := rcn.GetServerName()
 	if err == nil {
-		fmt.Printf("Conntected to the Server: %s\n", serverName)
+		fmt.Printf("Connected to the Server: %s\n", serverName)
 	} else {
 		fmt.Println(err)
 	}
 
+	printer := Printer{}
 	infoCache := event.NewCache()
 	eventListener := event.NewEventListener(rcn, infoCache)
-	printer := Printer{}
-
 	eventListener.Register(&printer)
 
 	time.Sleep(time.Second)
@@ -77,7 +98,16 @@ func main() {
 }
 ```
 
-## ⇁ Built with
+---
+
+## 🔧 Built with
+
 - [ttlcache](https://github.com/jellydator/ttlcache)
-- TUI [bubbletea](https://github.com/charmbracelet/bubbletea) and its awesome ecosystem
+- TUI powered by [bubbletea](https://github.com/charmbracelet/bubbletea) and its awesome ecosystem.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. You can view the full license [here](https://github.com/zMoooooritz/go-let-loose/blob/master/LICENSE).
 

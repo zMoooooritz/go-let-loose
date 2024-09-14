@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -25,6 +26,61 @@ var (
 
 	logsCmd = "showlog"
 
+	otherCommands = []string{
+		"clear",
+	}
+
+	normalCommands = []string{
+		"help",
+		"get name",
+		"get slots",
+		"get gamestate",
+		"get maxqueuedplayers",
+		"setmaxqueuedplayers",
+		"get numvipslots",
+		"setnumvipslots",
+		"say",
+		"broadcast",
+		"get map",
+		"rotlist",
+		"rotadd",
+		"rotdel",
+		"map",
+		"gamelayout",
+		"querymapshuffle",
+		"togglemapshuffle",
+		"listcurrentmapsequence",
+		"playerinfo",
+		"adminadd",
+		"admindel",
+		"vipadd",
+		"vipdel",
+		"message",
+		"punish",
+		"switchteamondeath",
+		"switchteamnow",
+		"kick",
+		"tempban",
+		"pardontempban",
+		"permaban",
+		"pardonpermaban",
+		"get idletime",
+		"get highping",
+		"get teamswitchcooldown",
+		"get autobalanceenabled",
+		"get votekickenabled",
+		"get votekickthreshold",
+		"get profanity",
+		"setkickidletime",
+		"sethighping",
+		"setteamswitchcooldown",
+		"setautobalanceenabled",
+		"setautobalancethreshold",
+		"setvotekickenabled",
+		"setvotekickthreshold",
+		"resetvotekickthreshold",
+	}
+
 	indexedListCommands = []string{
 		"get mapsforrotation",
 		"get players",
@@ -35,7 +91,11 @@ var (
 		"get tempbans",
 		"get permabans",
 		"get profanities",
-		"get objectiverow_",
+		"get objectiverow_0",
+		"get objectiverow_1",
+		"get objectiverow_2",
+		"get objectiverow_3",
+		"get objectiverow_4",
 		"banprofanity",
 		"unbanprofanity",
 	}
@@ -43,6 +103,8 @@ var (
 	unindexedListCommands = []string{
 		logsCmd,
 	}
+
+	allCommands = slices.Concat(normalCommands, indexedListCommands, unindexedListCommands, otherCommands)
 )
 
 type model struct {
@@ -61,6 +123,7 @@ func initialModel(cfg rcon.ServerConfig) model {
 	ti.Focus()
 	ti.Prompt = " > "
 	ti.Placeholder = ""
+	ti.ShowSuggestions = true
 
 	ti.PromptStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 	ti.TextStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("227"))
@@ -100,6 +163,7 @@ func initialModel(cfg rcon.ServerConfig) model {
 			}
 			history = append(history, msg+"\n")
 			connected = true
+			ti.SetSuggestions(allCommands)
 		}
 		vp.SetContent(strings.Join(history, "\n"))
 	}
@@ -161,6 +225,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						}
 						m.history = append(m.history, msg+"\n")
 						m.connected = true
+
+						m.textInput.SetSuggestions(allCommands)
 					}
 				}
 			} else {
@@ -170,14 +236,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.history = []string{}
 					m.viewport.SetContent(strings.Join(m.history, "\n"))
 				} else {
-					if m.connected {
+					if !isValidCommand(command) {
+						m.history = append(m.history, "Invalid command, won't run: "+command)
+					} else if !m.connected {
+						m.history = append(m.history, "Not connected, can't run: "+command)
+					} else {
 						response := executeCommand(m.rcon, command)
 						m.history = append(m.history, command)
 						for _, resp := range response {
 							m.history = append(m.history, " "+strings.ReplaceAll(resp, "\n", "\n "))
 						}
-					} else {
-						m.history = append(m.history, "Not connected, can't run: "+command)
 					}
 				}
 			}
@@ -194,7 +262,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width - 2
 		m.height = msg.Height - 2
-		m.textInput.Width = msg.Width - 6
+		m.textInput.Width = msg.Width - 30
 
 		m.viewport.Width = m.width - 2
 		m.viewport.Height = m.height - 5
@@ -207,6 +275,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.viewport, cmd = m.viewport.Update(msg)
 	cmds = append(cmds, cmd)
 	return m, tea.Batch(cmds...)
+}
+
+func isValidCommand(command string) bool {
+	for _, cmd := range allCommands {
+		if strings.HasPrefix(command, cmd) {
+			return true
+		}
+	}
+	return false
 }
 
 func (m model) View() string {
