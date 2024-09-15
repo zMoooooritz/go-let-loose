@@ -31,36 +31,56 @@ var (
 	voteCompletePattern  = regexp.MustCompile(`VOTESYS: Vote \[(\d+)\] completed. Result: (.*)`)
 )
 
+var openVoteKicksMap = make(map[int]VoteStartedEvent)
+
 type EventType string
 
 const (
-	EVENT_CONNECTED        EventType = "CONNECTED"
-	EVENT_DISCONNECTED     EventType = "DISCONNECTED"
-	EVENT_KILL             EventType = "KILL"
-	EVENT_DEATH            EventType = "DEATH"
-	EVENT_TEAMKILL         EventType = "TEAM KILL"
-	EVENT_TEAMDEATH        EventType = "TEAM DEATH"
-	EVENT_TEAMSWITCH       EventType = "TEAMSWITCH" // WARN: generic hll event; this event does not have a player id
-	EVENT_CHAT             EventType = "CHAT"
-	EVENT_BAN              EventType = "BAN"
-	EVENT_KICK             EventType = "KICK"
-	EVENT_MESSAGE          EventType = "MESSAGE"
-	EVENT_MATCHSTART       EventType = "MATCH START"
-	EVENT_MATCHEND         EventType = "MATCH END"
-	EVENT_ADMINCAM         EventType = "Player"
-	EVENT_VOTE_STARTED     EventType = "VOTE STARTED"
-	EVENT_VOTE_SUBMITTED   EventType = "VOTE SUBMITTED"
-	EVENT_VOTE_COMPLETED   EventType = "VOTE COMPLETED"
-	EVENT_TEAM_SWITCHED    EventType = "TEAM SWITCHED" // WARN: custom event; this event does have the player id
-	EVENT_SQUAD_SWITCHED   EventType = "SQUAD SWITCHED"
-	EVENT_SCORE_UPDATE     EventType = "SCORE UPDATE"
-	EVENT_ROLE_CHANGED     EventType = "ROLE CHANGED"
-	EVENT_LOADOUT_CHANGED  EventType = "LOADOUT_CHANGED"
-	EVENT_OBJECTIVE_CAPPED EventType = "OBJECTIVE_CAPPED"
-	EVENT_GENERIC          EventType = "GENERIC"
+	EVENT_CONNECTED    EventType = "CONNECTED"
+	EVENT_DISCONNECTED EventType = "DISCONNECTED"
+	EVENT_KILL         EventType = "KILL"
+	EVENT_DEATH        EventType = "DEATH"
+	EVENT_TEAMKILL     EventType = "TEAM KILL"
+	EVENT_TEAMDEATH    EventType = "TEAM DEATH"
+	EVENT_TEAMSWITCH   EventType = "TEAMSWITCH" // WARN: generic hll event; this event does not have a player id
+	EVENT_CHAT         EventType = "CHAT"
+	EVENT_BAN          EventType = "BAN"
+	EVENT_KICK         EventType = "KICK"
+	EVENT_MESSAGE      EventType = "MESSAGE"
+	EVENT_MATCHSTART   EventType = "MATCH START"
+	EVENT_MATCHEND     EventType = "MATCH END"
+	EVENT_ADMINCAM     EventType = "Player"
+	event_vote         EventType = "VOTESYS"
 
-	event_vote EventType = "VOTESYS"
+	// native log events above; custom events below
+
+	EVENT_VOTE_KICK_STARTED   EventType = "VOTE KICK STARTED"
+	EVENT_VOTE_SUBMITTED      EventType = "VOTE SUBMITTED"
+	EVENT_VOTE_KICK_COMPLETED EventType = "VOTE KICK COMPLETED"
+	EVENT_TEAM_SWITCHED       EventType = "TEAM SWITCHED" // WARN: custom event; this event does have the player id
+	EVENT_SQUAD_SWITCHED      EventType = "SQUAD SWITCHED"
+	EVENT_SCORE_UPDATE        EventType = "SCORE UPDATE"
+	EVENT_ROLE_CHANGED        EventType = "ROLE CHANGED"
+	EVENT_LOADOUT_CHANGED     EventType = "LOADOUT_CHANGED"
+	EVENT_OBJECTIVE_CAPPED    EventType = "OBJECTIVE_CAPPED"
+	EVENT_GENERIC             EventType = "GENERIC"
 )
+
+var logEventParsers = map[EventType]func(time.Time, string) []Event{
+	EVENT_CONNECTED:    logToConnectEvent,
+	EVENT_DISCONNECTED: logToDisconnectEvent,
+	EVENT_KILL:         logToKillEvents,
+	EVENT_TEAMKILL:     logToTeamKillEvents,
+	EVENT_TEAMSWITCH:   logToTeamSwitchEvent,
+	EVENT_CHAT:         logToChatEvent,
+	EVENT_BAN:          logToBanEvent,
+	EVENT_KICK:         logToKickEvent,
+	EVENT_MESSAGE:      logToMessageEvent,
+	EVENT_MATCHSTART:   logToMatchStartEvent,
+	EVENT_MATCHEND:     logToMatchEndEvent,
+	EVENT_ADMINCAM:     logToAdminCamEvent,
+	event_vote:         logToVoteEvents,
+}
 
 type Event interface {
 	Type() EventType
@@ -116,19 +136,19 @@ type ConnectEvent struct {
 	Player hll.PlayerInfo
 }
 
-func logToConnectEvent(time time.Time, eventdata string) ConnectEvent {
+func logToConnectEvent(time time.Time, eventdata string) []Event {
 	match := connPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
 		logger.Error("Event data unparseable:", eventdata)
-		return ConnectEvent{}
+		return []Event{}
 	}
-	return ConnectEvent{
+	return []Event{ConnectEvent{
 		GenericEvent{EVENT_CONNECTED, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   match[2],
 		},
-	}
+	}}
 }
 
 type DisconnectEvent struct {
@@ -136,19 +156,19 @@ type DisconnectEvent struct {
 	Player hll.PlayerInfo
 }
 
-func logToDisconnectEvent(time time.Time, eventdata string) DisconnectEvent {
+func logToDisconnectEvent(time time.Time, eventdata string) []Event {
 	match := connPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
 		logger.Error("Event data unparseable:", eventdata)
-		return DisconnectEvent{}
+		return []Event{}
 	}
-	return DisconnectEvent{
+	return []Event{DisconnectEvent{
 		GenericEvent{EVENT_DISCONNECTED, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   match[2],
 		},
-	}
+	}}
 }
 
 type KillEvent struct {
@@ -158,13 +178,13 @@ type KillEvent struct {
 	Weapon hll.Weapon
 }
 
-func logToKillEvent(time time.Time, eventdata string) KillEvent {
+func logToKillEvents(time time.Time, eventdata string) []Event {
 	match := killPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
 		logger.Error("Event data unparseable:", eventdata)
-		return KillEvent{}
+		return []Event{}
 	}
-	return KillEvent{
+	killEvent := KillEvent{
 		GenericEvent{EVENT_KILL, time},
 		hll.PlayerInfo{
 			Name: match[1],
@@ -176,6 +196,7 @@ func logToKillEvent(time time.Time, eventdata string) KillEvent {
 		},
 		hll.ParseWeapon(match[5]),
 	}
+	return []Event{killEvent, killToDeatchEvent(killEvent)}
 }
 
 type DeathEvent struct {
@@ -201,13 +222,13 @@ type TeamKillEvent struct {
 	Weapon hll.Weapon
 }
 
-func logToTeamKillEvent(time time.Time, eventdata string) TeamKillEvent {
+func logToTeamKillEvents(time time.Time, eventdata string) []Event {
 	match := killPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
 		logger.Error("Event data unparseable:", eventdata)
-		return TeamKillEvent{}
+		return []Event{}
 	}
-	return TeamKillEvent{
+	teamKillEvent := TeamKillEvent{
 		GenericEvent{EVENT_TEAMKILL, time},
 		hll.PlayerInfo{
 			Name: match[1],
@@ -219,6 +240,7 @@ func logToTeamKillEvent(time time.Time, eventdata string) TeamKillEvent {
 		},
 		hll.ParseWeapon(match[5]),
 	}
+	return []Event{teamKillEvent, teamKillToTeamDeatchEvent(teamKillEvent)}
 }
 
 type TeamDeathEvent struct {
@@ -244,13 +266,13 @@ type TeamSwitchEvent struct {
 	To     hll.Team
 }
 
-func logToTeamSwitchEvent(time time.Time, eventdata string) TeamSwitchEvent {
+func logToTeamSwitchEvent(time time.Time, eventdata string) []Event {
 	match := switchPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
 		logger.Error("Event data unparseable:", eventdata)
-		return TeamSwitchEvent{}
+		return []Event{}
 	}
-	return TeamSwitchEvent{
+	return []Event{TeamSwitchEvent{
 		GenericEvent{EVENT_TEAMSWITCH, time},
 		hll.PlayerInfo{
 			Name: match[1],
@@ -258,7 +280,7 @@ func logToTeamSwitchEvent(time time.Time, eventdata string) TeamSwitchEvent {
 		},
 		hll.Team(match[2]),
 		hll.Team(match[3]),
-	}
+	}}
 }
 
 type ChatEvent struct {
@@ -269,13 +291,13 @@ type ChatEvent struct {
 	Message string
 }
 
-func logToChatEvent(time time.Time, eventdata string) ChatEvent {
+func logToChatEvent(time time.Time, eventdata string) []Event {
 	match := chatPattern.FindStringSubmatch(eventdata)
 	if len(match) < 6 {
 		logger.Error("Event data unparseable:", eventdata)
-		return ChatEvent{}
+		return []Event{}
 	}
-	return ChatEvent{
+	return []Event{ChatEvent{
 		GenericEvent{EVENT_CHAT, time},
 		hll.PlayerInfo{
 			Name: match[2],
@@ -284,7 +306,7 @@ func logToChatEvent(time time.Time, eventdata string) ChatEvent {
 		hll.TeamFromString(match[3]),
 		hll.ChatScopeFromString(match[1]),
 		match[5],
-	}
+	}}
 }
 
 type BanEvent struct {
@@ -293,20 +315,20 @@ type BanEvent struct {
 	Reason string
 }
 
-func logToBanEvent(time time.Time, eventdata string) BanEvent {
+func logToBanEvent(time time.Time, eventdata string) []Event {
 	match := banPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
 		logger.Error("Event data unparseable:", eventdata)
-		return BanEvent{}
+		return []Event{}
 	}
-	return BanEvent{
+	return []Event{BanEvent{
 		GenericEvent{EVENT_BAN, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   hll.NoPlayerID,
 		},
 		match[2],
-	}
+	}}
 }
 
 type KickEvent struct {
@@ -315,20 +337,20 @@ type KickEvent struct {
 	Reason string
 }
 
-func logToKickEvent(time time.Time, eventdata string) KickEvent {
+func logToKickEvent(time time.Time, eventdata string) []Event {
 	match := kickPattern.FindStringSubmatch(eventdata)
 	if len(match) < 3 {
 		logger.Error("Event data unparseable:", eventdata)
-		return KickEvent{}
+		return []Event{}
 	}
-	return KickEvent{
+	return []Event{KickEvent{
 		GenericEvent{EVENT_KICK, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   hll.NoPlayerID,
 		},
 		match[2],
-	}
+	}}
 }
 
 type MessageEvent struct {
@@ -337,20 +359,20 @@ type MessageEvent struct {
 	Message string
 }
 
-func logToMessageEvent(time time.Time, eventdata string) MessageEvent {
+func logToMessageEvent(time time.Time, eventdata string) []Event {
 	match := msgPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
 		logger.Error("Event data unparseable:", eventdata)
-		return MessageEvent{}
+		return []Event{}
 	}
-	return MessageEvent{
+	return []Event{MessageEvent{
 		GenericEvent{EVENT_MESSAGE, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   match[2],
 		},
 		match[3],
-	}
+	}}
 }
 
 type MatchStartEvent struct {
@@ -358,16 +380,16 @@ type MatchStartEvent struct {
 	Map hll.GameMap
 }
 
-func logToMatchStartEvent(time time.Time, eventdata string) MatchStartEvent {
+func logToMatchStartEvent(time time.Time, eventdata string) []Event {
 	match := startPattern.FindStringSubmatch(eventdata)
 	if len(match) < 2 {
 		logger.Error("Event data unparseable:", eventdata)
-		return MatchStartEvent{}
+		return []Event{}
 	}
-	return MatchStartEvent{
+	return []Event{MatchStartEvent{
 		GenericEvent{EVENT_MATCHSTART, time},
 		hll.LogMapNameToMap(match[1]),
-	}
+	}}
 }
 
 type MatchEndEvent struct {
@@ -376,20 +398,20 @@ type MatchEndEvent struct {
 	Score hll.TeamData
 }
 
-func logToMatchEndEvent(time time.Time, eventdata string) MatchEndEvent {
+func logToMatchEndEvent(time time.Time, eventdata string) []Event {
 	match := endPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
 		logger.Error("Event data unparseable:", eventdata)
-		return MatchEndEvent{}
+		return []Event{}
 	}
-	return MatchEndEvent{
+	return []Event{MatchEndEvent{
 		GenericEvent{EVENT_MATCHEND, time},
 		hll.LogMapNameToMap(match[1]),
 		hll.TeamData{
 			Allies: util.ToInt(match[2]),
 			Axis:   util.ToInt(match[3]),
 		},
-	}
+	}}
 }
 
 type AdminCamEvent struct {
@@ -398,20 +420,20 @@ type AdminCamEvent struct {
 	Content string
 }
 
-func logToAdminCamEvent(time time.Time, eventdata string) AdminCamEvent {
+func logToAdminCamEvent(time time.Time, eventdata string) []Event {
 	match := camPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
 		logger.Error("Event data unparseable:", eventdata)
-		return AdminCamEvent{}
+		return []Event{}
 	}
-	return AdminCamEvent{
+	return []Event{AdminCamEvent{
 		GenericEvent{EVENT_ADMINCAM, time},
 		hll.PlayerInfo{
 			Name: match[1],
 			ID:   match[2],
 		},
 		match[3],
-	}
+	}}
 }
 
 type VoteStartedEvent struct {
@@ -428,8 +450,6 @@ type VoteSubmittedEvent struct {
 	ID        int
 	Vote      string
 }
-
-var openVotesMap = make(map[int]VoteStartedEvent)
 
 type VoteCompletedEvent struct {
 	GenericEvent
@@ -456,7 +476,7 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 		)
 	} else if match := voteStartedPattern.FindStringSubmatch(eventdata); len(match) > 4 {
 		voteStartEvent := VoteStartedEvent{
-			GenericEvent: GenericEvent{EVENT_VOTE_STARTED, time},
+			GenericEvent: GenericEvent{EVENT_VOTE_KICK_STARTED, time},
 			Reason:       match[2],
 			ID:           util.ToInt(match[4]),
 			Initiator: hll.PlayerInfo{
@@ -469,15 +489,15 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 			},
 		}
 
-		openVotesMap[voteStartEvent.ID] = voteStartEvent
+		openVoteKicksMap[voteStartEvent.ID] = voteStartEvent
 		events = append(events, voteStartEvent)
 	} else if match := voteCompletePattern.FindStringSubmatch(eventdata); len(match) > 2 {
 		voteID := util.ToInt(match[1])
 
-		if voteStartEvent, ok := openVotesMap[voteID]; ok {
+		if voteStartEvent, ok := openVoteKicksMap[voteID]; ok {
 			events = append(events,
 				VoteCompletedEvent{
-					GenericEvent: GenericEvent{EVENT_VOTE_COMPLETED, time},
+					GenericEvent: GenericEvent{EVENT_VOTE_KICK_COMPLETED, time},
 					Reason:       voteStartEvent.Reason,
 					Result:       match[2],
 					ID:           voteStartEvent.ID,
@@ -486,7 +506,7 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 				},
 			)
 		}
-		delete(openVotesMap, voteID)
+		delete(openVoteKicksMap, voteID)
 	}
 	return events
 }
@@ -580,87 +600,15 @@ func logToEvents(logline string) []Event {
 		logger.Error("Logline invalid format:", logline)
 		return []Event{GenericEvent{EVENT_GENERIC, time.Now()}}
 	}
-	time := time.Unix(util.ToInt64(match[1]), 0)
+	timestamp := time.Unix(util.ToInt64(match[1]), 0)
 	data := match[2]
 
-	if strings.HasPrefix(data, string(EVENT_CONNECTED)) {
-		return []Event{logToConnectEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_DISCONNECTED)) {
-		return []Event{logToDisconnectEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_KILL)) {
-		killEvent := logToKillEvent(time, data)
-		deathEvent := killToDeatchEvent(killEvent)
-		return []Event{killEvent, deathEvent}
-	} else if strings.HasPrefix(data, string(EVENT_TEAMKILL)) {
-		teamKillEvent := logToTeamKillEvent(time, data)
-		teamDeathEvent := teamKillToTeamDeatchEvent(teamKillEvent)
-		return []Event{teamKillEvent, teamDeathEvent}
-	} else if strings.HasPrefix(data, string(EVENT_TEAMSWITCH)) {
-		return []Event{logToTeamSwitchEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_CHAT)) {
-		return []Event{logToChatEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_BAN)) {
-		return []Event{logToBanEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_KICK)) {
-		return []Event{logToKickEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_MESSAGE)) {
-		return []Event{logToMessageEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_MATCHSTART)) {
-		return []Event{logToMatchStartEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_MATCHEND)) {
-		return []Event{logToMatchEndEvent(time, data)}
-	} else if strings.HasPrefix(data, string(EVENT_ADMINCAM)) {
-		return []Event{logToAdminCamEvent(time, data)}
-	} else if strings.HasPrefix(data, string(event_vote)) {
-		return logToVoteEvents(time, data)
+	for eventPrefix, parser := range logEventParsers {
+		if strings.HasPrefix(data, string(eventPrefix)) {
+			return parser(timestamp, data)
+		}
 	}
 
 	logger.Error("Logline unparseable:", logline)
-	return []Event{GenericEvent{EVENT_GENERIC, time}}
-}
-
-func GetAffectedPlayer(e Event) (hll.PlayerInfo, bool) {
-	switch e := e.(type) {
-	case KillEvent:
-		return e.Killer, true
-	case DeathEvent:
-		return e.Victim, true
-	case TeamKillEvent:
-		return e.Killer, true
-	case TeamDeathEvent:
-		return e.Victim, true
-	case ConnectEvent:
-		return e.Player, true
-	case DisconnectEvent:
-		return e.Player, true
-	case TeamSwitchEvent:
-		return e.Player, true
-	case ChatEvent:
-		return e.Player, true
-	case BanEvent:
-		return e.Player, true
-	case KickEvent:
-		return e.Player, true
-	case MessageEvent:
-		return e.Player, true
-	case AdminCamEvent:
-		return e.Player, true
-	case VoteStartedEvent:
-		return e.Initiator, true
-	case VoteSubmittedEvent:
-		return e.Submitter, true
-	case VoteCompletedEvent:
-		return e.Target, true
-	case PlayerSwitchTeamEvent:
-		return e.Player, true
-	case PlayerSwitchSquadEvent:
-		return e.Player, true
-	case PlayerScoreUpdateEvent:
-		return e.Player, true
-	case PlayerChangeRoleEvent:
-		return e.Player, true
-	case PlayerChangeLoadoutEvent:
-		return e.Player, true
-	}
-	return hll.PlayerInfo{}, false
+	return []Event{}
 }
