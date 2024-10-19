@@ -49,11 +49,13 @@ const (
 	EVENT_MESSAGE      EventType = "MESSAGE"
 	EVENT_MATCHSTART   EventType = "MATCH START"
 	EVENT_MATCHEND     EventType = "MATCH END"
-	EVENT_ADMINCAM     EventType = "Player"
+	event_admincam     EventType = "Player"
 	event_vote         EventType = "VOTESYS"
 
 	// native log events above; custom events below
 
+	EVENT_ENTER_ADMINCAM      EventType = "ADMINCAM ENTERED"
+	EVENT_LEAVE_ADMINCAM      EventType = "ADMINCAM LEFT"
 	EVENT_VOTE_KICK_STARTED   EventType = "VOTE KICK STARTED"
 	EVENT_VOTE_SUBMITTED      EventType = "VOTE SUBMITTED"
 	EVENT_VOTE_KICK_COMPLETED EventType = "VOTE KICK COMPLETED"
@@ -78,7 +80,7 @@ var logEventParsers = map[EventType]func(time.Time, string) []Event{
 	EVENT_MESSAGE:      logToMessageEvent,
 	EVENT_MATCHSTART:   logToMatchStartEvent,
 	EVENT_MATCHEND:     logToMatchEndEvent,
-	EVENT_ADMINCAM:     logToAdminCamEvent,
+	event_admincam:     logToAdminCamEvent,
 	event_vote:         logToVoteEvents,
 }
 
@@ -414,26 +416,43 @@ func logToMatchEndEvent(time time.Time, eventdata string) []Event {
 	}}
 }
 
-type AdminCamEvent struct {
+type AdminCamEnteredEvent struct {
 	GenericEvent
-	Player  hll.PlayerInfo
-	Content string
+	Player hll.PlayerInfo
+}
+
+type AdminCamLeftEvent struct {
+	GenericEvent
+	Player hll.PlayerInfo
 }
 
 func logToAdminCamEvent(time time.Time, eventdata string) []Event {
+	events := []Event{}
 	match := camPattern.FindStringSubmatch(eventdata)
 	if len(match) < 4 {
 		logger.Error("Event data unparseable:", eventdata)
-		return []Event{}
+		return events
 	}
-	return []Event{AdminCamEvent{
-		GenericEvent{EVENT_ADMINCAM, time},
-		hll.PlayerInfo{
-			Name: match[1],
-			ID:   match[2],
-		},
-		match[3],
-	}}
+	if strings.HasPrefix(match[3], "Entered") {
+		events = append(events,
+			AdminCamEnteredEvent{
+				GenericEvent{EVENT_ENTER_ADMINCAM, time},
+				hll.PlayerInfo{
+					Name: match[1],
+					ID:   match[2],
+				},
+			})
+	} else {
+		events = append(events,
+			AdminCamLeftEvent{
+				GenericEvent{EVENT_LEAVE_ADMINCAM, time},
+				hll.PlayerInfo{
+					Name: match[1],
+					ID:   match[2],
+				},
+			})
+	}
+	return events
 }
 
 type VoteStartedEvent struct {
@@ -462,19 +481,7 @@ type VoteCompletedEvent struct {
 
 func logToVoteEvents(time time.Time, eventdata string) []Event {
 	events := []Event{}
-	if match := voteSubmittedPattern.FindStringSubmatch(eventdata); len(match) > 3 {
-		events = append(events,
-			VoteSubmittedEvent{
-				GenericEvent: GenericEvent{EVENT_VOTE_SUBMITTED, time},
-				Submitter: hll.PlayerInfo{
-					Name: match[1],
-					ID:   hll.NoPlayerID,
-				},
-				ID:   util.ToInt(match[3]),
-				Vote: match[2],
-			},
-		)
-	} else if match := voteStartedPattern.FindStringSubmatch(eventdata); len(match) > 4 {
+	if match := voteStartedPattern.FindStringSubmatch(eventdata); len(match) > 4 {
 		voteStartEvent := VoteStartedEvent{
 			GenericEvent: GenericEvent{EVENT_VOTE_KICK_STARTED, time},
 			Reason:       match[2],
@@ -491,6 +498,18 @@ func logToVoteEvents(time time.Time, eventdata string) []Event {
 
 		openVoteKicksMap[voteStartEvent.ID] = voteStartEvent
 		events = append(events, voteStartEvent)
+	} else if match := voteSubmittedPattern.FindStringSubmatch(eventdata); len(match) > 3 {
+		events = append(events,
+			VoteSubmittedEvent{
+				GenericEvent: GenericEvent{EVENT_VOTE_SUBMITTED, time},
+				Submitter: hll.PlayerInfo{
+					Name: match[1],
+					ID:   hll.NoPlayerID,
+				},
+				ID:   util.ToInt(match[3]),
+				Vote: match[2],
+			},
+		)
 	} else if match := voteCompletePattern.FindStringSubmatch(eventdata); len(match) > 2 {
 		voteID := util.ToInt(match[1])
 
@@ -554,6 +573,11 @@ type PlayerChangeLoadoutEvent struct {
 func PlayerInfoDiffToEvents(oldData hll.DetailedPlayerInfo, newData hll.DetailedPlayerInfo) []Event {
 	events := []Event{}
 
+	emptyPlayerInfo := hll.DetailedPlayerInfo{}
+	if oldData == emptyPlayerInfo {
+		return events
+	}
+
 	if oldData.Team != newData.Team {
 		events = append(events, PlayerSwitchTeamEvent{GenericEvent{EVENT_TEAM_SWITCHED, time.Now()}, newData.PlayerInfo, oldData.Team, newData.Team})
 	}
@@ -611,4 +635,52 @@ func logToEvents(logline string) []Event {
 
 	logger.Error("Logline unparseable:", logline)
 	return []Event{}
+}
+
+func GetAffectedPlayers(e Event) []hll.PlayerInfo {
+	switch e := e.(type) {
+	case KillEvent:
+		return []hll.PlayerInfo{e.Killer, e.Victim}
+	case DeathEvent:
+		return []hll.PlayerInfo{e.Victim, e.Killer}
+	case TeamKillEvent:
+		return []hll.PlayerInfo{e.Killer, e.Victim}
+	case TeamDeathEvent:
+		return []hll.PlayerInfo{e.Victim, e.Killer}
+	case ConnectEvent:
+		return []hll.PlayerInfo{e.Player}
+	case DisconnectEvent:
+		return []hll.PlayerInfo{e.Player}
+	case TeamSwitchEvent:
+		return []hll.PlayerInfo{e.Player}
+	case ChatEvent:
+		return []hll.PlayerInfo{e.Player}
+	case BanEvent:
+		return []hll.PlayerInfo{e.Player}
+	case KickEvent:
+		return []hll.PlayerInfo{e.Player}
+	case MessageEvent:
+		return []hll.PlayerInfo{e.Player}
+	case AdminCamEnteredEvent:
+		return []hll.PlayerInfo{e.Player}
+	case AdminCamLeftEvent:
+		return []hll.PlayerInfo{e.Player}
+	case VoteStartedEvent:
+		return []hll.PlayerInfo{e.Initiator, e.Target}
+	case VoteSubmittedEvent:
+		return []hll.PlayerInfo{e.Submitter}
+	case VoteCompletedEvent:
+		return []hll.PlayerInfo{e.Initiator, e.Target}
+	case PlayerSwitchTeamEvent:
+		return []hll.PlayerInfo{e.Player}
+	case PlayerSwitchSquadEvent:
+		return []hll.PlayerInfo{e.Player}
+	case PlayerScoreUpdateEvent:
+		return []hll.PlayerInfo{e.Player}
+	case PlayerChangeRoleEvent:
+		return []hll.PlayerInfo{e.Player}
+	case PlayerChangeLoadoutEvent:
+		return []hll.PlayerInfo{e.Player}
+	}
+	return []hll.PlayerInfo{}
 }
