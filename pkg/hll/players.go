@@ -99,19 +99,6 @@ func (s Score) GetScoreValue(scoreCategory ScoreCategory) int {
 	return 0
 }
 
-type TeamData struct {
-	Allies int
-	Axis   int
-}
-
-type GameState struct {
-	PlayerCount      TeamData
-	GameScore        TeamData
-	RemainingSeconds int
-	CurrentMap       Layer
-	NextMap          Layer
-}
-
 type PlayerInfo struct {
 	Name string
 	ID   string

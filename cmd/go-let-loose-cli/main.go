@@ -34,6 +34,7 @@ var (
 		"help",
 		"get name",
 		"get slots",
+		"get gamemode",
 		"get gamestate",
 		"get maxqueuedplayers",
 		"setmaxqueuedplayers",

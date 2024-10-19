@@ -16,6 +16,10 @@ func (r *Rcon) GetCurrentMap() (hll.Layer, error) {
 	return hll.ParseLayer(data), nil
 }
 
+func (r *Rcon) GetGameMode() (string, error) {
+	return r.runBasicCommand("get gamemode")
+}
+
 func (r *Rcon) GetAllMaps() ([]hll.Layer, error) {
 	layerStr, err := r.runListCommand("get mapsforrotation")
 	if err != nil {
