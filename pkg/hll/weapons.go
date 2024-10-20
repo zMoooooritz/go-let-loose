@@ -1,6 +1,7 @@
 package hll
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
@@ -234,7 +235,7 @@ type Weapon struct {
 	Category WeaponCategory
 }
 
-var weapons = map[WeaponIdentifier]Weapon{
+var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_M1_GARAND:                       {ID: WI_M1_GARAND, Name: "M1 Garand", Factions: []Faction{FctUS}, Category: WcSemiAutoRifle},
 	WI_M1_CARBINE:                      {ID: WI_M1_CARBINE, Name: "M1 Carbine", Factions: []Faction{FctUS}, Category: WcSemiAutoRifle},
 	WI_M1A1_THOMPSON:                   {ID: WI_M1A1_THOMPSON, Name: "M1A1 Thompson", Factions: []Faction{FctUS}, Category: WcSubmachineGun},
@@ -430,10 +431,10 @@ var fallback_weapon = Weapon{ID: WI_INVALID, Name: "Invalid", Factions: []Factio
 
 func ParseWeapon(weaponIdentifier string) Weapon {
 	wi := WeaponIdentifier(weaponIdentifier)
-	if weapon, ok := weapons[wi]; ok {
+	if weapon, ok := weaponsMap[wi]; ok {
 		return weapon
 	}
-	for _, v := range weapons {
+	for _, v := range weaponsMap {
 		if strings.HasPrefix(string(v.ID), weaponIdentifier) {
 			logger.Info("Using", v.ID, "as fallback for", weaponIdentifier)
 			return v
@@ -441,4 +442,32 @@ func ParseWeapon(weaponIdentifier string) Weapon {
 	}
 	logger.Error("Weapon unparseable:", weaponIdentifier)
 	return fallback_weapon
+}
+
+func AllWeapons() []Weapon {
+	weapons := []Weapon{}
+	for _, w := range weaponsMap {
+		weapons = append(weapons, w)
+	}
+	return weapons
+}
+
+func WeaponsByFaction(faction Faction) []Weapon {
+	weapons := []Weapon{}
+	for _, w := range weaponsMap {
+		if slices.Contains(w.Factions, faction) {
+			weapons = append(weapons, w)
+		}
+	}
+	return weapons
+}
+
+func WeaponsByCategory(category WeaponCategory) []Weapon {
+	weapons := []Weapon{}
+	for _, w := range weaponsMap {
+		if w.Category == category {
+			weapons = append(weapons, w)
+		}
+	}
+	return weapons
 }
