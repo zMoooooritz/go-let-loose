@@ -1,4 +1,3 @@
-
 go-let-loose
 ======
 
@@ -18,6 +17,7 @@ Go bindings and interface for the remote console of **Hell Let Loose**.
 - Bindings for all supported RCON operations.
 - Proper typing for maps, armaments, squads, and more.
 - Event system that expands on the HLL provided logs.
+- Support for Lua plugins.
 
 ---
 
@@ -96,6 +96,40 @@ func main() {
 	eventListener.Close()
 	rcn.Close()
 }
+```
+
+### Lua Plugins
+
+To use Lua plugins, place your Lua scripts in the `plugins` directory. The system will automatically detect and load them.
+
+Example:
+
+```lua
+function Init()
+	print("Initializing Plugin")
+end
+
+function Run()
+	local err, name = getServerName()
+	if name then
+		print("Connected to the Server: " .. name)
+	else
+		print("Error: " .. err)
+	end
+end
+
+function Stop()
+	print("Exiting Plugin")
+	exit()
+end
+```
+
+For a more in-depth example, see [hello_world.lua](https://github.com/zMoooooritz/go-let-loose/blob/master/plugins/hello_world.lua).
+
+To run the plugins, use the following command:
+
+```bash
+go run cmd/go-let-loose-lua/main.go
 ```
 
 ---
