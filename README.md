@@ -51,50 +51,50 @@ Below is an example of how to use the `go-let-loose` module in a Go project:
 type Printer struct{}
 
 func (p *Printer) IsSubscribed(e event.Event) bool {
-	return true
+  return true
 }
 
 func (p *Printer) Notify(e event.Event) {
-	fmt.Println(e)
+  fmt.Println(e)
 }
 
 func main() {
-	logger.DefaultLogger()
+  logger.DefaultLogger()
 
-	cfg := rcon.ServerConfig{
-		Host:     "123.123.123.123",
-		Port:     "12345",
-		Password: "password",
-	}
+  cfg := rcon.ServerConfig{
+    Host:     "123.123.123.123",
+    Port:     "12345",
+    Password: "password",
+  }
 
-    const workerCount = 10
-	rcn, err := rcon.NewRcon(cfg, workerCount)
-	if err != nil {
-		log.Fatal(err)
-	}
+  const workerCount = 10
+  rcn, err := rcon.NewRcon(cfg, workerCount)
+  if err != nil {
+    log.Fatal(err)
+  }
 
-	serverName, err := rcn.GetServerName()
-	if err == nil {
-		fmt.Printf("Connected to the Server: %s\n", serverName)
-	} else {
-		fmt.Println(err)
-	}
+  serverName, err := rcn.GetServerName()
+  if err == nil {
+    fmt.Printf("Connected to the Server: %s\n", serverName)
+  } else {
+    fmt.Println(err)
+  }
 
-	printer := Printer{}
-	infoCache := event.NewCache()
-	eventListener := event.NewEventListener(rcn, infoCache)
-	eventListener.Register(&printer)
+  printer := Printer{}
+  infoCache := event.NewCache()
+  eventListener := event.NewEventListener(rcn, infoCache)
+  eventListener.Register(&printer)
 
-	time.Sleep(time.Second)
+  time.Sleep(time.Second)
 
-	fmt.Printf("%+v\n", infoCache.GetGameState())
+  fmt.Printf("%+v\n", infoCache.GetGameState())
 
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
-	<-sc
+  sc := make(chan os.Signal, 1)
+  signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
+  <-sc
 
-	eventListener.Close()
-	rcn.Close()
+  eventListener.Close()
+  rcn.Close()
 }
 ```
 
@@ -106,21 +106,21 @@ Example:
 
 ```lua
 function Init()
-	print("Initializing Plugin")
+  print("Initializing Plugin")
 end
 
 function Run()
-	local err, name = getServerName()
-	if name then
-		print("Connected to the Server: " .. name)
-	else
-		print("Error: " .. err)
-	end
+  local err, name = getServerName()
+  if name then
+    print("Connected to the Server: " .. name)
+  else
+    print("Error: " .. err)
+  end
 end
 
 function Stop()
-	print("Exiting Plugin")
-	exit()
+  print("Exiting Plugin")
+  exit()
 end
 ```
 

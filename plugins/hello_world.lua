@@ -24,7 +24,7 @@ end
 function Init()
 	-- Here goes any initialization logic
 	print("The available commands are:")
-	tprint(listCommands()) -- get a full list of the available commands via help()
+	tprint(listCommands())
 	print()
 	print("The subscribable events are:")
 	tprint(listEvents())
