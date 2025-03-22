@@ -25,3 +25,7 @@
 go.work
 
 # End of https://www.toptal.com/developers/gitignore/api/go
+
+# Custom project specific
+plugins/*
+!plugins/hello_world.lua
