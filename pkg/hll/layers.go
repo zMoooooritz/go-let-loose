@@ -26,6 +26,7 @@ const (
 	MP_ELALAMEIN       Map = "elalamein"
 	MP_MORTAIN         Map = "mortain"
 	MP_ELSENBORNRIDGE  Map = "elsenbornridge"
+	MP_TOBRUK          Map = "tobruk"
 	MP_INVALID         Map = "invalid"
 )
 
@@ -133,6 +134,7 @@ var mapMap = map[Map]GameMap{
 	MP_ELALAMEIN:       {ID: MP_ELALAMEIN, Name: "EL ALAMEIN", Tag: "ELA", PrettyName: "El Alamein", ShortName: "Alamein", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal},
 	MP_MORTAIN:         {ID: MP_MORTAIN, Name: "MORTAIN", Tag: "MOR", PrettyName: "Mortain", ShortName: "Mortain", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
 	MP_ELSENBORNRIDGE:  {ID: MP_ELSENBORNRIDGE, Name: "ELSENBORN RIDGE", Tag: "EBR", PrettyName: "Elsenborn Ridge", ShortName: "Elsenborn", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
+	MP_TOBRUK:          {ID: MP_TOBRUK, Name: "TOBRUK", Tag: "TBK", PrettyName: "Tobruk", ShortName: "Tobruk", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal},
 }
 
 var fallback_gamemap = GameMap{ID: MP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: FctUS, Axis: FctGER}
@@ -263,6 +265,18 @@ var layerMap = map[string]Layer{
 	"stmereeglise_offensive_us":           {ID: "stmereeglise_offensive_us", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"stmereeglise_warfare":                {ID: "stmereeglise_warfare", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmWarfare, Environment: EnvDay},
 	"stmereeglise_warfare_night":          {ID: "stmereeglise_warfare_night", GameMap: mapMap[MP_STMEREEGLISE], Environment: EnvNight},
+	"tobruk_offensivebritish_day":         {ID: "tobruk_offensivebritish_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
+	"tobruk_offensivebritish_dusk":        {ID: "tobruk_offensivebritish_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDusk},
+	"tobruk_offensivebritish_morning":     {ID: "tobruk_offensivebritish_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDawn},
+	"tobruk_offensiveger_day":             {ID: "tobruk_offensiveger_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
+	"tobruk_offensiveger_dusk":            {ID: "tobruk_offensiveger_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDusk},
+	"tobruk_offensiveger_morning":         {ID: "tobruk_offensiveger_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDawn},
+	"tobruk_skirmish_day":                 {ID: "tobruk_skirmish_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDay},
+	"tobruk_skirmish_dusk":                {ID: "tobruk_skirmish_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDusk},
+	"tobruk_skirmish_morning":             {ID: "tobruk_skirmish_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDawn},
+	"tobruk_warfare_day":                  {ID: "tobruk_warfare_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDay},
+	"tobruk_warfare_dusk":                 {ID: "tobruk_warfare_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDusk},
+	"tobruk_warfare_morning":              {ID: "tobruk_warfare_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDawn},
 	"utahbeach_offensive_ger":             {ID: "utahbeach_offensive_ger", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
 	"utahbeach_offensive_us":              {ID: "utahbeach_offensive_us", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
 	"utahbeach_warfare":                   {ID: "utahbeach_warfare", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmWarfare, Environment: EnvDay},
