@@ -95,7 +95,26 @@ const (
 	FctGER Faction = "GER"
 	FctRUS Faction = "RUS"
 	FctGB  Faction = "GB"
+	FctDAK Faction = "DAK"
+	FctB8A Faction = "B8A"
 )
+
+func FactionFromInt(id int) Faction {
+	switch id {
+	case 0:
+		return FctGER
+	case 1:
+		return FctUS
+	case 2:
+		return FctRUS
+	case 3:
+		return FctGB
+	case 4:
+		return FctDAK
+	default:
+		return FctB8A
+	}
+}
 
 type GameMap struct {
 	ID          Map

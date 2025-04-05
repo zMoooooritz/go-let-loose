@@ -2,6 +2,7 @@ package hll
 
 import (
 	"fmt"
+	"math"
 	"strings"
 	"time"
 )
@@ -36,6 +37,41 @@ func RoleFromString(name string) Role {
 	}
 }
 
+func RoleFromInt(id int) Role {
+	switch id {
+	case 0:
+		return Rifleman
+	case 1:
+		return Assault
+	case 2:
+		return AutomaticRifleman
+	case 3:
+		return Medic
+	case 4:
+		return Spotter
+	case 5:
+		return Support
+	case 6:
+		return HeavyMachinegunner
+	case 7:
+		return AntiTank
+	case 8:
+		return Engineer
+	case 9:
+		return Officer
+	case 10:
+		return Sniper
+	case 11:
+		return Crewman
+	case 12:
+		return TankCommander
+	case 13:
+		return ArmyCommander
+	default:
+		return NoRole
+	}
+}
+
 type SquadType string
 
 const (
@@ -48,7 +84,7 @@ const (
 	CommandUnitID    = 100
 	CommandUnitName  = "Command"
 	NoUnitID         = -1
-	NoUnitName       = "NONE"
+	NoUnitName       = "None"
 	NoPlayerID       = "NONE"
 	NoLoadout        = "NONE"
 	NeutralSquadName = "Neutral"
@@ -160,16 +196,29 @@ func IsNameProblematic(name string) bool {
 	return false
 }
 
+type Position struct {
+	X float64
+	Y float64
+	Z float64
+}
+
+func (p Position) IsActive() bool {
+	return p.X != 0 || p.Y != 0 || p.Z != 0
+}
+
 type DetailedPlayerInfo struct {
 	PlayerInfo
-	Team    Team
-	Role    Role
-	Unit    Unit
-	Loadout string
-	Kills   int
-	Deaths  int
-	Score   Score
-	Level   int
+	ClanTag  string
+	Platform Platform
+	Team     Team
+	Role     Role
+	Unit     Unit
+	Loadout  string
+	Kills    int
+	Deaths   int
+	Score    Score
+	Level    int
+	Position Position
 }
 
 func EmptyDetailedPlayerInfo() DetailedPlayerInfo {
@@ -183,6 +232,16 @@ func EmptyDetailedPlayerInfo() DetailedPlayerInfo {
 
 func (pi DetailedPlayerInfo) String() string {
 	return fmt.Sprintf("%s [%d] (%s)", pi.Name, pi.Level, pi.Role)
+}
+
+func (pi DetailedPlayerInfo) IsSpawned() bool {
+	return pi.Position.IsActive()
+}
+
+func (pi DetailedPlayerInfo) DistanceTo(coords Position) float64 {
+	return math.Sqrt(math.Pow(pi.Position.X-coords.X, 2) +
+		math.Pow(pi.Position.Y-coords.Y, 2) +
+		math.Pow(pi.Position.Z-coords.Z, 2))
 }
 
 type ServerView struct {
@@ -224,7 +283,7 @@ func (s SquadView) String() string {
 	return str
 }
 
-func PlayerstoServerView(players []DetailedPlayerInfo) ServerView {
+func PlayersToServerView(players []DetailedPlayerInfo) ServerView {
 	allies := TeamView{DetailedPlayerInfo{}, make(map[string]SquadView)}
 	axis := TeamView{DetailedPlayerInfo{}, make(map[string]SquadView)}
 	sv := ServerView{allies, axis, SquadView{TmNone, StInfanty, NeutralSquadName, []DetailedPlayerInfo{}}}
@@ -238,7 +297,7 @@ func PlayerstoServerView(players []DetailedPlayerInfo) ServerView {
 				tv = sv.Axis
 			}
 
-			if detailedPlayer.Unit.ID == CommandUnitID {
+			if detailedPlayer.Unit.ID == CommandUnitID || detailedPlayer.Role == ArmyCommander {
 				tv.Commander = detailedPlayer
 			} else {
 				_, ok := tv.Squads[detailedPlayer.Unit.Name]

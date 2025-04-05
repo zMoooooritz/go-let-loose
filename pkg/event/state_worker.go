@@ -82,7 +82,7 @@ func ServerInfoFetcher(rcn *rcon.Rcon, cache *Cache, events chan<- Event, ctx co
 				}
 			}
 
-			serverView := hll.PlayerstoServerView(players)
+			serverView := hll.PlayersToServerView(players)
 			cache.setServerView(serverView)
 
 			time.Sleep(2 * time.Second)
