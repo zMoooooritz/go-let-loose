@@ -7,30 +7,24 @@ import (
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
-func (r *Rcon) GetCurrentMap() (hll.Layer, error) {
-	resp, err := getMapRotation(r)
+func (r *Rcon) GetCurrentMap() (hll.GameMap, error) {
+	resp, err := getSessionInfo(r)
 	if err != nil {
-		return hll.Layer{}, err
+		return hll.GameMap{}, err
 	}
-	for _, entry := range resp.Maps {
-		if entry.Position == 0 {
-			return hll.ParseLayer(entry.ID), nil
-		}
-	}
-	return hll.Layer{}, fmt.Errorf("no current map found")
+	return hll.LogMapNameToMap(resp.MapName), nil
+}
+
+func (r *Rcon) GetCurrentLayer() (hll.Layer, error) {
+	return hll.Layer{}, fmt.Errorf("not implemented")
 }
 
 func (r *Rcon) GetGameMode() (string, error) {
-	resp, err := getMapRotation(r)
+	resp, err := getSessionInfo(r)
 	if err != nil {
 		return "", err
 	}
-	for _, entry := range resp.Maps {
-		if entry.Position == 0 {
-			return entry.GameMode, nil
-		}
-	}
-	return "", fmt.Errorf("no current map found")
+	return resp.GameMode, nil
 }
 
 func (r *Rcon) GetAllMaps() ([]hll.Layer, error) {
