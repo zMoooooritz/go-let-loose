@@ -14,7 +14,7 @@ Go bindings and interface for the remote console of **Hell Let Loose**.
 
 ## 🚀 Features
 
-- Bindings for all supported RCON operations.
+- Bindings for all supported RCON v1 and v2 operations.
 - Proper typing for maps, armaments, squads, and more.
 - Event system that expands on the HLL provided logs.
 - Support for Lua plugins.
@@ -43,9 +43,20 @@ This will install `go-let-loose-cli` globally on your system, allowing you to in
 
 ---
 
+## 🚨 Warning
+
+> [!WARNING]
+> The `rconv2` API is currently in **beta**. It does not yet support the full feature set of the `rcon` v1 API. Use it with caution.
+> This API will be expanded as the official `rconv2` receives updates.
+> Keep in mind that the `rcon` v1 protocol will be deprecated in the not too distant future. The new `rconv2` API aims to be as similar to v1 as possible to ease the transition.
+
+---
+
 ## 📖 Usage
 
-Below is an example of how to use the `go-let-loose` module in a Go project:
+### Using the `rcon` API
+
+Below is an example of how to use the `go-let-loose/rcon` module in a Go project:
 
 ```go
 type Printer struct{}
@@ -98,7 +109,41 @@ func main() {
 }
 ```
 
+### Using the `rconv2` API
+
+Below is an example of how to use the `go-let-loose/rconv2` module in a Go project:
+
+```go
+func main() {
+  logger.DefaultLogger()
+
+  cfg := rconv2.ServerConfig{
+    Host:     "123.123.123.123",
+    Port:     "12345",
+    Password: "password",
+  }
+
+  const workerCount = 10
+  rcn, err := rconv2.NewRcon(cfg, workerCount)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  serverName, err := rcn.GetServerName()
+  if err == nil {
+    fmt.Printf("Connected to the Server: %s\n", serverName)
+  } else {
+    fmt.Println(err)
+  }
+
+  rcn.Close()
+}
+```
+
 ### Lua Plugins
+
+> [!WARNING]
+> Lua plugins are only supported with the `rcon` v1 API. They are not compatible with the `rconv2` API as of now.
 
 To use Lua plugins, place your Lua scripts in the `plugins` directory. The system will automatically detect and load them.
 
