@@ -238,10 +238,19 @@ func (pi DetailedPlayerInfo) IsSpawned() bool {
 	return pi.Position.IsActive()
 }
 
-func (pi DetailedPlayerInfo) DistanceTo(coords Position) float64 {
-	return math.Sqrt(math.Pow(pi.Position.X-coords.X, 2) +
-		math.Pow(pi.Position.Y-coords.Y, 2) +
-		math.Pow(pi.Position.Z-coords.Z, 2))
+// the distance is measured in 1 unit = 1 cm on the 2x2km map
+func (pi DetailedPlayerInfo) SpacialDistanceTo(coords Position) float64 {
+	diffX := pi.Position.X - coords.X
+	diffY := pi.Position.Y - coords.Y
+	diffZ := pi.Position.Z - coords.Z
+	return math.Sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ)
+}
+
+// the distance is measured in 1 unit = 1 cm on the 2x2km map
+func (pi DetailedPlayerInfo) PlanarDistanceTo(coords Position) float64 {
+	diffX := pi.Position.X - coords.X
+	diffY := pi.Position.Y - coords.Y
+	return math.Sqrt(diffX*diffX + diffY*diffY)
 }
 
 type ServerView struct {

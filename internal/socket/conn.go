@@ -41,7 +41,7 @@ type ServerConnection struct {
 	fastUnsafeLogsFetching bool
 }
 
-var InvalidRconCommand = errors.New("invalid rcon command")
+var ErrInvalidRconCommand = errors.New("invalid rcon command")
 
 func NewConnection(ip, port, password string) (*ServerConnection, error) {
 	sc := ServerConnection{ip: ip, port: port, password: password}
@@ -56,7 +56,7 @@ func (sc *ServerConnection) Reconnect() error {
 
 func (sc *ServerConnection) Close() {
 	if sc.IsActive() {
-		sc.conn.Close()
+		_ = sc.conn.Close()
 	}
 }
 
@@ -77,16 +77,17 @@ func (sc *ServerConnection) Execute(command string, format config.ResponseFormat
 	}
 	data = string(resp)
 	if isInvalidCommand(command, data) {
-		return []string{}, InvalidRconCommand
+		return []string{}, ErrInvalidRconCommand
 	}
 	if data == RESP_EMPTY || data == RESP_SUCCESS {
 		return []string{}, nil
 	}
 
 	timeout := FAST_READ_TIMEOUT
-	if format == config.RF_INDEXEDLIST {
+	switch format {
+	case config.RF_INDEXEDLIST:
 		timeout = NORMAL_READ_TIMEOUT
-	} else if format == config.RF_UNINDEXEDLIST {
+	case config.RF_UNINDEXEDLIST:
 		timeout = SLOW_READ_TIMEOUT
 	}
 	iterations := 0

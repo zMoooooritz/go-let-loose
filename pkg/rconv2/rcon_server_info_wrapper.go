@@ -13,6 +13,7 @@ var (
 	caser = cases.Title(language.AmericanEnglish)
 )
 
+//nolint:all
 func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
 	resp, err := runCommand[api.ServerInformation, api.RespPlayerInformation](
 		r,

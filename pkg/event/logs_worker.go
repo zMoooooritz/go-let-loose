@@ -30,7 +30,7 @@ func LogsFetcher(cfg rcon.ServerConfig, events chan<- Event, ctx context.Context
 			return
 		default:
 			loglines, err := sc.Execute("showlog 1", config.RF_UNINDEXEDLIST)
-			if errors.Is(err, socket.InvalidRconCommand) {
+			if errors.Is(err, socket.ErrInvalidRconCommand) {
 				logger.Error("showlog 1", err, "this should not happen")
 				continue
 			}

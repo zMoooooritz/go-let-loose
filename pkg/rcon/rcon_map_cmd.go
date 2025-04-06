@@ -86,12 +86,12 @@ func (r *Rcon) GetCurrentMapObjectives() ([][]string, error) {
 // 1-3  => specific objective
 func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
 	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
-		return errors.New("Incorrect number of objectives provided")
+		return errors.New("incorrect number of objectives provided")
 	}
 
 	for i := range hll.ObjectiveCount[hll.GmWarfare] {
 		if objs[i] < 0 || objs[i] > hll.OptionsPerObjective[hll.GmWarfare] {
-			return errors.New("Provided index is invalid (0 (random) and 1-3 are valid)")
+			return errors.New("provided index is invalid (0 (random) and 1-3 are valid)")
 		}
 	}
 
@@ -114,7 +114,7 @@ func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
 
 func (r *Rcon) SetGameLayout(objs []string) error {
 	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
-		return errors.New("Incorrect number of objectives provided")
+		return errors.New("incorrect number of objectives provided")
 	}
 	return runSetCommand(r, fmt.Sprintf("gamelayout %s %s %s %s %s", objs[0], objs[1], objs[2], objs[3], objs[4]))
 }

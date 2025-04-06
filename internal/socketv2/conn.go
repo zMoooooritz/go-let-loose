@@ -74,7 +74,7 @@ func (sc *ServerConnection) Reconnect() error {
 
 func (sc *ServerConnection) Close() {
 	if sc.IsActive() {
-		sc.conn.Close()
+		_ = sc.conn.Close()
 	}
 }
 

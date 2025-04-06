@@ -77,8 +77,8 @@ func ServerInfoFetcher(rcn *rcon.Rcon, cache *Cache, events chan<- Event, ctx co
 						}
 					}
 					cache.setPlayerInfo(detailedPlayer)
-				case <-time.After(time.Second):
-					break
+				case <-time.After(2 * time.Second):
+					return
 				}
 			}
 

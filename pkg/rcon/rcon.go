@@ -21,7 +21,7 @@ var (
 	fallbackTimeout = time.Duration(30) * time.Second
 	sleepTimeout    = time.Second
 
-	timeoutErr = errors.New("timeout error")
+	errTimeout = errors.New("timeout error")
 )
 
 type ServerConfig struct {
@@ -52,7 +52,7 @@ func NewRcon(cfg ServerConfig, workerCount int) (*Rcon, error) {
 	// test for correct credentials
 	sc, err := socket.NewConnection(cfg.Host, cfg.Port, cfg.Password)
 	if err != nil {
-		return &Rcon{}, errors.New("Invalid credentials provided")
+		return &Rcon{}, errors.New("invalid credentials provided")
 	}
 	sc.Close()
 
@@ -100,7 +100,7 @@ func (r *Rcon) worker() {
 				continue
 			}
 
-			if errors.Is(err, socket.InvalidRconCommand) {
+			if errors.Is(err, socket.ErrInvalidRconCommand) {
 				continue
 			}
 
@@ -158,7 +158,7 @@ func (r *Rcon) RunCommand(command string, format config.ResponseFormat) ([]strin
 	case <-ctx.Done():
 		command = strings.ReplaceAll(command, config.NEWLINE, config.ESCAPED_NEWLINE)
 		logger.Info("command: " + command + " timed out")
-		return nil, timeoutErr
+		return nil, errTimeout
 	}
 }
 
