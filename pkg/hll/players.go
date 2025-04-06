@@ -3,6 +3,7 @@ package hll
 import (
 	"fmt"
 	"math"
+	"slices"
 	"strings"
 	"time"
 )
@@ -25,6 +26,15 @@ const (
 	Spotter            Role = "Spotter"
 	Sniper             Role = "Sniper"
 	NoRole             Role = "None"
+)
+
+var (
+	leaderRoles = []Role{
+		ArmyCommander,
+		Officer,
+		Spotter,
+		TankCommander,
+	}
 )
 
 func RoleFromString(name string) Role {
@@ -239,18 +249,18 @@ func (pi DetailedPlayerInfo) IsSpawned() bool {
 }
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map
-func (pi DetailedPlayerInfo) SpacialDistanceTo(coords Position) float64 {
+func (pi DetailedPlayerInfo) SpacialDistanceTo(coords Position) int {
 	diffX := pi.Position.X - coords.X
 	diffY := pi.Position.Y - coords.Y
 	diffZ := pi.Position.Z - coords.Z
-	return math.Sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ)
+	return int(math.Sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ))
 }
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map
-func (pi DetailedPlayerInfo) PlanarDistanceTo(coords Position) float64 {
+func (pi DetailedPlayerInfo) PlanarDistanceTo(coords Position) int {
 	diffX := pi.Position.X - coords.X
 	diffY := pi.Position.Y - coords.Y
-	return math.Sqrt(diffX*diffX + diffY*diffY)
+	return int(math.Sqrt(diffX*diffX + diffY*diffY))
 }
 
 type ServerView struct {
@@ -268,6 +278,41 @@ type TeamView struct {
 	Squads    map[string]SquadView
 }
 
+func (tv TeamView) PlayerCount() int {
+	sum := 0
+	for _, squad := range tv.Squads {
+		sum += squad.PlayerCount()
+	}
+	return sum
+}
+
+func (tv TeamView) KillCount() int {
+	sum := 0
+	for _, squad := range tv.Squads {
+		sum += squad.KillCount()
+	}
+	return sum
+}
+
+func (tv TeamView) DeathCount() int {
+	sum := 0
+	for _, squad := range tv.Squads {
+		sum += squad.DeathCount()
+	}
+	return sum
+}
+
+func (tv TeamView) AverageLevel() int {
+	sum, count := 0, 0
+	for _, squad := range tv.Squads {
+		count += len(squad.Players)
+		for _, player := range squad.Players {
+			sum += player.Level
+		}
+	}
+	return int(sum / count)
+}
+
 func (tv TeamView) String() string {
 	str := fmt.Sprintf("Commander: %v\n", tv.Commander)
 	for _, squad := range tv.Squads {
@@ -281,6 +326,118 @@ type SquadView struct {
 	SquadType SquadType
 	Name      string
 	Players   []DetailedPlayerInfo
+}
+
+func (sv SquadView) PlayerCount() int {
+	return len(sv.Players)
+}
+
+func (sv SquadView) KillCount() int {
+	sum := 0
+	for _, player := range sv.Players {
+		sum += player.Kills
+	}
+	return sum
+}
+
+func (sv SquadView) DeathCount() int {
+	sum := 0
+	for _, player := range sv.Players {
+		sum += player.Deaths
+	}
+	return sum
+}
+
+func (sv SquadView) AverageLevel() int {
+	sum := 0
+	for _, player := range sv.Players {
+		sum += player.Level
+	}
+	return int(sum / len(sv.Players))
+}
+
+func (sv SquadView) HasSquadLead() bool {
+	for _, player := range sv.Players {
+		if slices.Contains(leaderRoles, player.Role) {
+			return true
+		}
+	}
+	return false
+}
+
+// the distance is measured in 1 unit = 1 cm on the 2x2km map
+func (sv SquadView) CalculateSpread() int {
+	if len(sv.Players) < 2 {
+		return 0
+	}
+
+	var centroid Position
+	for _, p := range sv.Players {
+		centroid.X += p.Position.X
+		centroid.Y += p.Position.Y
+		centroid.Z += p.Position.Z
+	}
+	centroid.X /= float64(len(sv.Players))
+	centroid.Y /= float64(len(sv.Players))
+	centroid.Z /= float64(len(sv.Players))
+
+	totalDist := 0
+	for _, p := range sv.Players {
+		totalDist += p.PlanarDistanceTo(centroid)
+	}
+
+	return totalDist / len(sv.Players)
+}
+
+// the distance is measured in 1 unit = 1 cm on the 2x2km map
+func (sv SquadView) CalculateCohesion() int {
+	if len(sv.Players) < 2 {
+		return 0
+	}
+
+	maxDist := 0
+	for i := 0; i < len(sv.Players); i++ {
+		for j := i + 1; j < len(sv.Players); j++ {
+			dist := sv.Players[i].PlanarDistanceTo(sv.Players[j].Position)
+			if dist > maxDist {
+				maxDist = dist
+			}
+		}
+	}
+	return maxDist
+}
+
+// the distance is measured in 1 unit = 1 cm on the 2x2km map
+func (sv SquadView) CalculateLeaderDistance() int {
+	if len(sv.Players) < 2 {
+		return 0
+	}
+
+	var leader *DetailedPlayerInfo
+	for _, p := range sv.Players {
+		if slices.Contains(leaderRoles, p.Role) {
+			leader = &p
+			break
+		}
+	}
+
+	if leader == nil {
+		return 0
+	}
+
+	totalDist := 0
+	count := 0
+	for _, p := range sv.Players {
+		if !slices.Contains(leaderRoles, p.Role) {
+			totalDist += p.PlanarDistanceTo(leader.Position)
+			count++
+		}
+	}
+
+	if count == 0 {
+		return 0
+	}
+	return totalDist / count
 }
 
 func (s SquadView) String() string {
