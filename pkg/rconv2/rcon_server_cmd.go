@@ -42,7 +42,7 @@ func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
 	return []string{}, fmt.Errorf("not implemented")
 }
 
-func (r *Rcon) GetServerInfo() (hll.ServerInfo, error) {
+func (r *Rcon) GetServerConfig() (hll.ServerInfo, error) {
 	resp, err := getServerConfig(r)
 	if err != nil {
 		return hll.ServerInfo{}, err
@@ -56,6 +56,24 @@ func (r *Rcon) GetServerInfo() (hll.ServerInfo, error) {
 		BuildNumber:        resp.BuildNumber,
 		BuildRevision:      resp.BuildRevision,
 		SupportedPlatforms: platforms,
+	}, nil
+}
+
+func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.SessionInfo{}, err
+	}
+	return hll.SessionInfo{
+		ServerName:       resp.ServerName,
+		MapName:          resp.MapName,
+		GameMode:         hll.GameMode(resp.GameMode),
+		MaxPlayerCount:   resp.MaxPlayerCount,
+		PlayerCount:      resp.PlayerCount,
+		MaxQueueCount:    resp.MaxQueueCount,
+		QueueCount:       resp.QueueCount,
+		MaxVIPQueueCount: resp.MaxVIPQueueCount,
+		VIPQueueCount:    resp.VIPQueueCount,
 	}, nil
 }
 

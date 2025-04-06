@@ -44,3 +44,15 @@ type ServerInfo struct {
 	BuildRevision      string
 	SupportedPlatforms []Platform
 }
+
+type SessionInfo struct {
+	ServerName       string
+	MapName          string
+	GameMode         GameMode
+	MaxPlayerCount   int
+	PlayerCount      int
+	MaxQueueCount    int
+	QueueCount       int
+	MaxVIPQueueCount int
+	VIPQueueCount    int
+}

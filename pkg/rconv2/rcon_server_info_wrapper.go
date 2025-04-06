@@ -13,6 +13,8 @@ var (
 	caser = cases.Title(language.AmericanEnglish)
 )
 
+// TODO: it is probably a good idea to introduce caching for these getter methods
+
 //nolint:all
 func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
 	resp, err := runCommand[api.ServerInformation, api.RespPlayerInformation](
