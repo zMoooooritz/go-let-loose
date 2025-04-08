@@ -206,6 +206,25 @@ func IsNameProblematic(name string) bool {
 	return false
 }
 
+type PlayerPlatform string
+
+const (
+	PlayerPlatformSteam PlayerPlatform = "steam"
+	PlayerPlatformEpic  PlayerPlatform = "epic"
+	PlayerPlatformXbos  PlayerPlatform = "xbl"
+	PlayerPlatformNone  PlayerPlatform = "none"
+)
+
+func PlayerPlatformFromString(name string) PlayerPlatform {
+	typed := PlayerPlatform(name)
+	switch typed {
+	case PlayerPlatformSteam, PlayerPlatformEpic, PlayerPlatformXbos:
+		return typed
+	default:
+		return PlayerPlatformNone
+	}
+}
+
 type Position struct {
 	X float64
 	Y float64
@@ -219,7 +238,7 @@ func (p Position) IsActive() bool {
 type DetailedPlayerInfo struct {
 	PlayerInfo
 	ClanTag  string
-	Platform Platform
+	Platform PlayerPlatform
 	Team     Team
 	Faction  Faction
 	Role     Role

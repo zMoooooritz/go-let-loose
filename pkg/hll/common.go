@@ -19,30 +19,30 @@ type Command struct {
 	ClientSupported bool
 }
 
-type Platform string
+type SupportedPlatform string
 
 const (
-	PlatformSteam   Platform = "Steam"
-	PlatformWindows Platform = "WinGDK"
-	PlatformEpic    Platform = "eos"
-	PlatformNone    Platform = "None"
+	SupportedPlatformSteam   SupportedPlatform = "Steam"
+	SupportedPlatformWindows SupportedPlatform = "WinGDK"
+	SupportedPlatformEpic    SupportedPlatform = "eos"
+	SupportedPlatformNone    SupportedPlatform = "None"
 )
 
-func PlatformFromString(name string) Platform {
-	typed := Platform(name)
+func SupportedPlatformFromString(name string) SupportedPlatform {
+	typed := SupportedPlatform(name)
 	switch typed {
-	case PlatformSteam, PlatformWindows, PlatformEpic:
+	case SupportedPlatformSteam, SupportedPlatformWindows, SupportedPlatformEpic:
 		return typed
 	default:
-		return PlatformNone
+		return SupportedPlatformNone
 	}
 }
 
-type ServerInfo struct {
+type ServerConfig struct {
 	Name               string
 	BuildNumber        string
 	BuildRevision      string
-	SupportedPlatforms []Platform
+	SupportedPlatforms []SupportedPlatform
 }
 
 type SessionInfo struct {

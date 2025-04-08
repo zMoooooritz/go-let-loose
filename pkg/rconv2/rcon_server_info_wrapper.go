@@ -105,7 +105,7 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 			ID:   player.ID,
 		},
 		ClanTag:  player.ClanTag,
-		Platform: hll.PlatformFromString(player.Platform),
+		Platform: hll.PlayerPlatformFromString(player.Platform),
 		Team:     hll.FactionFromInt(player.Team).Team(),
 		Faction:  hll.FactionFromInt(player.Team),
 		Role:     hll.RoleFromInt(player.Role),

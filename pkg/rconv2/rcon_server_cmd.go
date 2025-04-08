@@ -42,16 +42,16 @@ func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
 	return []string{}, fmt.Errorf("not implemented")
 }
 
-func (r *Rcon) GetServerConfig() (hll.ServerInfo, error) {
+func (r *Rcon) GetServerConfig() (hll.ServerConfig, error) {
 	resp, err := getServerConfig(r)
 	if err != nil {
-		return hll.ServerInfo{}, err
+		return hll.ServerConfig{}, err
 	}
-	platforms := []hll.Platform{}
+	platforms := []hll.SupportedPlatform{}
 	for _, entry := range resp.SupportedPlatforms {
-		platforms = append(platforms, hll.PlatformFromString(entry))
+		platforms = append(platforms, hll.SupportedPlatformFromString(entry))
 	}
-	return hll.ServerInfo{
+	return hll.ServerConfig{
 		Name:               resp.ServerName,
 		BuildNumber:        resp.BuildNumber,
 		BuildRevision:      resp.BuildRevision,
