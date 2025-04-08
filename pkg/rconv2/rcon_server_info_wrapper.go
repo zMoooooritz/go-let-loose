@@ -99,15 +99,6 @@ func getServerConfig(r *Rcon) (*api.RespServerConfiguration, error) {
 }
 
 func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerInfo {
-	fct := hll.FactionFromInt(player.Team)
-	team := hll.TmAllies
-	if fct == hll.FctGER || fct == hll.FctDAK {
-		team = hll.TmAxis
-	}
-	unitName := caser.String(player.Platoon)
-	if unitName == "" {
-		unitName = hll.NoUnitName
-	}
 	return hll.DetailedPlayerInfo{
 		PlayerInfo: hll.PlayerInfo{
 			Name: player.Name,
@@ -115,15 +106,13 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 		},
 		ClanTag:  player.ClanTag,
 		Platform: hll.PlatformFromString(player.Platform),
-		Team:     team,
+		Team:     hll.FactionFromInt(player.Team).Team(),
+		Faction:  hll.FactionFromInt(player.Team),
 		Role:     hll.RoleFromInt(player.Role),
-		Unit: hll.Unit{
-			Name: unitName,
-			ID:   hll.NoUnitID,
-		},
-		Loadout: player.Loadout,
-		Kills:   player.Kills,
-		Deaths:  player.Deaths,
+		Unit:     constructUnit(player.Platoon, player.Role),
+		Loadout:  player.Loadout,
+		Kills:    player.Kills,
+		Deaths:   player.Deaths,
 		Score: hll.Score{
 			Combat:  player.Score.Combat,
 			Offense: player.Score.Offense,
@@ -137,4 +126,39 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 			Z: player.Position.Z,
 		},
 	}
+}
+
+func constructUnit(playerPlatoon string, playerRole int) hll.Unit {
+	role := hll.RoleFromInt(playerRole)
+
+	unit := hll.Unit{}
+	if playerPlatoon == "" {
+		if role == hll.ArmyCommander {
+			unit = hll.CommandUnit
+		} else {
+			unit = hll.NoUnit
+		}
+	} else {
+		unit.Name = caser.String(playerPlatoon)
+		unit.ID = nameToUnitID(playerPlatoon)
+	}
+
+	return unit
+}
+
+func nameToUnitID(name string) int {
+	if len(name) == 0 {
+		return hll.NoUnitID
+	}
+
+	ch := name[0]
+	if ch >= 'A' && ch <= 'Z' {
+		ch += ('a' - 'A')
+	}
+
+	if ch >= 'a' && ch <= 'z' {
+		return int(ch - 'a')
+	}
+
+	return hll.NoUnitID
 }

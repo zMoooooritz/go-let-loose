@@ -221,6 +221,7 @@ type DetailedPlayerInfo struct {
 	ClanTag  string
 	Platform Platform
 	Team     Team
+	Faction  Faction
 	Role     Role
 	Unit     Unit
 	Loadout  string

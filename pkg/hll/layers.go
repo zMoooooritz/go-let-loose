@@ -99,6 +99,13 @@ const (
 	FctB8A Faction = "B8A"
 )
 
+func (f Faction) Team() Team {
+	if f == FctGER || f == FctDAK {
+		return TmAxis
+	}
+	return TmAllies
+}
+
 func FactionFromInt(id int) Faction {
 	switch id {
 	case 0:
