@@ -63,13 +63,37 @@ const (
 	TmAllies Team = "Allies"
 	TmAxis   Team = "Axis"
 	TmNone   Team = "None"
+
+	NoTeamID = 0
 )
+
+func (t Team) ToInt() int {
+	switch t {
+	case TmAllies:
+		return 1
+	case TmAxis:
+		return 2
+	default:
+		return NoTeamID
+	}
+}
 
 func TeamFromString(name string) Team {
 	typed := Team(name)
 	switch typed {
 	case TmAllies, TmAxis:
 		return typed
+	default:
+		return TmNone
+	}
+}
+
+func TeamFromInt(team int) Team {
+	switch team {
+	case 1:
+		return TmAllies
+	case 2:
+		return TmAxis
 	default:
 		return TmNone
 	}

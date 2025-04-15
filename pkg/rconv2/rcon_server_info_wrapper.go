@@ -140,25 +140,8 @@ func constructUnit(playerPlatoon string, playerRole int) hll.Unit {
 		}
 	} else {
 		unit.Name = caser.String(playerPlatoon)
-		unit.ID = nameToUnitID(playerPlatoon)
+		unit.ID = hll.UnitNameToID(playerPlatoon)
 	}
 
 	return unit
-}
-
-func nameToUnitID(name string) int {
-	if len(name) == 0 {
-		return hll.NoUnitID
-	}
-
-	ch := name[0]
-	if ch >= 'A' && ch <= 'Z' {
-		ch += ('a' - 'A')
-	}
-
-	if ch >= 'a' && ch <= 'z' {
-		return int(ch - 'a')
-	}
-
-	return hll.NoUnitID
 }

@@ -29,57 +29,51 @@ const (
 )
 
 var (
-	leaderRoles = []Role{
-		ArmyCommander,
-		Officer,
-		Spotter,
-		TankCommander,
+	leaderRoles = []Role{ArmyCommander, Officer, Spotter, TankCommander}
+	roleMap     = map[string]Role{
+		"ArmyCommander":      ArmyCommander,
+		"Officer":            Officer,
+		"Rifleman":           Rifleman,
+		"Assault":            Assault,
+		"AutomaticRifleman":  AutomaticRifleman,
+		"Medic":              Medic,
+		"Support":            Support,
+		"HeavyMachineGunner": HeavyMachinegunner,
+		"AntiTank":           AntiTank,
+		"Engineer":           Engineer,
+		"TankCommander":      TankCommander,
+		"Crewman":            Crewman,
+		"Spotter":            Spotter,
+		"Sniper":             Sniper,
+	}
+	roleIntMap = []Role{
+		Rifleman, Assault, AutomaticRifleman, Medic, Spotter, Support,
+		HeavyMachinegunner, AntiTank, Engineer, Officer, Sniper,
+		Crewman, TankCommander, ArmyCommander,
 	}
 )
 
 func RoleFromString(name string) Role {
-	typed := Role(name)
-	switch typed {
-	case ArmyCommander, Officer, Rifleman, Assault, AutomaticRifleman, Medic, Support, HeavyMachinegunner, AntiTank, Engineer, TankCommander, Crewman, Spotter, Sniper:
-		return typed
-	default:
-		return NoRole
+	if role, ok := roleMap[name]; ok {
+		return role
 	}
+	return NoRole
 }
 
 func RoleFromInt(id int) Role {
-	switch id {
-	case 0:
-		return Rifleman
-	case 1:
-		return Assault
-	case 2:
-		return AutomaticRifleman
-	case 3:
-		return Medic
-	case 4:
-		return Spotter
-	case 5:
-		return Support
-	case 6:
-		return HeavyMachinegunner
-	case 7:
-		return AntiTank
-	case 8:
-		return Engineer
-	case 9:
-		return Officer
-	case 10:
-		return Sniper
-	case 11:
-		return Crewman
-	case 12:
-		return TankCommander
-	case 13:
-		return ArmyCommander
-	default:
-		return NoRole
+	if id >= 0 && id < len(roleIntMap) {
+		return roleIntMap[id]
 	}
+	return NoRole
+}
+
+func (r Role) ToInt() int {
+	for i, role := range roleIntMap {
+		if r == role {
+			return i
+		}
+	}
+	return NoRoleID
 }
 
 type SquadType string
@@ -95,6 +89,7 @@ const (
 	CommandUnitName  = "Command"
 	NoUnitID         = -1
 	NoUnitName       = "None"
+	NoRoleID         = -1
 	NoPlayerID       = "NONE"
 	NoLoadout        = "NONE"
 	NeutralSquadName = "Neutral"
@@ -105,14 +100,31 @@ type Unit struct {
 	ID   int
 }
 
-var CommandUnit = Unit{
-	Name: CommandUnitName,
-	ID:   CommandUnitID,
+var (
+	CommandUnit = Unit{Name: CommandUnitName, ID: CommandUnitID}
+	NoUnit      = Unit{Name: NoUnitName, ID: NoUnitID}
+	unitNames   = []string{"Able", "Baker", "Charlie", "Dog", "Easy", "Fox", "George", "How", "Item", "Jig", "King", "Love", "Mike", "Negat", "Option", "Prep", "Queen", "Roger", "Sugar", "Tare"}
+)
+
+func UnitIDToName(unitID int) string {
+	if unitID == CommandUnitID {
+		return CommandUnitName
+	}
+	if unitID > 0 && unitID <= len(unitNames) {
+		return unitNames[unitID-1]
+	}
+	return NoUnitName
 }
 
-var NoUnit = Unit{
-	Name: NoUnitName,
-	ID:   NoUnitID,
+func UnitNameToID(name string) int {
+	if len(name) == 0 {
+		return NoUnitID
+	}
+	ch := strings.ToLower(name)[0]
+	if ch >= 'a' && ch <= 'z' {
+		return int(ch - 'a')
+	}
+	return NoUnitID
 }
 
 type ScoreCategory int

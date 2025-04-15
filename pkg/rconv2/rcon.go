@@ -18,7 +18,7 @@ const (
 )
 
 var (
-	fallbackTimeout = time.Duration(30) * time.Second
+	fallbackTimeout = 10 * time.Second
 	sleepTimeout    = time.Second
 
 	errTimeout = errors.New("timeout error")
@@ -142,6 +142,7 @@ func runCommand[T, U any](rcn *Rcon, req T) (*U, error) {
 		return &result, err
 	case <-ctx.Done():
 		var result U
+		logger.Warn("runCommand: timeout occurred", "cmd:", cmd, "body:", body)
 		return &result, errTimeout
 	}
 }
