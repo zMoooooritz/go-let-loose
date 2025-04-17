@@ -18,7 +18,7 @@ const (
 )
 
 var (
-	fallbackTimeout = 10 * time.Second
+	fallbackTimeout = 30 * time.Second
 	sleepTimeout    = time.Second
 
 	errTimeout = errors.New("timeout error")
@@ -96,7 +96,7 @@ func (r *Rcon) worker() {
 				continue
 			}
 
-			logger.Warn("worker: recreating connection")
+			logger.Warn("worker: recreating connection", err)
 			time.Sleep(sleepTimeout)
 			err = sc.Reconnect()
 			if err != nil {

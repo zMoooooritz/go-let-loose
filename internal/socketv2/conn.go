@@ -36,7 +36,14 @@ type ServerConnection struct {
 }
 
 func NewConnection(ip, port, password string, version int) (*ServerConnection, error) {
-	sc := ServerConnection{ip: ip, port: port, password: password, version: version, key: nil}
+	sc := ServerConnection{
+		ip:       ip,
+		port:     port,
+		password: password,
+		version:  version,
+		conn:     nil,
+		key:      nil,
+	}
 	err := sc.reconnect()
 	return &sc, err
 }
@@ -64,7 +71,7 @@ func (sc *ServerConnection) Execute(command, body string) (string, error) {
 	if resData.StatusCode != StatusOk {
 		return "", NewRconError(resData.StatusCode, resData.StatusMessage)
 	}
-	return string(resData.ContentBody), err
+	return string(resData.ContentBody), nil
 }
 
 func (sc *ServerConnection) Reconnect() error {
@@ -74,8 +81,15 @@ func (sc *ServerConnection) Reconnect() error {
 
 func (sc *ServerConnection) Close() {
 	if sc.IsActive() {
-		_ = sc.conn.Close()
+		sc.conn.Close()
 	}
+	sc.reset()
+}
+
+func (sc *ServerConnection) reset() {
+	sc.conn = nil
+	sc.key = nil
+	sc.authToken = ""
 }
 
 func (sc *ServerConnection) IsActive() bool {
