@@ -1,6 +1,7 @@
 package socketv2
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
@@ -14,11 +15,8 @@ const (
 	LEGACY_V1_XOR_KEY_LENGTH = 4
 	DO_READ_V1_XOR_KEY       = true
 
-	INIT_TIMEOUT        = time.Duration(5 * time.Second)
-	WRITE_TIMEOUT       = time.Duration(3 * time.Second)
-	SLOW_READ_TIMEOUT   = time.Duration(2 * time.Second)
-	NORMAL_READ_TIMEOUT = time.Duration(1 * time.Second)
-	FAST_READ_TIMEOUT   = time.Duration(300 * time.Millisecond)
+	INIT_TIMEOUT = time.Duration(5 * time.Second)
+	CMD_TIMEOUT  = time.Duration(3 * time.Second)
 )
 
 var (
@@ -48,21 +46,28 @@ func NewConnection(ip, port, password string, version int) (*ServerConnection, e
 	return &sc, err
 }
 
-func (sc *ServerConnection) Execute(command, body string) (string, error) {
-	sc.setTimeout(WRITE_TIMEOUT)
+func (sc *ServerConnection) Execute(ctx context.Context, command, body string) (string, error) {
+	if !sc.IsActive() {
+		return "", errConnectionNotActive
+	}
+
+	if deadline, ok := ctx.Deadline(); ok {
+		_ = sc.conn.SetDeadline(deadline)
+	} else {
+		_ = sc.conn.SetDeadline(time.Time{})
+	}
+
 	request := NewRawRequest(sc.authToken, sc.version, command, body)
 	err := sc.write(request.Pack())
-	sc.resetTimeout()
 	if err != nil {
 		return "", err
 	}
 
-	sc.setTimeout(NORMAL_READ_TIMEOUT)
 	resp, err := sc.read()
-	sc.resetTimeout()
 	if err != nil {
 		return "", err
 	}
+
 	resData := RconResponse{}
 	err = json.Unmarshal(resp, &resData)
 	if err != nil {
@@ -81,7 +86,7 @@ func (sc *ServerConnection) Reconnect() error {
 
 func (sc *ServerConnection) Close() {
 	if sc.IsActive() {
-		sc.conn.Close()
+		_ = sc.conn.Close()
 	}
 	sc.reset()
 }
@@ -118,9 +123,13 @@ func (sc *ServerConnection) initialize() error {
 
 	// RCONv1 XOR key, can be ignored
 	if DO_READ_V1_XOR_KEY {
-		buf := make([]byte, LEGACY_V1_XOR_KEY_LENGTH)
-		sc.setTimeout(INIT_TIMEOUT)
-		nbytes, err := sc.conn.Read(buf)
+		buffer := make([]byte, LEGACY_V1_XOR_KEY_LENGTH)
+		_ = sc.conn.SetDeadline(time.Now().Add(INIT_TIMEOUT))
+		nbytes, err := io.ReadFull(sc.conn, buffer)
+		if err != nil {
+			return err
+		}
+
 		if err != nil || nbytes != LEGACY_V1_XOR_KEY_LENGTH {
 			sc.conn = nil
 			return err
@@ -131,7 +140,10 @@ func (sc *ServerConnection) initialize() error {
 }
 
 func (sc *ServerConnection) connect() error {
-	resp, err := sc.Execute("ServerConnect", "")
+	ctx, cancel := context.WithTimeout(context.Background(), INIT_TIMEOUT)
+	defer cancel()
+
+	resp, err := sc.Execute(ctx, "ServerConnect", "")
 	if err != nil {
 		return err
 	}
@@ -140,7 +152,10 @@ func (sc *ServerConnection) connect() error {
 }
 
 func (sc *ServerConnection) login() error {
-	resp, err := sc.Execute("Login", sc.password)
+	ctx, cancel := context.WithTimeout(context.Background(), INIT_TIMEOUT)
+	defer cancel()
+
+	resp, err := sc.Execute(ctx, "Login", sc.password)
 	if err != nil {
 		return err
 	}
@@ -187,18 +202,6 @@ func (sc *ServerConnection) read() ([]byte, error) {
 	}
 
 	return sc.xor(answer), nil
-}
-
-func (sc *ServerConnection) setTimeout(timeout time.Duration) {
-	if sc.IsActive() {
-		_ = sc.conn.SetDeadline(time.Now().Add(timeout))
-	}
-}
-
-func (sc *ServerConnection) resetTimeout() {
-	if sc.IsActive() {
-		_ = sc.conn.SetDeadline(time.Time{})
-	}
 }
 
 func (sc *ServerConnection) xor(data []byte) []byte {
