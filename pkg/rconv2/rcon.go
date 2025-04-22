@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"sync"
 	"time"
 
 	"github.com/zMoooooritz/go-let-loose/internal/socketv2"
@@ -30,25 +29,35 @@ type ServerConfig struct {
 	Password string
 }
 
-type CommandData struct {
+type commandData struct {
 	Command string
 	Body    string
 }
 
-type RconJob struct {
-	Data     CommandData
+type rconJob struct {
+	Data     commandData
 	Response chan string
+	Error    chan error
+}
+
+func newRconJob(cmd, body string) rconJob {
+	return rconJob{
+		Data: commandData{
+			Command: cmd,
+			Body:    body,
+		},
+		Response: make(chan string, 1),
+		Error:    make(chan error, 1),
+	}
 }
 
 type Rcon struct {
-	config     ServerConfig
-	jobChannel chan RconJob
-	waitGroup  *sync.WaitGroup
-	context    context.Context
-	cancel     context.CancelFunc
+	cache      *rconCache
+	Worker     *WorkerManager
+	jobChannel chan rconJob
 }
 
-func NewRcon(cfg ServerConfig, workerCount int) (*Rcon, error) {
+func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, error) {
 	// test for correct credentials
 	sc, err := socketv2.NewConnection(cfg.Host, cfg.Port, cfg.Password, RCON_VERSION)
 	if err != nil {
@@ -56,93 +65,74 @@ func NewRcon(cfg ServerConfig, workerCount int) (*Rcon, error) {
 	}
 	sc.Close()
 
-	waitGroup := sync.WaitGroup{}
-	context, cancel := context.WithCancel(context.Background())
+	jobChannel := make(chan rconJob, jobChannelSize)
+
+	workerManager := newWorkerManager(cfg, jobChannel)
 
 	rcon := Rcon{
-		config:     cfg,
-		jobChannel: make(chan RconJob, jobChannelSize),
-		waitGroup:  &waitGroup,
-		context:    context,
-		cancel:     cancel,
+		cache:      &rconCache{},
+		Worker:     workerManager,
+		jobChannel: jobChannel,
 	}
 
-	for range workerCount {
-		waitGroup.Add(1)
-		go rcon.worker()
+	for _, opt := range opts {
+		opt(&rcon)
 	}
+
+	rcon.Worker.Start(workerCount)
 
 	return &rcon, nil
 }
 
-func (r *Rcon) Close() {
-	r.cancel()
-	r.waitGroup.Wait()
-}
-
-func (r *Rcon) worker() {
-	sc, _ := socketv2.NewConnection(r.config.Host, r.config.Port, r.config.Password, RCON_VERSION)
-	defer sc.Close()
-	defer r.waitGroup.Done()
-
-	for {
-		select {
-		case job := <-r.jobChannel:
-			resp, err := sc.Execute(job.Data.Command, job.Data.Body)
-			if err == nil {
-				if job.Response != nil {
-					job.Response <- resp
-				}
-				continue
-			}
-
-			logger.Warn("worker: recreating connection", err)
-			time.Sleep(sleepTimeout)
-			err = sc.Reconnect()
-			if err != nil {
-				logger.Warn("worker: creating new connection failed", err)
-			}
-			time.Sleep(sleepTimeout)
-
-			resp, err = sc.Execute(job.Data.Command, job.Data.Body)
-			if err == nil && job.Response != nil {
-				job.Response <- resp
-			}
-		case <-r.context.Done():
-			return
-		}
-	}
-}
-
-func (r *Rcon) QueueJob(job RconJob) {
-	r.jobChannel <- job
+func (rcon *Rcon) Close() {
+	rcon.cache.data.Stop()
+	rcon.Worker.Close()
+	close(rcon.jobChannel)
 }
 
 func runCommand[T, U any](rcn *Rcon, req T) (*U, error) {
 	request := socketv2.RconRequest[T]{Body: req}
 	cmd, body := request.ToArgs()
 
-	recvChan := make(chan string, 1)
+	cacheKey := cmd + "|" + body
+
+	val, err := rcn.cache.get(cacheKey)
+	if err == nil {
+		cached := val.(*U)
+		return cached, nil
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), fallbackTimeout)
+	rconJob := newRconJob(cmd, body)
 	defer cancel()
 
 	go func() {
-		rcn.QueueJob(RconJob{CommandData{cmd, body}, recvChan})
+		rcn.jobChannel <- rconJob
 	}()
 
 	select {
-	case data := <-recvChan:
+	case response := <-rconJob.Response:
 		var result U
 		if _, ok := any(result).(string); ok {
-			result = any(data).(U)
+			result = any(response).(U)
+			rcn.cache.set(cacheKey, &result)
 			return &result, nil
 		}
 
-		err := json.Unmarshal([]byte(data), &result)
+		err := json.Unmarshal([]byte(response), &result)
+
+		if err == nil {
+			rcn.cache.set(cacheKey, &result)
+		}
+
+		return &result, err
+	case err := <-rconJob.Error:
+		var result U
+		logger.Warn("runCommand: error occurred", "cmd:", cmd, "body:", body, "err:", err)
 		return &result, err
 	case <-ctx.Done():
 		var result U
-		logger.Warn("runCommand: timeout occurred", "cmd:", cmd, "body:", body)
+		logger.Warn("runCommand: fallback timeout occurred", "cmd:", cmd, "body:", body)
 		return &result, errTimeout
 	}
 }

@@ -123,8 +123,8 @@ func main() {
     Password: "password",
   }
 
-  const workerCount = 10
-  rcn, err := rconv2.NewRcon(cfg, workerCount)
+  const workerCount = 3
+  rcn, err := rconv2.NewRcon(cfg, workerCount, rconv2.WithCache())
   if err != nil {
     log.Fatal(err)
   }
