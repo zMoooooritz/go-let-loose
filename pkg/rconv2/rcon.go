@@ -85,7 +85,9 @@ func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, erro
 }
 
 func (rcon *Rcon) Close() {
-	rcon.cache.data.Stop()
+	if rcon.cache.data != nil {
+		rcon.cache.data.Stop()
+	}
 	rcon.Worker.Close()
 	close(rcon.jobChannel)
 }

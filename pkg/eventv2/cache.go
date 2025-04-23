@@ -10,7 +10,7 @@ import (
 )
 
 type Cache struct {
-	serverView hll.ServerView
+	serverView *hll.ServerView
 	svLock     *sync.RWMutex
 
 	players *ttlcache.Cache[string, hll.DetailedPlayerInfo]
@@ -18,7 +18,7 @@ type Cache struct {
 
 func NewCache() *Cache {
 	cache := Cache{
-		serverView: hll.ServerView{},
+		serverView: &hll.ServerView{},
 		svLock:     &sync.RWMutex{},
 		players: ttlcache.New(
 			ttlcache.WithTTL[string, hll.DetailedPlayerInfo](2*time.Minute),
@@ -31,13 +31,13 @@ func NewCache() *Cache {
 	return &cache
 }
 
-func (c *Cache) GetServerView() hll.ServerView {
+func (c *Cache) GetServerView() *hll.ServerView {
 	c.svLock.RLock()
 	defer c.svLock.RUnlock()
 	return c.serverView
 }
 
-func (c *Cache) setServerView(sv hll.ServerView) {
+func (c *Cache) setServerView(sv *hll.ServerView) {
 	c.svLock.Lock()
 	c.serverView = sv
 	c.svLock.Unlock()

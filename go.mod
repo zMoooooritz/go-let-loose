@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.12.1
 	github.com/jellydator/ttlcache/v3 v3.3.0
 	github.com/yuin/gopher-lua v1.1.1
-	golang.org/x/text v0.23.0
+	golang.org/x/text v0.24.0
 )
 
 require (

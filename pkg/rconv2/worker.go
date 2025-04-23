@@ -102,7 +102,7 @@ func (wm *WorkerManager) worker() {
 				continue
 			}
 
-			logger.Warn("worker: recreating connection", err)
+			logger.Info("worker: recreating connection", err)
 			time.Sleep(sleepTimeout)
 
 			err = sc.Reconnect()
@@ -124,11 +124,11 @@ func (wm *WorkerManager) worker() {
 				job.Error <- err
 			}
 		case <-wm.stopWorkerChannel:
-			logger.Info("worker: received stop signal")
+			logger.Debug("worker: received stop signal")
 			wm.modifyWorkerCount(-1)
 			return
 		case <-wm.context.Done():
-			logger.Info("worker: received global stop signal")
+			logger.Debug("worker: received global stop signal")
 			wm.modifyWorkerCount(-1)
 			return
 		}

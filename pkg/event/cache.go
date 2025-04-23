@@ -13,7 +13,7 @@ type Cache struct {
 	gameState hll.GameState
 	gsLock    *sync.RWMutex
 
-	serverView hll.ServerView
+	serverView *hll.ServerView
 	svLock     *sync.RWMutex
 
 	players *ttlcache.Cache[string, hll.DetailedPlayerInfo]
@@ -23,7 +23,7 @@ func NewCache() *Cache {
 	cache := Cache{
 		gameState:  hll.GameState{},
 		gsLock:     &sync.RWMutex{},
-		serverView: hll.ServerView{},
+		serverView: &hll.ServerView{},
 		svLock:     &sync.RWMutex{},
 		players: ttlcache.New(
 			ttlcache.WithTTL[string, hll.DetailedPlayerInfo](2*time.Minute),
@@ -48,13 +48,13 @@ func (c *Cache) setGameState(gs hll.GameState) {
 	c.gsLock.Unlock()
 }
 
-func (c *Cache) GetServerView() hll.ServerView {
+func (c *Cache) GetServerView() *hll.ServerView {
 	c.svLock.RLock()
 	defer c.svLock.RUnlock()
 	return c.serverView
 }
 
-func (c *Cache) setServerView(sv hll.ServerView) {
+func (c *Cache) setServerView(sv *hll.ServerView) {
 	c.svLock.Lock()
 	c.serverView = sv
 	c.svLock.Unlock()
