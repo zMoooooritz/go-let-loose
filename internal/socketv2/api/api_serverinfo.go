@@ -16,12 +16,12 @@ const (
 
 type ServerInformationName string
 
-type ServerInformation struct {
+type GetServerInformation struct {
 	Name  ServerInformationName `json:"Name"`
 	Value string                `json:"Value"`
 }
 
-func (s *ServerInformation) Pack() []byte {
+func (s *GetServerInformation) Pack() []byte {
 	body, err := json.Marshal(s)
 	if err != nil {
 		return []byte{}

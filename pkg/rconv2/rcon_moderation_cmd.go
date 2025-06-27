@@ -8,10 +8,12 @@ import (
 )
 
 func (r *Rcon) GetTempBans() ([]hll.ServerBan, error) {
+	// TODO: via ClientReferenceData-API?
 	return []hll.ServerBan{}, fmt.Errorf("not implemented")
 }
 
 func (r *Rcon) GetPermaBans() ([]hll.ServerBan, error) {
+	// TODO: via ClientReferenceData-API?
 	return []hll.ServerBan{}, fmt.Errorf("not implemented")
 }
 
@@ -54,8 +56,8 @@ func (r *Rcon) KickPlayer(player, reason string) error {
 }
 
 func (r *Rcon) TempBanPlayer(player string, duration int, reason, admin string) error {
-	_, err := runCommand[api.TempBan, any](r,
-		api.TempBan{
+	_, err := runCommand[api.TemporaryBanPlayer, any](r,
+		api.TemporaryBanPlayer{
 			Reason:    reason,
 			PlayerID:  player,
 			Duration:  duration,
@@ -66,8 +68,8 @@ func (r *Rcon) TempBanPlayer(player string, duration int, reason, admin string) 
 }
 
 func (r *Rcon) PardonTempBanPlayer(ban hll.ServerBan) error {
-	_, err := runCommand[api.RemoveTempBan, any](r,
-		api.RemoveTempBan{
+	_, err := runCommand[api.RemoveTemporaryBan, any](r,
+		api.RemoveTemporaryBan{
 			PlayerID: ban.Player.ID,
 		},
 	)
@@ -75,8 +77,8 @@ func (r *Rcon) PardonTempBanPlayer(ban hll.ServerBan) error {
 }
 
 func (r *Rcon) PermaBanPlayer(player, reason, admin string) error {
-	_, err := runCommand[api.PermanentBan, any](r,
-		api.PermanentBan{
+	_, err := runCommand[api.PermanentBanPlayer, any](r,
+		api.PermanentBanPlayer{
 			Reason:    reason,
 			PlayerID:  player,
 			AdminName: admin,

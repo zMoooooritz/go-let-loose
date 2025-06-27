@@ -99,10 +99,21 @@ func (r *Rcon) RemoveAdmin(id string) error {
 	return err
 }
 
-func (r *Rcon) AddVip(id, name string) error {
-	return fmt.Errorf("not implemented")
+func (r *Rcon) AddVip(id, comment string) error {
+	_, err := runCommand[api.AddVipPlayer, any](r,
+		api.AddVipPlayer{
+			PlayerId:    id,
+			Description: comment,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) RemoveVip(id string) error {
-	return fmt.Errorf("not implemented")
+	_, err := runCommand[api.RemoveVipPlayer, any](r,
+		api.RemoveVipPlayer{
+			PlayerId: id,
+		},
+	)
+	return err
 }

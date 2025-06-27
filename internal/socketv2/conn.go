@@ -130,7 +130,7 @@ func (sc *ServerConnection) initialize() error {
 			return err
 		}
 
-		if err != nil || nbytes != LEGACY_V1_XOR_KEY_LENGTH {
+		if nbytes != LEGACY_V1_XOR_KEY_LENGTH {
 			sc.conn = nil
 			return err
 		}

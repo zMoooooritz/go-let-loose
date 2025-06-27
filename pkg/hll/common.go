@@ -1,5 +1,7 @@
 package hll
 
+import "time"
+
 type TeamData struct {
 	Allies int
 	Axis   int
@@ -17,6 +19,21 @@ type Command struct {
 	ID              string
 	Name            string
 	ClientSupported bool
+}
+
+type CommandDetails struct {
+	Name               string
+	Text               string
+	Description        string
+	DialogueParameters []DialogueParameter
+}
+
+type DialogueParameter struct {
+	Type          string
+	Name          string
+	ID            string
+	DisplayMember string
+	ValueMember   string
 }
 
 type SupportedPlatform string
@@ -55,4 +72,9 @@ type SessionInfo struct {
 	QueueCount       int
 	MaxVIPQueueCount int
 	VIPQueueCount    int
+}
+
+type LogEntry struct {
+	Timestamp time.Time
+	Message   string
 }

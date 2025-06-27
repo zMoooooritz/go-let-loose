@@ -2,6 +2,7 @@ package rconv2
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/zMoooooritz/go-let-loose/internal/socketv2/api"
 )
@@ -99,8 +100,8 @@ func (r *Rcon) SetTeamSwitchCooldown(cooldown int) error {
 }
 
 func (r *Rcon) SetAutoBalanceEnabled(enabled bool) error {
-	_, err := runCommand[api.AutoBalance, any](r,
-		api.AutoBalance{
+	_, err := runCommand[api.SetAutoBalance, any](r,
+		api.SetAutoBalance{
 			EnableAutoBalance: enabled,
 		},
 	)
@@ -108,8 +109,8 @@ func (r *Rcon) SetAutoBalanceEnabled(enabled bool) error {
 }
 
 func (r *Rcon) SetAutoBalanceThreshold(threshold int) error {
-	_, err := runCommand[api.AutoBalanceThreshold, any](r,
-		api.AutoBalanceThreshold{
+	_, err := runCommand[api.SetAutoBalanceThreshold, any](r,
+		api.SetAutoBalanceThreshold{
 			AutoBalanceThreshold: threshold,
 		},
 	)
@@ -117,8 +118,8 @@ func (r *Rcon) SetAutoBalanceThreshold(threshold int) error {
 }
 
 func (r *Rcon) SetVoteKickEnabled(enabled bool) error {
-	_, err := runCommand[api.VoteKickEnabled, any](r,
-		api.VoteKickEnabled{
+	_, err := runCommand[api.SetVoteKick, any](r,
+		api.SetVoteKick{
 			Enabled: enabled,
 		},
 	)
@@ -126,8 +127,8 @@ func (r *Rcon) SetVoteKickEnabled(enabled bool) error {
 }
 
 func (r *Rcon) SetVoteKickThreshold(thresholdPairs string) error {
-	_, err := runCommand[api.VoteKickThreshold, any](r,
-		api.VoteKickThreshold{
+	_, err := runCommand[api.SetVoteKickThreshold, any](r,
+		api.SetVoteKickThreshold{
 			ThresholdValue: thresholdPairs,
 		},
 	)
@@ -142,9 +143,17 @@ func (r *Rcon) ResetVoteKickThreshold() error {
 }
 
 func (r *Rcon) BanProfanities(profanities []string) error {
-	return fmt.Errorf("not implemented")
+	_, err := runCommand[api.AddBannedWords, any](r,
+		api.AddBannedWords{
+			BannedWords: strings.Join(profanities, ","),
+		})
+	return err
 }
 
 func (r *Rcon) UnbanProfanities(profanities []string) error {
-	return fmt.Errorf("not implemented")
+	_, err := runCommand[api.RemoveBannedWords, any](r,
+		api.RemoveBannedWords{
+			BannedWords: strings.Join(profanities, ","),
+		})
+	return err
 }

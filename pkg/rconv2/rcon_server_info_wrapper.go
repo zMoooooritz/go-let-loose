@@ -15,9 +15,9 @@ var (
 
 //nolint:all
 func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespPlayerInformation](
+	resp, err := runCommand[api.GetServerInformation, api.RespPlayerInformation](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name:  api.ServerInfoPlayer,
 			Value: playerID,
 		},
@@ -29,9 +29,9 @@ func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
 }
 
 func getPlayers(r *Rcon) (*api.RespPlayersInformation, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespPlayersInformation](
+	resp, err := runCommand[api.GetServerInformation, api.RespPlayersInformation](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name: api.ServerInfoPlayers,
 		},
 	)
@@ -42,9 +42,9 @@ func getPlayers(r *Rcon) (*api.RespPlayersInformation, error) {
 }
 
 func getSessionInfo(r *Rcon) (*api.RespSessionInformation, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespSessionInformation](
+	resp, err := runCommand[api.GetServerInformation, api.RespSessionInformation](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name: api.ServerInfoSession,
 		},
 	)
@@ -55,9 +55,9 @@ func getSessionInfo(r *Rcon) (*api.RespSessionInformation, error) {
 }
 
 func getMapRotation(r *Rcon) (*api.RespMapRotation, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespMapRotation](
+	resp, err := runCommand[api.GetServerInformation, api.RespMapRotation](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name: api.ServerInfoMapRotation,
 		},
 	)
@@ -68,9 +68,9 @@ func getMapRotation(r *Rcon) (*api.RespMapRotation, error) {
 }
 
 func getMapSequence(r *Rcon) (*api.RespMapSequence, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespMapSequence](
+	resp, err := runCommand[api.GetServerInformation, api.RespMapSequence](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name: api.ServerInfoMapSequence,
 		},
 	)
@@ -84,9 +84,9 @@ func getMapSequence(r *Rcon) (*api.RespMapSequence, error) {
 }
 
 func getServerConfig(r *Rcon) (*api.RespServerConfiguration, error) {
-	resp, err := runCommand[api.ServerInformation, api.RespServerConfiguration](
+	resp, err := runCommand[api.GetServerInformation, api.RespServerConfiguration](
 		r,
-		api.ServerInformation{
+		api.GetServerInformation{
 			Name: api.ServerInfoServerConfig,
 		},
 	)

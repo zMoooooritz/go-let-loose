@@ -115,15 +115,19 @@ const (
 type Faction string
 
 const (
-	FctUS  Faction = "US"
-	FctGER Faction = "GER"
-	FctRUS Faction = "RUS"
-	FctGB  Faction = "GB"
-	FctDAK Faction = "DAK"
-	FctB8A Faction = "B8A"
+	FctUS         Faction = "US"
+	FctGER        Faction = "GER"
+	FctRUS        Faction = "RUS"
+	FctGB         Faction = "GB"
+	FctDAK        Faction = "DAK"
+	FctB8A        Faction = "B8A"
+	FctUnassigned Faction = "NON"
 )
 
 func (f Faction) Team() Team {
+	if f == FctUnassigned {
+		return TmNone
+	}
 	if f == FctGER || f == FctDAK {
 		return TmAxis
 	}
@@ -142,8 +146,10 @@ func FactionFromInt(id int) Faction {
 		return FctGB
 	case 4:
 		return FctDAK
-	default:
+	case 5:
 		return FctB8A
+	default:
+		return FctUnassigned
 	}
 }
 

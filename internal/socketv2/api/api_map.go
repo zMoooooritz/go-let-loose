@@ -10,7 +10,7 @@ type AddMapToSequence struct {
 	Index   int    `json:"Index"`
 }
 
-type ChangeSectorLayout struct {
+type SetSectorLayout struct {
 	SectorOne   string `json:"Sector_1"`
 	SectorTwo   string `json:"Sector_2"`
 	SectorThree string `json:"Sector_3"`
@@ -18,7 +18,7 @@ type ChangeSectorLayout struct {
 	SectorFive  string `json:"Sector_5"`
 }
 
-type MapChange struct {
+type ChangeMap struct {
 	MapName string `json:"MapName"`
 }
 
@@ -35,6 +35,28 @@ type RemoveMapFromSequence struct {
 	Index int `json:"index"`
 }
 
-type ShuffleMapSequence struct {
+type SetShuffleMapSequence struct {
 	Enable bool `json:"Enable"`
+}
+
+type SetMapWeatherToggle struct {
+	MapId  string `json:"MapId"`
+	Enable bool   `json:"Enable"`
+}
+
+type SetMatchTimer struct {
+	GameMode    string `json:"GameMode"`
+	MatchLength int    `json:"MatchLength"` // in minutes
+}
+type RemoveMatchTimer struct {
+	GameMode string `json:"GameMode"`
+}
+
+type SetWarmupTimer struct {
+	GameMode     string `json:"GameMode"`
+	WarmupLength int    `json:"WarmupLength"` // in minutes
+}
+
+type RemoveWarmupTimer struct {
+	GameMode string `json:"GameMode"`
 }

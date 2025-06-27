@@ -1,10 +1,10 @@
 package api
 
-type AutoBalance struct {
+type SetAutoBalance struct {
 	EnableAutoBalance bool `json:"EnableAutoBalance"`
 }
 
-type AutoBalanceThreshold struct {
+type SetAutoBalanceThreshold struct {
 	AutoBalanceThreshold int `json:"AutoBalanceThreshold"`
 }
 
@@ -23,10 +23,18 @@ type SetTeamSwitchCooldown struct {
 	TeamSwitchTimer int `json:"TeamSwitchTimer"`
 }
 
-type VoteKickEnabled struct {
+type SetVoteKick struct {
 	Enabled bool `json:"Enabled"`
 }
 
-type VoteKickThreshold struct {
+type SetVoteKickThreshold struct {
 	ThresholdValue string `json:"ThresholdValue"`
+}
+
+type AddBannedWords struct {
+	BannedWords string `json:"BannedWords"`
+}
+
+type RemoveBannedWords struct {
+	BannedWords string `json:"BannedWords"`
 }
