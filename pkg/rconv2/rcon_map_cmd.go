@@ -1,7 +1,10 @@
 package rconv2
 
 import (
+	"errors"
 	"fmt"
+	"math/rand"
+	"strings"
 
 	"github.com/zMoooooritz/go-let-loose/internal/socketv2/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
@@ -122,17 +125,51 @@ func (r *Rcon) MoveMapInSequence(from, to int) error {
 }
 
 func (r *Rcon) GetCurrentMapObjectives() ([][]string, error) {
-	// TODO: should be possible using the ClientReferenceData-API?
-	return [][]string{}, fmt.Errorf("not implemented")
+	resp, err := r.GetCommandDetails("SetSectorLayout")
+	if err != nil {
+		return [][]string{}, err
+	}
+	objectives := [][]string{}
+	for _, param := range resp.DialogueParameters {
+		objectives = append(objectives, strings.Split(param.ValueMember, ","))
+	}
+	return objectives, nil
 }
 
+// 0    => random objective in that row/col
+// 1-3  => specific objective
 func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
-	// TODO: should be possible using the ClientReferenceData-API?
-	return fmt.Errorf("not implemented")
+	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+		return errors.New("incorrect number of objectives provided")
+	}
+
+	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+		if objs[i] < 0 || objs[i] > hll.OptionsPerObjective[hll.GmWarfare] {
+			return errors.New("provided index is invalid (0 (random) and 1-3 are valid)")
+		}
+	}
+
+	allObjNames, err := r.GetCurrentMapObjectives()
+	if err != nil {
+		return err
+	}
+
+	objNames := []string{}
+	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+		objectiveIndex := objs[i]
+		if objectiveIndex == 0 {
+			objectiveIndex = rand.Intn(3) + 1
+		}
+
+		objNames = append(objNames, allObjNames[i][objectiveIndex-1])
+	}
+	return r.SetGameLayout(objNames)
 }
 
 func (r *Rcon) SetGameLayout(objs []string) error {
-	// TODO: validation?
+	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+		return errors.New("incorrect number of objectives provided")
+	}
 	_, err := runCommand[api.SetSectorLayout, any](r,
 		api.SetSectorLayout{
 			SectorOne:   objs[0],

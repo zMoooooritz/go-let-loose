@@ -46,8 +46,8 @@ func (r *Rcon) SwitchPlayerNow(player string) error {
 }
 
 func (r *Rcon) KickPlayer(player, reason string) error {
-	_, err := runCommand[api.Kick, any](r,
-		api.Kick{
+	_, err := runCommand[api.KickPlayer, any](r,
+		api.KickPlayer{
 			Reason:   reason,
 			PlayerID: player,
 		},

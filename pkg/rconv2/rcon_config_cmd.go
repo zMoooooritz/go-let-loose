@@ -55,10 +55,6 @@ func (r *Rcon) GetVoteKickThreshold() (int, error) {
 	return 0, fmt.Errorf("not implemented")
 }
 
-func (r *Rcon) GetProfanities() ([]string, error) {
-	return []string{}, fmt.Errorf("not implemented")
-}
-
 func (r *Rcon) SetMaxQueuedPlayers(size int) error {
 	_, err := runCommand[api.SetMaxQueuedPlayers, any](r,
 		api.SetMaxQueuedPlayers{
@@ -156,4 +152,12 @@ func (r *Rcon) UnbanProfanities(profanities []string) error {
 			BannedWords: strings.Join(profanities, ","),
 		})
 	return err
+}
+
+func (r *Rcon) GetProfanities() ([]string, error) {
+	resp, err := getBannedWords(r)
+	if err != nil {
+		return []string{}, err
+	}
+	return resp.BannedWords, nil
 }

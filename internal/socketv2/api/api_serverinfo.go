@@ -12,6 +12,7 @@ const (
 	ServerInfoMapSequence  = "mapsequence"
 	ServerInfoSession      = "session"
 	ServerInfoServerConfig = "serverconfig"
+	ServerInfoBannedWords  = "bannedwords"
 )
 
 type ServerInformationName string
@@ -119,5 +120,13 @@ type RespServerConfiguration struct {
 }
 
 func (r RespServerConfiguration) CacheTTL() time.Duration {
+	return 1 * time.Second
+}
+
+type RespBannedWords struct {
+	BannedWords []string `json:"BannedWords"`
+}
+
+func (r RespBannedWords) CacheTTL() time.Duration {
 	return 1 * time.Second
 }

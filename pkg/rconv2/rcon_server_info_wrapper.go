@@ -96,6 +96,19 @@ func getServerConfig(r *Rcon) (*api.RespServerConfiguration, error) {
 	return resp, nil
 }
 
+func getBannedWords(r *Rcon) (*api.RespBannedWords, error) {
+	resp, err := runCommand[api.GetServerInformation, api.RespBannedWords](
+		r,
+		api.GetServerInformation{
+			Name: api.ServerInfoBannedWords,
+		},
+	)
+	if err != nil {
+		return &api.RespBannedWords{}, err
+	}
+	return resp, nil
+}
+
 func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerInfo {
 	return hll.DetailedPlayerInfo{
 		PlayerInfo: hll.PlayerInfo{
