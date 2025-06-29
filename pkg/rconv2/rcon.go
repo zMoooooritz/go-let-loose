@@ -52,10 +52,13 @@ func newRconJob(cmd, body string) rconJob {
 }
 
 type Rcon struct {
-	cache      *rconCache
-	Worker     *WorkerManager
-	jobChannel chan rconJob
+	cache        *rconCache
+	verification *rconVerification
+	Worker       *WorkerManager
+	jobChannel   chan rconJob
 }
+
+type RconOption func(*Rcon)
 
 func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, error) {
 	// test for correct credentials
@@ -70,9 +73,10 @@ func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, erro
 	workerManager := newWorkerManager(cfg, jobChannel)
 
 	rcon := Rcon{
-		cache:      &rconCache{},
-		Worker:     workerManager,
-		jobChannel: jobChannel,
+		cache:        &rconCache{},
+		verification: &rconVerification{},
+		Worker:       workerManager,
+		jobChannel:   jobChannel,
 	}
 
 	for _, opt := range opts {
@@ -80,6 +84,8 @@ func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, erro
 	}
 
 	rcon.Worker.Start(workerCount)
+
+	rcon.verification.verifyLayers(&rcon)
 
 	return &rcon, nil
 }

@@ -12,8 +12,6 @@ type rconCache struct {
 	enabled bool
 }
 
-type RconOption func(*Rcon)
-
 func WithCache() RconOption {
 	return func(r *Rcon) {
 		r.cache.data = ttlcache.New[string, any](
