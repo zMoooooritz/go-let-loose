@@ -76,7 +76,7 @@ type MapInformation struct {
 	Name      string `json:"Name"`
 	GameMode  string `json:"GameMode"`
 	TimeOfDay string `json:"TimeOfDay"`
-	ID        string `json:"ID"`
+	ID        string `json:"Id"`
 	Position  int    `json:"Position"`
 }
 

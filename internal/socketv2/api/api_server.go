@@ -1,8 +1,6 @@
 package api
 
 import (
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -19,22 +17,25 @@ type SendServerMessage struct {
 }
 
 type GetAdminLog struct {
+	LogBackTrackTime int32  `json:"LogBackTrackTime"` // in seconds
+	Filters          string `json:"Filters"`
 }
 
 type ResponseAdminLog struct {
-	Entries []AdminLogEntry `json:"entries"`
+	Entries []AdminLogEntry `json:"Entries"`
 }
 
 type AdminLogEntry struct {
-	Timestamp string `json:"timestamp"`
-	Message   string `json:"message"`
+	Timestamp string `json:"Timestamp"`
+	Message   string `json:"Message"`
 }
 
 func (a AdminLogEntry) Time() time.Time {
-	li := strings.LastIndex(a.Timestamp, ":")
-	p, _ := strconv.Atoi(a.Timestamp[li+1:])
-	r, _ := time.Parse("2006.01.02-15:04:05", a.Timestamp[:li])
-	return time.Date(r.Year(), r.Month(), r.Day(), r.Hour(), r.Minute(), r.Second(), p*1000000, r.Location())
+	t, err := time.Parse(time.RFC3339, a.Timestamp)
+	if err != nil {
+		return time.Time{}
+	}
+	return t
 }
 
 type GetDisplayableCommands struct {
@@ -62,7 +63,7 @@ type ResponseClientReferenceData struct {
 type DialogueParameter struct {
 	Type          string `json:"Type"`
 	Name          string `json:"Name"`
-	ID            string `json:"ID"`
+	ID            string `json:"Id"`
 	DisplayMember string `json:"DisplayMember"`
 	ValueMember   string `json:"ValueMember"`
 }

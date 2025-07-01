@@ -32,7 +32,7 @@ type RemoveMapFromRotation struct {
 }
 
 type RemoveMapFromSequence struct {
-	Index int `json:"index"`
+	Index int `json:"Index"`
 }
 
 type SetShuffleMapSequence struct {

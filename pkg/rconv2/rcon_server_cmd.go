@@ -44,7 +44,12 @@ func (r *Rcon) ClearBroadcastMessage(message string) error {
 }
 
 func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
-	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r, api.GetAdminLog{})
+	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+		api.GetAdminLog{
+			LogBackTrackTime: int32(spanMins * 60),
+			Filters:          "",
+		},
+	)
 	logLines := []string{}
 	if err == nil {
 		for _, entry := range response.Entries {
@@ -54,8 +59,13 @@ func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
 	return logLines, err
 }
 
-func (r *Rcon) GetTimestampedLogs() ([]hll.LogEntry, error) {
-	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r, api.GetAdminLog{})
+func (r *Rcon) GetLogEntries(seconds int, filters string) ([]hll.LogEntry, error) {
+	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+		api.GetAdminLog{
+			LogBackTrackTime: int32(seconds),
+			Filters:          filters,
+		},
+	)
 	logEntries := []hll.LogEntry{}
 	if err == nil {
 		for _, entry := range response.Entries {
