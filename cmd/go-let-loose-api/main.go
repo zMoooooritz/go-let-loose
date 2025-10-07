@@ -7,22 +7,24 @@ import (
 
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
-	"github.com/zMoooooritz/go-let-loose/pkg/rconv2"
+	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 
 const workerCount = 10
 
 func main() {
-	logger.NOPLogger()
+	logger.DefaultLogger()
 
-	var cfg rconv2.ServerConfig
+	logger.Info("Starting go-let-loose-api...")
+
+	var cfg rcon.ServerConfig
 
 	flag.StringVar(&cfg.Host, "host", "", "hostname of server")
 	flag.StringVar(&cfg.Port, "port", "", "port on the server")
 	flag.StringVar(&cfg.Password, "password", "", "password of the rcon")
 	flag.Parse()
 
-	rcn, err := rconv2.NewRcon(cfg, workerCount)
+	rcn, err := rcon.NewRcon(cfg, workerCount)
 	if err != nil {
 		logger.Fatal(err)
 		os.Exit(0)
@@ -61,14 +63,15 @@ func main() {
 		logger.Fatal(err)
 		os.Exit(1)
 	}
-	defer f.Close()
 
 	enc := json.NewEncoder(f)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(cmdDetails); err != nil {
 		logger.Fatal(err)
+		_ = f.Close()
 		os.Exit(1)
 	}
+	_ = f.Close()
 
 	rcn.Close()
 }

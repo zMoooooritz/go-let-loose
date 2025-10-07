@@ -2,7 +2,7 @@ package lua
 
 import (
 	lua "github.com/yuin/gopher-lua"
-	"github.com/zMoooooritz/go-let-loose/pkg/event"
+	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
 var eventHandlers = make(map[string]*lua.LFunction)
@@ -12,11 +12,7 @@ type Forwarder struct {
 	L *lua.LState
 }
 
-func (f *Forwarder) IsSubscribed(e event.Event) bool {
-	return true
-}
-
-func (f *Forwarder) Notify(e event.Event) {
+func (f *Forwarder) Notify(e hll.Event) {
 	handler, ok := eventHandlers[string(e.Type())]
 	if !ok {
 		return
@@ -33,14 +29,14 @@ func RegisterEvents(L *lua.LState) {
 	L.SetGlobal("registerEvent", L.NewFunction(registerEvent))
 	L.SetGlobal("unregisterEvent", L.NewFunction(unregisterEvent))
 
-	eventListener := GetEventListenerInstance()
 	forwarder = Forwarder{L}
-	eventListener.Register(&forwarder)
+	rcn := GetRconInstance()
+	rcn.Events.Register(&forwarder)
 }
 
 func UnregisterEvents() {
-	eventListener := GetEventListenerInstance()
-	eventListener.Unregister(&forwarder)
+	rcn := GetRconInstance()
+	rcn.Events.Unregister(&forwarder)
 }
 
 func registerEvent(L *lua.LState) int {

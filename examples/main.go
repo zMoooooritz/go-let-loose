@@ -8,21 +8,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/pkg/event"
+	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 
-const workerCount = 10
-
 type Printer struct{}
 
-func (p *Printer) IsSubscribed(e event.Event) bool {
-	return true
-}
-
-func (p *Printer) Notify(e event.Event) {
-	fmt.Println(e)
+func (p *Printer) Notify(e hll.Event) {
+	if e.Type() == hll.EVENT_KILL {
+		fmt.Printf("Kill: %s -> %s (%s)\n", e.(*hll.KillEvent).Killer.Name, e.(*hll.KillEvent).Victim.Name, e.(*hll.KillEvent).Weapon.Name)
+	}
 }
 
 func main() {
@@ -34,7 +30,8 @@ func main() {
 		Password: "password",
 	}
 
-	rcn, err := rcon.NewRcon(cfg, workerCount)
+	const workerCount = 10
+	rcn, err := rcon.NewRcon(cfg, workerCount, rcon.WithCache(), rcon.WithEvents())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,20 +43,19 @@ func main() {
 		fmt.Println(err)
 	}
 
-	infoCache := event.NewCache()
-	eventListener := event.NewEventListener(rcn, infoCache)
 	printer := Printer{}
-
-	eventListener.Register(&printer)
+	rcn.Events.Register(&printer)
 
 	time.Sleep(time.Second)
 
-	fmt.Printf("%+v\n", infoCache.GetGameState())
+	gameState, err := rcn.GetGameState()
+	if err == nil {
+		fmt.Printf("Current game state: %+v\n", gameState)
+	}
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
 
-	eventListener.Close()
 	rcn.Close()
 }

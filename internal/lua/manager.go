@@ -8,20 +8,15 @@ import (
 	"strings"
 
 	lua "github.com/yuin/gopher-lua"
-	"github.com/zMoooooritz/go-let-loose/pkg/event"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 
 var rconInstance *rcon.Rcon
-var cacheInstance *event.Cache
-var listenerInstance *event.EventListener
 
 var activePlugins = make(map[string]chan bool)
 
-func InitLua(r *rcon.Rcon, c *event.Cache, l *event.EventListener) {
+func InitLua(r *rcon.Rcon) {
 	rconInstance = r
-	cacheInstance = c
-	listenerInstance = l
 
 	startAllPlugins()
 }
@@ -73,10 +68,6 @@ func getPluginsPath() string {
 
 func GetRconInstance() *rcon.Rcon {
 	return rconInstance
-}
-
-func GetEventListenerInstance() *event.EventListener {
-	return listenerInstance
 }
 
 func startAllPlugins() {

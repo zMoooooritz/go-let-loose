@@ -2,105 +2,79 @@ package rcon
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 
-	"github.com/zMoooooritz/go-let-loose/internal/util"
-	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
 func (r *Rcon) GetServerName() (string, error) {
-	data, err := r.runBasicCommand("get name")
-	if err != nil {
-		return "", err
-	}
-	return data, nil
+	resp, err := getSessionInfo(r)
+	return resp.ServerName, err
 }
 
 func (r *Rcon) GetSlots() (int, int, error) {
-	resp, err := r.runBasicCommand("get slots")
-	if err != nil {
-		return 0, 0, err
-	}
-	split := strings.Split(resp, "/")
-	if len(split) < 2 {
-		return 0, 0, nil
-	}
-	return util.ToInt(split[0]), util.ToInt(split[1]), nil
+	resp, err := getSessionInfo(r)
+	return int(resp.PlayerCount), int(resp.MaxPlayerCount), err
 }
 
 func (r *Rcon) GetGameState() (hll.GameState, error) {
-	gameState := hll.GameState{}
-	data, err := r.runBasicCommand("get gamestate")
+	resp, err := getSessionInfo(r)
 	if err != nil {
-		return gameState, err
+		return hll.GameState{}, err
 	}
-	return ParseGameState(data)
+	return hll.GameState{
+		PlayerCount: hll.TeamData{
+			Allies: int(resp.AlliedPlayerCount),
+			Axis:   int(resp.AxisPlayerCount),
+		},
+		GameScore: hll.TeamData{
+			Allies: int(resp.AlliedScore),
+			Axis:   int(resp.AxisScore),
+		},
+		RemainingSeconds: int(resp.RemainingMatchTime),
+		CurrentMap:       hll.Layer{},
+		NextMap:          hll.Layer{},
+	}, nil
 }
 
-func ParseGameState(data string) (hll.GameState, error) {
-	var gameState hll.GameState
-	lines := strings.Split(data, config.NEWLINE)
-	if len(lines) < 5 {
-		return gameState, fmt.Errorf("invalid data %s", data)
+func (r *Rcon) GetPlayerCounts() (hll.TeamData, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.TeamData{}, err
 	}
-	r := regexp.MustCompile(`Players: Allied: (\d+) - Axis: (\d+)`)
-	match := r.FindStringSubmatch(lines[0])
-	if len(match) < 3 {
-		return gameState, fmt.Errorf("invalid data %s", data)
-	}
-	gameState.PlayerCount = hll.TeamData{
-		Allies: util.ToInt(match[1]),
-		Axis:   util.ToInt(match[2]),
-	}
-
-	r = regexp.MustCompile(`Score: Allied: (\d+) - Axis: (\d+)`)
-	match = r.FindStringSubmatch(lines[1])
-	if len(match) < 3 {
-		return gameState, fmt.Errorf("invalid data %s", data)
-	}
-	gameState.GameScore = hll.TeamData{
-		Allies: util.ToInt(match[1]),
-		Axis:   util.ToInt(match[2]),
-	}
-
-	r = regexp.MustCompile(`Remaining Time: (\d):(\d{2}):(\d{2})`)
-	match = r.FindStringSubmatch(lines[2])
-	if len(match) < 4 {
-		return gameState, fmt.Errorf("invalid data %s", data)
-	}
-	gameState.RemainingSeconds = util.ToInt(match[1])*60*60 + util.ToInt(match[2])*60 + util.ToInt(match[3])
-
-	currMapName := strings.Split(lines[3], ": ")[1]
-	nextMapName := strings.Split(lines[4], ": ")[1]
-
-	gameState.CurrentMap = hll.ParseLayer(currMapName)
-	gameState.NextMap = hll.ParseLayer(nextMapName)
-	return gameState, nil
-}
-func (r *Rcon) GetMaxQueuedPlayers() (int, error) {
-	return getNumVal(r, "get maxqueuedplayers")
+	return hll.TeamData{
+		Allies: int(resp.AlliedPlayerCount),
+		Axis:   int(resp.AxisPlayerCount),
+	}, nil
 }
 
-func (r *Rcon) GetNumVipSlots() (int, error) {
-	return getNumVal(r, "get numvipslots")
-}
-
-func (r *Rcon) SetMaxQueuedPlayers(size int) error {
-	return runSetCommand(r, fmt.Sprintf("setmaxqueuedplayers %d", min(0, max(size, 6))))
-}
-
-func (r *Rcon) SetNumVipSlots(amount int) error {
-	return runSetCommand(r, fmt.Sprintf("setnumvipslots %d", min(0, max(amount, 100))))
+func (r *Rcon) GetScore() (hll.TeamData, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.TeamData{}, err
+	}
+	return hll.TeamData{
+		Allies: int(resp.AlliedScore),
+		Axis:   int(resp.AxisScore),
+	}, nil
 }
 
 func (r *Rcon) SetWelcomeMessage(message string) error {
-	return runSetCommand(r, fmt.Sprintf("say %s", message))
+	_, err := runCommand[api.SendServerMessage, any](r,
+		api.SendServerMessage{
+			Message: message,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) SetBroadcastMessage(message string) error {
-	return runSetCommand(r, fmt.Sprintf("broadcast %s", message))
+	_, err := runCommand[api.ServerBroadcast, any](r,
+		api.ServerBroadcast{
+			Message: message,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) ClearBroadcastMessage(message string) error {
@@ -108,5 +82,133 @@ func (r *Rcon) ClearBroadcastMessage(message string) error {
 }
 
 func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
-	return r.runUnindexedListCommand(fmt.Sprintf("showlog %d", spanMins))
+	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+		api.GetAdminLog{
+			LogBackTrackTime: int32(spanMins * 60),
+			Filters:          "",
+		},
+	)
+	logLines := []string{}
+	if err == nil {
+		for _, entry := range response.Entries {
+			logLines = append(logLines, fmt.Sprintf("%s: %s", entry.Timestamp, entry.Message))
+		}
+	}
+	return logLines, err
+}
+
+func (r *Rcon) GetLogEntries(seconds int, filters string) ([]hll.LogEntry, error) {
+	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+		api.GetAdminLog{
+			LogBackTrackTime: int32(seconds),
+			Filters:          filters,
+		},
+	)
+	logEntries := []hll.LogEntry{}
+	if err == nil {
+		for _, entry := range response.Entries {
+			logEntries = append(logEntries, hll.LogEntry{
+				Timestamp: entry.Time(),
+				Message:   entry.Message,
+			})
+		}
+	}
+	return logEntries, err
+}
+
+func (r *Rcon) GetServerConfig() (hll.ServerConfig, error) {
+	resp, err := getServerConfig(r)
+	if err != nil {
+		return hll.ServerConfig{}, err
+	}
+	platforms := []hll.SupportedPlatform{}
+	for _, entry := range resp.SupportedPlatforms {
+		platforms = append(platforms, hll.SupportedPlatformFromString(entry))
+	}
+	return hll.ServerConfig{
+		Name:               resp.ServerName,
+		BuildNumber:        resp.BuildNumber,
+		BuildRevision:      resp.BuildRevision,
+		SupportedPlatforms: platforms,
+		PasswordProtected:  resp.PasswordProtected,
+	}, nil
+}
+
+func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.SessionInfo{}, err
+	}
+	return hll.SessionInfo{
+		ServerName:         resp.ServerName,
+		MapName:            resp.MapName,
+		GameMode:           hll.GameMode(resp.GameMode),
+		RemainingMatchTime: int(resp.RemainingMatchTime),
+		MatchTime:          int(resp.MatchTime),
+		AlliedFaction:      hll.FactionFromInt(int(resp.AlliedFaction)),
+		AxisFaction:        hll.FactionFromInt(int(resp.AxisFaction)),
+		MaxPlayerCount:     int(resp.MaxPlayerCount),
+		AlliedScore:        int(resp.AlliedScore),
+		AxisScore:          int(resp.AxisScore),
+		PlayerCount:        int(resp.PlayerCount),
+		AlliedPlayerCount:  int(resp.AlliedPlayerCount),
+		AxisPlayerCount:    int(resp.AxisPlayerCount),
+		MaxQueueCount:      int(resp.MaxQueueCount),
+		QueueCount:         int(resp.QueueCount),
+		MaxVIPQueueCount:   int(resp.MaxVipQueueCount),
+		VIPQueueCount:      int(resp.VipQueueCount),
+	}, nil
+}
+
+func (r *Rcon) GetCommands() ([]hll.Command, error) {
+	commands := []hll.Command{}
+	resp, err := runCommand[api.GetDisplayableCommands, api.ResponseDisplayableCommands](r,
+		api.GetDisplayableCommands{},
+	)
+	if err != nil {
+		return commands, err
+	}
+	for _, entry := range resp.Entries {
+		commands = append(commands, hll.Command{
+			ID:              entry.ID,
+			Name:            entry.FriendlyName,
+			ClientSupported: entry.IsClientSupported,
+		})
+	}
+	return commands, nil
+}
+
+func (r *Rcon) GetCommandDetails(commandID string) (hll.CommandDetails, error) {
+	resp, err := runCommand[api.GetClientReferenceData, api.ResponseClientReferenceData](r,
+		api.GetClientReferenceData(commandID),
+	)
+	if err != nil {
+		return hll.CommandDetails{}, err
+	}
+	parameters := []hll.DialogueParameter{}
+	for _, param := range resp.DialogueParameters {
+		parameters = append(parameters, hll.DialogueParameter{
+			Type:          param.Type,
+			Name:          param.Name,
+			ID:            param.ID,
+			DisplayMember: param.DisplayMember,
+			ValueMember:   param.ValueMember,
+		})
+	}
+	return hll.CommandDetails{
+		Name:               resp.Name,
+		Text:               resp.Text,
+		Description:        resp.Description,
+		DialogueParameters: parameters,
+	}, nil
+}
+
+func (r *Rcon) GetServerChangelist() (string, error) {
+	resp, err := runCommand[api.GetServerChangelist, api.ResponseServerChangelist](r,
+		api.GetServerChangelist{},
+	)
+	if err != nil {
+		return "", err
+	}
+	return resp.Changelist, nil
 }

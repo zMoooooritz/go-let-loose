@@ -5,7 +5,7 @@ import (
 )
 
 type SetMaxQueuedPlayers struct {
-	MaxQueuedPlayers int `json:"MaxQueuedPlayers"`
+	MaxQueuedPlayers int32 `json:"MaxQueuedPlayers"`
 }
 
 type ServerBroadcast struct {
@@ -36,6 +36,13 @@ func (a AdminLogEntry) Time() time.Time {
 		return time.Time{}
 	}
 	return t
+}
+
+type GetServerChangelist struct {
+}
+
+type ResponseServerChangelist struct {
+	Changelist string `json:"Changelist"`
 }
 
 type GetDisplayableCommands struct {

@@ -7,33 +7,35 @@ import (
 	"strings"
 
 	lua "github.com/yuin/gopher-lua"
-	"github.com/zMoooooritz/go-let-loose/pkg/event"
+	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
-var allPublicEvents = []event.EventType{
-	event.EVENT_CONNECTED,
-	event.EVENT_DISCONNECTED,
-	event.EVENT_KILL,
-	event.EVENT_DEATH,
-	event.EVENT_TEAMKILL,
-	event.EVENT_TEAMDEATH,
-	event.EVENT_CHAT,
-	event.EVENT_BAN,
-	event.EVENT_KICK,
-	event.EVENT_MESSAGE,
-	event.EVENT_MATCHSTART,
-	event.EVENT_MATCHEND,
-	event.EVENT_ENTER_ADMINCAM,
-	event.EVENT_LEAVE_ADMINCAM,
-	event.EVENT_VOTE_KICK_STARTED,
-	event.EVENT_VOTE_SUBMITTED,
-	event.EVENT_VOTE_KICK_COMPLETED,
-	event.EVENT_TEAM_SWITCHED,
-	event.EVENT_SQUAD_SWITCHED,
-	event.EVENT_SCORE_UPDATE,
-	event.EVENT_ROLE_CHANGED,
-	event.EVENT_LOADOUT_CHANGED,
-	event.EVENT_OBJECTIVE_CAPPED,
+var allPublicEvents = []hll.EventType{
+	hll.EVENT_CONNECTED,
+	hll.EVENT_DISCONNECTED,
+	hll.EVENT_KILL,
+	hll.EVENT_DEATH,
+	hll.EVENT_TEAMKILL,
+	hll.EVENT_TEAMDEATH,
+	hll.EVENT_CHAT,
+	hll.EVENT_BAN,
+	hll.EVENT_KICK,
+	hll.EVENT_MESSAGE,
+	hll.EVENT_MATCHSTART,
+	hll.EVENT_MATCHEND,
+	hll.EVENT_ENTER_ADMINCAM,
+	hll.EVENT_LEAVE_ADMINCAM,
+	hll.EVENT_VOTE_KICK_STARTED,
+	hll.EVENT_VOTE_SUBMITTED,
+	hll.EVENT_VOTE_KICK_COMPLETED,
+	hll.EVENT_TEAM_SWITCHED,
+	hll.EVENT_SQUAD_SWITCHED,
+	hll.EVENT_SCORE_UPDATE,
+	hll.EVENT_ROLE_CHANGED,
+	hll.EVENT_LOADOUT_CHANGED,
+	hll.EVENT_OBJECTIVE_CAPPED,
+	hll.EVENT_POSITION_CHANGED,
+	hll.EVENT_CLAN_TAG_CHANGED,
 }
 
 func RegisterHelp(L *lua.LState) {
@@ -51,7 +53,6 @@ func luaApiSignatures() []string {
 	signatures := []string{
 		"registerEvent(string, function)",
 		"unregisterEvent(string)",
-		"getServerView() -> (error, table)",
 		"listCommands() -> (table)",
 		"listEvents() -> (table)",
 	}

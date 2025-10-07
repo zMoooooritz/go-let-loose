@@ -60,18 +60,27 @@ type ServerConfig struct {
 	BuildNumber        string
 	BuildRevision      string
 	SupportedPlatforms []SupportedPlatform
+	PasswordProtected  bool
 }
 
 type SessionInfo struct {
-	ServerName       string
-	MapName          string
-	GameMode         GameMode
-	MaxPlayerCount   int
-	PlayerCount      int
-	MaxQueueCount    int
-	QueueCount       int
-	MaxVIPQueueCount int
-	VIPQueueCount    int
+	ServerName         string
+	MapName            string
+	GameMode           GameMode
+	RemainingMatchTime int
+	MatchTime          int
+	AlliedFaction      Faction
+	AxisFaction        Faction
+	MaxPlayerCount     int
+	AlliedScore        int
+	AxisScore          int
+	PlayerCount        int
+	AlliedPlayerCount  int
+	AxisPlayerCount    int
+	MaxQueueCount      int
+	QueueCount         int
+	MaxVIPQueueCount   int
+	VIPQueueCount      int
 }
 
 type LogEntry struct {

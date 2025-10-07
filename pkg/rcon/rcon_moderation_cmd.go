@@ -1,134 +1,170 @@
 package rcon
 
 import (
-	"fmt"
-	"regexp"
-	"strings"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
-	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 func (r *Rcon) GetTempBans() ([]hll.ServerBan, error) {
-	resp, err := r.runListCommand("get tempbans")
+	data, err := runCommand[api.GetTemporaryBans, api.RespTemporaryBans](r,
+		api.GetTemporaryBans{},
+	)
 	if err != nil {
 		return []hll.ServerBan{}, err
 	}
-	return ParseBans(resp), nil
+	bans := []hll.ServerBan{}
+	for _, ban := range data.BanList {
+		timestamp, _ := time.Parse(time.RFC3339, ban.TimeOfBanning)
+		bans = append(bans, hll.ServerBan{
+			Player: hll.PlayerInfo{
+				Name: ban.UserName,
+				ID:   ban.UserID,
+			},
+			Reason:    ban.Reason,
+			AdminName: ban.AdminName,
+			Timestamp: timestamp,
+			Duration:  time.Duration(ban.Duration) * time.Minute,
+			Type:      hll.TempBan,
+		})
+	}
+	return bans, nil
 }
 
 func (r *Rcon) GetPermaBans() ([]hll.ServerBan, error) {
-	resp, err := r.runListCommand("get permabans")
+	data, err := runCommand[api.GetTemporaryBans, api.RespTemporaryBans](r,
+		api.GetTemporaryBans{},
+	)
 	if err != nil {
 		return []hll.ServerBan{}, err
 	}
-	return ParseBans(resp), nil
-}
-
-func ParseBans(banLogs []string) []hll.ServerBan {
 	bans := []hll.ServerBan{}
-	for _, line := range banLogs {
-		if line == "" {
-			continue
-		}
-
-		regex := regexp.MustCompile(`^(?P<ID>[\w-]+) :(?: nickname "(?P<Nickname>.+?)")? banned(?: for (?P<Duration>\d+ hours))? on (?P<Date>\d{4}\.\d{2}\.\d{2}-\d{2}\.\d{2}\.\d{2}) for "(?P<Reason>(?s:.+?))" by admin "(?P<Admin>.+?)"$`)
-
-		matches := regex.FindStringSubmatch(line)
-		if matches == nil {
-			logger.Error("no match found for line:", line)
-			continue
-		}
-
-		// Extract named groups into a map
-		result := make(map[string]string)
-		for i, name := range regex.SubexpNames() {
-			if i != 0 && name != "" {
-				result[name] = matches[i]
-			}
-		}
-
-		// Parse the timestamp
-		timestamp, err := time.Parse("2006.01.02-15.04.05", result["Date"])
-		if err != nil {
-			logger.Error("error parsing date:", err)
-			continue
-		}
-
-		// Parse the duration if present
-		var duration time.Duration
-		var banType hll.BanType
-
-		if result["Duration"] != "" {
-			hours := strings.Split(result["Duration"], " ")[0]
-			durationHours, err := time.ParseDuration(fmt.Sprintf("%sh", hours))
-			if err != nil {
-				logger.Error("error parsing duration:", err)
-				continue
-			}
-			duration = durationHours
-			banType = hll.TempBan
-		} else {
-			banType = hll.PermaBan
-		}
-
-		serverBan := hll.ServerBan{
-			Type: banType,
+	for _, ban := range data.BanList {
+		timestamp, _ := time.Parse(time.RFC3339, ban.TimeOfBanning)
+		bans = append(bans, hll.ServerBan{
 			Player: hll.PlayerInfo{
-				ID:   result["ID"],
-				Name: result["Nickname"],
+				Name: ban.UserName,
+				ID:   ban.UserID,
 			},
+			Reason:    ban.Reason,
+			AdminName: ban.AdminName,
 			Timestamp: timestamp,
-			Duration:  duration,
-			Reason:    result["Reason"],
-			AdminName: result["Admin"],
-			RawLog:    line,
-		}
-
-		bans = append(bans, serverBan)
+			Duration:  time.Duration(ban.Duration) * time.Minute,
+			Type:      hll.PermaBan,
+		})
 	}
-	return bans
+	return bans, nil
 }
 
-func (r *Rcon) SendMessage(playerID string, message string) error {
-	return runSetCommand(r, fmt.Sprintf("message %s %s", playerID, message))
+func (r *Rcon) MessagePlayer(playerID string, message string) error {
+	_, err := runCommand[api.MessagePlayer, any](r,
+		api.MessagePlayer{
+			PlayerID: playerID,
+			Message:  message,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) PunishPlayer(player, reason string) error {
-	reason = strings.ReplaceAll(reason, config.LIST_DELIMITER, "") // WARN: this would break the response
-	return runSetCommand(r, fmt.Sprintf("punish %s %s", player, reason))
+	_, err := runCommand[api.PunishPlayer, any](r,
+		api.PunishPlayer{
+			PlayerID: player,
+			Reason:   reason,
+		},
+	)
+	return err
+}
+
+func (r *Rcon) RemovePlayerFromPlatoon(player, reason string) error {
+	_, err := runCommand[api.RemovePlayerFromPlatoon, any](r,
+		api.RemovePlayerFromPlatoon{
+			PlayerID: player,
+			Reason:   reason,
+		},
+	)
+	return err
+}
+
+func (r *Rcon) DisbandPlatoon(team hll.Team, unit hll.Unit, reason string) error {
+	_, err := runCommand[api.DisbandPlatoon, any](r,
+		api.DisbandPlatoon{
+			TeamIndex:  int8(team.ToInt()),
+			SquadIndex: int32(unit.ID),
+			Reason:     reason,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) SwitchPlayerOnDeath(player string) error {
-	return runSetCommand(r, fmt.Sprintf("switchteamondeath %s", player))
+	_, err := runCommand[api.ForceTeamSwitch, any](r,
+		api.ForceTeamSwitch{
+			PlayerID:  player,
+			ForceMode: 0, // 0 = Switch on Death, 1 = Switch Immediately
+		},
+	)
+	return err
 }
 
 func (r *Rcon) SwitchPlayerNow(player string) error {
-	return runSetCommand(r, fmt.Sprintf("switchteamnow %s", player))
+	_, err := runCommand[api.ForceTeamSwitch, any](r,
+		api.ForceTeamSwitch{
+			PlayerID:  player,
+			ForceMode: 1, // 0 = Switch on Death, 1 = Switch Immediately
+		},
+	)
+	return err
 }
 
 func (r *Rcon) KickPlayer(player, reason string) error {
-	reason = strings.ReplaceAll(reason, config.LIST_DELIMITER, "") // WARN: this would break the response
-	return runSetCommand(r, fmt.Sprintf("kick %s %s", player, reason))
+	_, err := runCommand[api.KickPlayer, any](r,
+		api.KickPlayer{
+			PlayerID: player,
+			Reason:   reason,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) TempBanPlayer(player string, duration int, reason, admin string) error {
-	duration = min(1, duration)
-	reason = strings.ReplaceAll(reason, config.LIST_DELIMITER, "") // WARN: this would break the response
-	return runSetCommand(r, fmt.Sprintf("tempban %s %d %s %s", player, duration, reason, admin))
+	_, err := runCommand[api.TemporaryBanPlayer, any](r,
+		api.TemporaryBanPlayer{
+			PlayerID:  player,
+			Reason:    reason,
+			Duration:  int32(duration),
+			AdminName: admin,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) PardonTempBanPlayer(ban hll.ServerBan) error {
-	return runSetCommand(r, fmt.Sprintf("pardontempban %s", ban.RawLog))
+	_, err := runCommand[api.RemoveTemporaryBan, any](r,
+		api.RemoveTemporaryBan{
+			PlayerID: ban.Player.ID,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) PermaBanPlayer(player, reason, admin string) error {
-	reason = strings.ReplaceAll(reason, config.LIST_DELIMITER, "") // WARN: this would break the response
-	return runSetCommand(r, fmt.Sprintf("tempban %s %s %s", player, reason, admin))
+	_, err := runCommand[api.PermanentBanPlayer, any](r,
+		api.PermanentBanPlayer{
+			PlayerID:  player,
+			Reason:    reason,
+			AdminName: admin,
+		},
+	)
+	return err
 }
 
 func (r *Rcon) PardonPermaBanPlayer(ban hll.ServerBan) error {
-	return runSetCommand(r, fmt.Sprintf("pardonpermaban %s", ban.RawLog))
+	_, err := runCommand[api.RemovePermanentBan, any](r,
+		api.RemovePermanentBan{
+			PlayerID: ban.Player.ID,
+		},
+	)
+	return err
 }

@@ -2,87 +2,164 @@ package rcon
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
-	"strconv"
 	"strings"
 
-	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
-func (r *Rcon) GetCurrentMap() (hll.Layer, error) {
-	data, _ := r.runBasicCommand("get map")
-	return hll.ParseLayer(data), nil
+func (r *Rcon) GetCurrentMap() (hll.GameMap, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.GameMap{}, err
+	}
+	return hll.LogMapNameToMap(resp.MapName), nil
+}
+
+func (r *Rcon) GetCurrentLayer() (hll.Layer, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.Layer{}, err
+	}
+
+	layer := hll.Layer{ID: "invalid", GameMap: hll.GameMap{ID: hll.MP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: hll.FctUS, Axis: hll.FctGER}, GameMode: hll.GmWarfare, Environment: hll.EnvDay}
+	for _, lay := range hll.AllLayers() {
+		if resp.MapName == lay.GameMap.Name && resp.GameMode == string(lay.GameMode) {
+			layer = lay
+			break
+		}
+	}
+
+	return layer, nil
 }
 
 func (r *Rcon) GetGameMode() (string, error) {
-	return r.runBasicCommand("get gamemode")
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return "", err
+	}
+	return resp.GameMode, nil
 }
 
 func (r *Rcon) GetAllMaps() ([]hll.Layer, error) {
-	layerStr, err := r.runListCommand("get mapsforrotation")
+	layers := []hll.Layer{}
+	resp, err := runCommand[api.GetClientReferenceData, api.ResponseClientReferenceData](r,
+		api.GetClientReferenceData("AddMapToRotation"),
+	)
 	if err != nil {
-		return []hll.Layer{}, err
+		return layers, err
 	}
-	return toLayers(layerStr), nil
+	layer_names := strings.Split(resp.DialogueParameters[0].DisplayMember, ",")
+	for _, layer_name := range layer_names {
+		layers = append(layers, hll.ParseLayer(layer_name))
+	}
+	return layers, nil
 }
 
 func (r *Rcon) GetCurrentMapRotation() ([]hll.Layer, error) {
-	resp, err := r.runBasicCommand("rotlist")
+	layers := []hll.Layer{}
+	resp, err := getMapRotation(r)
 	if err != nil {
-		return []hll.Layer{}, err
+		return layers, err
 	}
-	return toLayers(strings.Split(resp, config.NEWLINE)), nil
+	for _, entry := range resp.Maps {
+		layers = append(layers, hll.ParseLayer(entry.ID))
+	}
+	return layers, nil
 }
 
-func (r *Rcon) AddMapToRotation(layer hll.Layer) error {
-	return runSetCommand(r, fmt.Sprintf("rotadd %s", layer.ID))
+func (r *Rcon) AddMapToRotation(layer hll.Layer, index int) error {
+	_, err := runCommand[api.AddMapToRotation, any](r,
+		api.AddMapToRotation{
+			MapName: layer.ID,
+			Index:   int32(index),
+		},
+	)
+	return err
 }
 
-func (r *Rcon) RemoveMapFromRotation(layer hll.Layer) error {
-	return runSetCommand(r, fmt.Sprintf("rotdel %s", layer.ID))
+func (r *Rcon) RemoveMapFromRotation(index int) error {
+	_, err := runCommand[api.RemoveMapFromRotation, any](r,
+		api.RemoveMapFromRotation{
+			Index: int32(index),
+		},
+	)
+	return err
+}
+
+func (r *Rcon) AddMapToSequence(layer hll.Layer, index int) error {
+	_, err := runCommand[api.AddMapToSequence, any](r,
+		api.AddMapToSequence{
+			MapName: layer.ID,
+			Index:   int32(index),
+		},
+	)
+	return err
+}
+
+func (r *Rcon) RemoveMapToSequence(index int) error {
+	_, err := runCommand[api.RemoveMapFromSequence, any](r,
+		api.RemoveMapFromSequence{
+			Index: int32(index),
+		},
+	)
+	return err
 }
 
 func (r *Rcon) SetCurrentMap(layer hll.Layer) error {
-	return runSetCommand(r, fmt.Sprintf("map %s", layer.ID))
+	_, err := runCommand[api.ChangeMap, any](r,
+		api.ChangeMap{
+			MapName: layer.ID,
+		},
+	)
+	return err
 }
 
-func (r *Rcon) IsMapShuffleActive() (bool, error) {
-	resp, err := r.runBasicCommand("querymapshuffle")
-	if err != nil {
-		return false, err
-	}
-	return strings.Contains(resp, "TRUE"), nil
-}
-
-func (r *Rcon) ToggleMapShuffle() error {
-	_, err := r.runBasicCommand("togglemapshuffle")
+func (r *Rcon) ShuffleMapSequence(enabled bool) error {
+	_, err := runCommand[api.SetMapShuffleEnabled, any](r,
+		api.SetMapShuffleEnabled{
+			Enable: enabled,
+		},
+	)
 	return err
 }
 
 func (r *Rcon) GetCurrentMapSequence() ([]hll.Layer, error) {
-	resp, err := r.runBasicCommand("listcurrentmapsequence")
+	layers := []hll.Layer{}
+	resp, err := getMapSequence(r)
 	if err != nil {
-		return []hll.Layer{}, err
+		return layers, err
 	}
-	return toLayers(strings.Split(resp, config.NEWLINE)), nil
+	for _, entry := range resp.Maps {
+		layers = append(layers, hll.ParseLayer(entry.ID))
+	}
+	return layers, nil
+}
+
+func (r *Rcon) MoveMapInSequence(from, to int) error {
+	_, err := runCommand[api.MoveMapInSequence, any](r,
+		api.MoveMapInSequence{
+			CurrentIndex: int32(from),
+			NewIndex:     int32(to),
+		},
+	)
+	return err
 }
 
 func (r *Rcon) GetCurrentMapObjectives() ([][]string, error) {
-	baseCommand := "get objectiverow_"
-	objectiveNames := [][]string{}
-	for i := range hll.ObjectiveCount[hll.GmWarfare] {
-		resp, err := r.runListCommand(baseCommand + strconv.Itoa(i))
-		if err != nil {
-			return [][]string{}, err
-		}
-		objectiveNames = append(objectiveNames, resp)
+	resp, err := r.GetCommandDetails("SetSectorLayout")
+	if err != nil {
+		return [][]string{}, err
 	}
-	return objectiveNames, nil
+	objectives := [][]string{}
+	for _, param := range resp.DialogueParameters {
+		objectives = append(objectives, strings.Split(param.ValueMember, ","))
+	}
+	return objectives, nil
 }
 
-// 0    => random objective in that row
+// 0    => random objective in that row/col
 // 1-3  => specific objective
 func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
 	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
@@ -116,13 +193,62 @@ func (r *Rcon) SetGameLayout(objs []string) error {
 	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
 		return errors.New("incorrect number of objectives provided")
 	}
-	return runSetCommand(r, fmt.Sprintf("gamelayout %s %s %s %s %s", objs[0], objs[1], objs[2], objs[3], objs[4]))
+	_, err := runCommand[api.SetSectorLayout, any](r,
+		api.SetSectorLayout{
+			SectorOne:   objs[0],
+			SectorTwo:   objs[1],
+			SectorThree: objs[2],
+			SectorFour:  objs[3],
+			SectorFive:  objs[4],
+		},
+	)
+	return err
 }
 
-func toLayers(mapStrings []string) []hll.Layer {
-	layers := []hll.Layer{}
-	for _, entry := range mapStrings {
-		layers = append(layers, hll.ParseLayer(entry))
-	}
-	return layers
+func (r *Rcon) SetDynamicWeatherToggle(layer hll.Layer, enabled bool) error {
+	_, err := runCommand[api.SetDynamicWeatherEnabled, any](r,
+		api.SetDynamicWeatherEnabled{
+			MapId:  layer.ID,
+			Enable: enabled,
+		},
+	)
+	return err
+}
+
+func (r *Rcon) SetMatchTimer(gameMode hll.GameMode, duration int) error {
+	_, err := runCommand[api.SetMatchTimer, any](r,
+		api.SetMatchTimer{
+			GameMode:    string(gameMode),
+			MatchLength: int32(duration), // in minutes
+		},
+	)
+	return err
+}
+
+func (r *Rcon) RemoveMatchTimer(gameMode hll.GameMode) error {
+	_, err := runCommand[api.RemoveMatchTimer, any](r,
+		api.RemoveMatchTimer{
+			GameMode: string(gameMode),
+		},
+	)
+	return err
+}
+
+func (r *Rcon) SetWarmupTimer(gameMode hll.GameMode, duration int) error {
+	_, err := runCommand[api.SetWarmupTimer, any](r,
+		api.SetWarmupTimer{
+			GameMode:     string(gameMode),
+			WarmupLength: int32(duration), // in minutes
+		},
+	)
+	return err
+}
+
+func (r *Rcon) RemoveWarmupTimer(gameMode hll.GameMode) error {
+	_, err := runCommand[api.RemoveWarmupTimer, any](r,
+		api.RemoveWarmupTimer{
+			GameMode: string(gameMode),
+		},
+	)
+	return err
 }

@@ -1,9 +1,9 @@
-package rconv2
+package rcon
 
 import (
 	"strings"
 
-	"github.com/zMoooooritz/go-let-loose/internal/socketv2/api"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -13,7 +13,6 @@ var (
 	caser = cases.Title(language.AmericanEnglish)
 )
 
-//nolint:all
 func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
 	resp, err := runCommand[api.GetServerInformation, api.RespPlayerInformation](
 		r,
@@ -109,6 +108,19 @@ func getBannedWords(r *Rcon) (*api.RespBannedWords, error) {
 	return resp, nil
 }
 
+func getVipPlayers(r *Rcon) (*api.RespVipPlayers, error) {
+	resp, err := runCommand[api.GetServerInformation, api.RespVipPlayers](
+		r,
+		api.GetServerInformation{
+			Name: api.ServerInfoVipPlayers,
+		},
+	)
+	if err != nil {
+		return &api.RespVipPlayers{}, err
+	}
+	return resp, nil
+}
+
 func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerInfo {
 	return hll.DetailedPlayerInfo{
 		PlayerInfo: hll.PlayerInfo{
@@ -117,20 +129,20 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 		},
 		ClanTag:  player.ClanTag,
 		Platform: hll.PlayerPlatformFromString(player.Platform),
-		Team:     hll.FactionFromInt(player.Team).Team(),
-		Faction:  hll.FactionFromInt(player.Team),
-		Role:     hll.RoleFromInt(player.Role),
-		Unit:     constructUnit(player.Platoon, player.Role),
+		Team:     hll.FactionFromInt(int(player.Team)).Team(),
+		Faction:  hll.FactionFromInt(int(player.Team)),
+		Role:     hll.RoleFromInt(int(player.Role)),
+		Unit:     constructUnit(player.Platoon, int(player.Role)),
 		Loadout:  player.Loadout,
-		Kills:    player.Kills,
-		Deaths:   player.Deaths,
+		Kills:    int(player.Kills),
+		Deaths:   int(player.Deaths),
 		Score: hll.Score{
-			Combat:  player.Score.Combat,
-			Offense: player.Score.Offense,
-			Defense: player.Score.Defense,
-			Support: player.Score.Support,
+			Combat:  int(player.Score.Combat),
+			Offense: int(player.Score.Offense),
+			Defense: int(player.Score.Defense),
+			Support: int(player.Score.Support),
 		},
-		Level: player.Level,
+		Level: int(player.Level),
 		Position: hll.Position{
 			X: player.Position.X,
 			Y: player.Position.Y,
