@@ -32,17 +32,10 @@ local function tprint(tbl, indent)
 	end
 end
 
-local function onKill(event)
-	print("Kill: " .. event.Killer.Name .. " -> " .. event.Victim.Name .. " (" .. event.Weapon.Name .. ")")
-end
-
 function Init()
 	-- Here goes any initialization logic
 	print("The available commands are:")
 	tprint(listCommands())
-	print()
-	print("The subscribable events are:")
-	tprint(listEvents())
 	print()
 end
 
@@ -50,7 +43,9 @@ function Run()
 	local err, name = getServerName()
 	if name then
 		print("Connected to the Server: " .. name)
-		registerEvent("KILL", onKill)
+		onKill(function(event)
+			print("Kill: " .. event.Killer.Name .. " -> " .. event.Victim.Name .. " (" .. event.Weapon.Name .. ")")
+		end)
 	else
 		print("Error: " .. err)
 	end
@@ -59,5 +54,5 @@ end
 function Stop()
 	-- A stop signal will be send to this function from the outside
 	-- Do any clean-up steps required
-	exit() -- at the end of this function Exit() should always be called
+	exit() -- at the end of this function exit() should always be called
 end

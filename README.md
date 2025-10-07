@@ -111,6 +111,9 @@ function Run()
   local err, name = getServerName()
   if name then
     print("Connected to the Server: " .. name)
+    onKill(function(event)
+      print("Kill: " .. event.Killer.Name .. " -> " .. event.Victim.Name .. " (" .. event.Weapon.Name .. ")")
+    end)
   else
     print("Error: " .. err)
   end
@@ -135,6 +138,7 @@ go run cmd/go-let-loose-lua/main.go
 ## 🔧 Built with
 
 - [ttlcache](https://github.com/jellydator/ttlcache)
+- [gopher-lua](https://github.com/yuin/gopher-lua)
 
 ---
 
