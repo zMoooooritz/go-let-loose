@@ -13,12 +13,8 @@ import (
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 
-type Printer struct{}
-
-func (p *Printer) Notify(e hll.Event) {
-	if e.Type() == hll.EVENT_KILL {
-		fmt.Printf("Kill: %s -> %s (%s)\n", e.(*hll.KillEvent).Killer.Name, e.(*hll.KillEvent).Victim.Name, e.(*hll.KillEvent).Weapon.Name)
-	}
+func onKill(e hll.KillEvent) {
+	fmt.Printf("Kill: %s -> %s (%s)\n", e.Killer.Name, e.Victim.Name, e.Weapon.Name)
 }
 
 func main() {
@@ -43,8 +39,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	printer := Printer{}
-	rcn.Events.Register(&printer)
+	rcn.OnKill(onKill)
 
 	time.Sleep(time.Second)
 

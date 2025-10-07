@@ -66,19 +66,19 @@ func (e *eventSystem) close() {
 	e.waitGroup.Wait()
 }
 
-// TODO: implement per event observer functionality
-
 type eventObserver interface {
 	Notify(hll.Event)
 }
 
 type eventNotifier struct {
-	observers map[eventObserver]struct{}
+	observers        map[eventObserver]struct{}
+	eventOberservers map[hll.EventType][]eventObserver
 }
 
 func newEventNotifier() *eventNotifier {
 	return &eventNotifier{
-		observers: make(map[eventObserver]struct{}),
+		observers:        make(map[eventObserver]struct{}),
+		eventOberservers: make(map[hll.EventType][]eventObserver),
 	}
 }
 
@@ -90,8 +90,20 @@ func (n *eventNotifier) Unregister(o eventObserver) {
 	delete(n.observers, o)
 }
 
+func (n *eventNotifier) registerEvent(event hll.EventType, o eventObserver) {
+	if n.eventOberservers[event] == nil {
+		n.eventOberservers[event] = make([]eventObserver, 0)
+	}
+	n.eventOberservers[event] = append(n.eventOberservers[event], o)
+}
+
 func (n *eventNotifier) notify(e hll.Event) {
 	for observer := range n.observers {
 		observer.Notify(e)
+	}
+	if n.eventOberservers[e.Type()] != nil {
+		for _, observer := range n.eventOberservers[e.Type()] {
+			observer.Notify(e)
+		}
 	}
 }

@@ -53,12 +53,8 @@ go get github.com/zMoooooritz/go-let-loose
 Below is an example of how to use the `go-let-loose/rcon` module in a Go project:
 
 ```go
-type Printer struct{}
-
-func (p *Printer) Notify(e hll.Event) {
-  if e.Type() == hll.EVENT_KILL {
-    fmt.Printf("Kill: %s -> %s (%s)\n", e.(*hll.KillEvent).Killer.Name, e.(*hll.KillEvent).Victim.Name, e.(*hll.KillEvent).Weapon.Name)
-  }
+func onKill(e hll.KillEvent) {
+  fmt.Printf("Kill: %s -> %s (%s)\n", e.Killer.Name, e.Victim.Name, e.Weapon.Name)
 }
 
 func main() {
@@ -78,13 +74,12 @@ func main() {
 
   serverName, err := rcn.GetServerName()
   if err == nil {
-    fmt.Printf("Conntected to the Server: %s\n", serverName)
+    fmt.Printf("Connected to the Server: %s\n", serverName)
   } else {
     fmt.Println(err)
   }
 
-  printer := Printer{}
-  rcn.Events.Register(&printer)
+  rcn.OnKill(onKill)
 
   time.Sleep(time.Second)
 
