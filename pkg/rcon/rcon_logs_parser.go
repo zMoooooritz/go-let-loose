@@ -48,7 +48,7 @@ var logEventParsers = map[hll.EventType]func(time.Time, string) []hll.Event{
 	hll.EVENT_MATCHEND:     logToMatchEndEvent,
 	event_admincam:         logToAdminCamEvent,
 	event_vote:             logToVoteEvents,
-	// hll.EVENT_TEAMSWITCH:   logToTeamSwitchEvent,
+	event_teamswitch:       logToTeamSwitchEvent,
 }
 
 func logToConnectEvent(time time.Time, eventdata string) []hll.Event {
@@ -159,25 +159,28 @@ func teamKillToTeamDeathEvent(teamKillEvent hll.TeamKillEvent) hll.TeamDeathEven
 	}
 }
 
-// func logToTeamSwitchEvent(time time.Time, eventdata string) []hll.Event {
-// 	match := switchPattern.FindStringSubmatch(eventdata)
-// 	if len(match) < 4 {
-// 		logger.Error("Event data unparseable:", eventdata)
-// 		return []hll.Event{}
-// 	}
-// 	return []hll.Event{hll.TeamSwitchEvent{
-// 		GenericEvent: hll.GenericEvent{
-// 			EventType: event_teamswitch,
-// 			EventTime: time,
-// 		},
-// 		Player: hll.PlayerInfo{
-// 			Name: match[1],
-// 			ID:   hll.NoPlayerID,
-// 		},
-// 		From: hll.Team(match[2]),
-// 		To:   hll.Team(match[3]),
-// 	}}
-// }
+func logToTeamSwitchEvent(time time.Time, eventdata string) []hll.Event {
+	// Dont use since a custom event with the player id is implemented
+	return []hll.Event{}
+
+	// match := switchPattern.FindStringSubmatch(eventdata)
+	// if len(match) < 4 {
+	// 	logger.Error("Event data unparseable:", eventdata)
+	// 	return []hll.Event{}
+	// }
+	// return []hll.Event{hll.TeamSwitchEvent{
+	// 	GenericEvent: hll.GenericEvent{
+	// 		EventType: event_teamswitch,
+	// 		EventTime: time,
+	// 	},
+	// 	Player: hll.PlayerInfo{
+	// 		Name: match[1],
+	// 		ID:   hll.NoPlayerID,
+	// 	},
+	// 	From: hll.Team(match[2]),
+	// 	To:   hll.Team(match[3]),
+	// }}
+}
 
 func logToChatEvent(time time.Time, eventdata string) []hll.Event {
 	match := chatPattern.FindStringSubmatch(eventdata)

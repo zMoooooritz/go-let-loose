@@ -24,7 +24,7 @@ func main() {
 	flag.StringVar(&cfg.Password, "password", "", "password of the rcon")
 	flag.Parse()
 
-	rcn, err := rcon.NewRcon(cfg, workerCount)
+	rcn, err := rcon.NewRcon(cfg, workerCount, rcon.WithVerification())
 	if err != nil {
 		logger.Fatal(err)
 		os.Exit(0)
