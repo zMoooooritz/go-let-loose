@@ -69,6 +69,7 @@ local TeamData = {}
 ---@field Allies string Allied faction
 ---@field Axis string Axis faction
 ---@field Orientation string Map orientation
+---@field MirroredFactions boolean Whether factions are mirrored on this map
 local GameMap = {}
 
 ---Layer information (map + game mode)

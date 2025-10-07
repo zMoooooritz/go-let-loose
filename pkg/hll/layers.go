@@ -154,14 +154,15 @@ func FactionFromInt(id int) Faction {
 }
 
 type GameMap struct {
-	ID          Map
-	Name        string
-	Tag         string
-	PrettyName  string
-	ShortName   string
-	Allies      Faction
-	Axis        Faction
-	Orientation Orientation
+	ID               Map
+	Name             string
+	Tag              string
+	PrettyName       string
+	ShortName        string
+	Allies           Faction
+	Axis             Faction
+	Orientation      Orientation // Whether the sectors are arranged horizontally (left-to-right) or vertically (top-to-bottom)
+	MirroredFactions bool        // If the start side of the factions is mirrored or not. By default, Allies start left/top and Axis start right/bottom
 }
 
 type Layer struct {
@@ -173,24 +174,24 @@ type Layer struct {
 }
 
 var mapMap = map[Map]GameMap{
-	MP_STMEREEGLISE:    {ID: MP_STMEREEGLISE, Name: "SAINTE-MÈRE-ÉGLISE", Tag: "SME", PrettyName: "St. Mere Eglise", ShortName: "SME", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_STMARIEDUMONT:   {ID: MP_STMARIEDUMONT, Name: "ST MARIE DU MONT", Tag: "BRC", PrettyName: "St. Marie Du Mont", ShortName: "SMDM", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
-	MP_UTAHBEACH:       {ID: MP_UTAHBEACH, Name: "UTAH BEACH", Tag: "UTA", PrettyName: "Utah Beach", ShortName: "Utah", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_OMAHABEACH:      {ID: MP_OMAHABEACH, Name: "OMAHA BEACH", Tag: "OMA", PrettyName: "Omaha Beach", ShortName: "Omaha", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_PURPLEHEARTLANE: {ID: MP_PURPLEHEARTLANE, Name: "PURPLE HEART LANE", Tag: "PHL", PrettyName: "Purple Heart Lane", ShortName: "PHL", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
-	MP_CARENTAN:        {ID: MP_CARENTAN, Name: "CARENTAN", Tag: "CAR", PrettyName: "Carentan", ShortName: "Carentan", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_HURTGENFOREST:   {ID: MP_HURTGENFOREST, Name: "HÜRTGEN FOREST", Tag: "HUR", PrettyName: "Hurtgen Forest", ShortName: "Hurtgen", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_HILL400:         {ID: MP_HILL400, Name: "HILL 400", Tag: "HIL", PrettyName: "Hill 400", ShortName: "Hill 400", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_FOY:             {ID: MP_FOY, Name: "FOY", Tag: "FOY", PrettyName: "Foy", ShortName: "Foy", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
-	MP_KURSK:           {ID: MP_KURSK, Name: "KURSK", Tag: "KUR", PrettyName: "Kursk", ShortName: "Kursk", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical},
-	MP_STALINGRAD:      {ID: MP_STALINGRAD, Name: "STALINGRAD", Tag: "STA", PrettyName: "Stalingrad", ShortName: "Stalingrad", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_REMAGEN:         {ID: MP_REMAGEN, Name: "REMAGEN", Tag: "REM", PrettyName: "Remagen", ShortName: "Remagen", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
-	MP_KHARKOV:         {ID: MP_KHARKOV, Name: "Kharkov", Tag: "KHA", PrettyName: "Kharkov", ShortName: "Kharkov", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical},
-	MP_DRIEL:           {ID: MP_DRIEL, Name: "DRIEL", Tag: "DRL", PrettyName: "Driel", ShortName: "Driel", Allies: FctGB, Axis: FctGER, Orientation: OriVertical},
-	MP_ELALAMEIN:       {ID: MP_ELALAMEIN, Name: "EL ALAMEIN", Tag: "ELA", PrettyName: "El Alamein", ShortName: "Alamein", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal},
-	MP_MORTAIN:         {ID: MP_MORTAIN, Name: "MORTAIN", Tag: "MOR", PrettyName: "Mortain", ShortName: "Mortain", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal},
-	MP_ELSENBORNRIDGE:  {ID: MP_ELSENBORNRIDGE, Name: "ELSENBORN RIDGE", Tag: "EBR", PrettyName: "Elsenborn Ridge", ShortName: "Elsenborn", Allies: FctUS, Axis: FctGER, Orientation: OriVertical},
-	MP_TOBRUK:          {ID: MP_TOBRUK, Name: "TOBRUK", Tag: "TBK", PrettyName: "Tobruk", ShortName: "Tobruk", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal},
+	MP_CARENTAN:        {ID: MP_CARENTAN, Name: "CARENTAN", Tag: "CAR", PrettyName: "Carentan", ShortName: "Carentan", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
+	MP_DRIEL:           {ID: MP_DRIEL, Name: "DRIEL", Tag: "DRL", PrettyName: "Driel", ShortName: "Driel", Allies: FctGB, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
+	MP_ELALAMEIN:       {ID: MP_ELALAMEIN, Name: "EL ALAMEIN", Tag: "ELA", PrettyName: "El Alamein", ShortName: "Alamein", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+	MP_ELSENBORNRIDGE:  {ID: MP_ELSENBORNRIDGE, Name: "ELSENBORN RIDGE", Tag: "EBR", PrettyName: "Elsenborn Ridge", ShortName: "Elsenborn", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
+	MP_FOY:             {ID: MP_FOY, Name: "FOY", Tag: "FOY", PrettyName: "Foy", ShortName: "Foy", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
+	MP_HILL400:         {ID: MP_HILL400, Name: "HILL 400", Tag: "HIL", PrettyName: "Hill 400", ShortName: "Hill 400", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
+	MP_HURTGENFOREST:   {ID: MP_HURTGENFOREST, Name: "HÜRTGEN FOREST", Tag: "HUR", PrettyName: "Hurtgen Forest", ShortName: "Hurtgen", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
+	MP_KHARKOV:         {ID: MP_KHARKOV, Name: "Kharkov", Tag: "KHA", PrettyName: "Kharkov", ShortName: "Kharkov", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
+	MP_KURSK:           {ID: MP_KURSK, Name: "KURSK", Tag: "KUR", PrettyName: "Kursk", ShortName: "Kursk", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
+	MP_MORTAIN:         {ID: MP_MORTAIN, Name: "MORTAIN", Tag: "MOR", PrettyName: "Mortain", ShortName: "Mortain", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
+	MP_OMAHABEACH:      {ID: MP_OMAHABEACH, Name: "OMAHA BEACH", Tag: "OMA", PrettyName: "Omaha Beach", ShortName: "Omaha", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+	MP_PURPLEHEARTLANE: {ID: MP_PURPLEHEARTLANE, Name: "PURPLE HEART LANE", Tag: "PHL", PrettyName: "Purple Heart Lane", ShortName: "PHL", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
+	MP_REMAGEN:         {ID: MP_REMAGEN, Name: "REMAGEN", Tag: "REM", PrettyName: "Remagen", ShortName: "Remagen", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
+	MP_STMARIEDUMONT:   {ID: MP_STMARIEDUMONT, Name: "ST MARIE DU MONT", Tag: "BRC", PrettyName: "St. Marie Du Mont", ShortName: "SMDM", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
+	MP_STMEREEGLISE:    {ID: MP_STMEREEGLISE, Name: "SAINTE-MÈRE-ÉGLISE", Tag: "SME", PrettyName: "St. Mere Eglise", ShortName: "SME", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+	MP_STALINGRAD:      {ID: MP_STALINGRAD, Name: "STALINGRAD", Tag: "STA", PrettyName: "Stalingrad", ShortName: "Stalingrad", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+	MP_TOBRUK:          {ID: MP_TOBRUK, Name: "TOBRUK", Tag: "TBK", PrettyName: "Tobruk", ShortName: "Tobruk", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+	MP_UTAHBEACH:       {ID: MP_UTAHBEACH, Name: "UTAH BEACH", Tag: "UTA", PrettyName: "Utah Beach", ShortName: "Utah", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
 }
 
 var fallback_gamemap = GameMap{ID: MP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: FctUS, Axis: FctGER}
