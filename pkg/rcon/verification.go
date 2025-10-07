@@ -1,4 +1,4 @@
-package rconv2
+package rcon
 
 import (
 	"fmt"

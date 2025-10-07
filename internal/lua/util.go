@@ -11,10 +11,7 @@ import (
 
 func rconFunctions() []string {
 	excludedFuncs := []string{
-		"GetServerConfig",
 		"Close",
-		"QueueJob",
-		"RunCommand",
 	}
 
 	funcs := []string{}

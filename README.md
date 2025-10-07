@@ -14,7 +14,7 @@ Go bindings and interface for the remote console of **Hell Let Loose**.
 
 ## 🚀 Features
 
-- Bindings for all supported RCON v1 and v2 operations.
+- Bindings for all supported RCONv2 operations.
 - Proper typing for maps, armaments, squads, and more.
 - Event system that expands on the HLL provided logs.
 - Support for Lua plugins.
@@ -31,24 +31,18 @@ To install the Go package, simply run:
 go get github.com/zMoooooritz/go-let-loose
 ```
 
-### Install the CLI:
-
-For those who want to install and use the **CLI** version of `go-let-loose`, download the latest release from the [releases page](https://github.com/zMoooooritz/go-let-loose/releases) or use the following command:
-
-```bash
-go install github.com/zMoooooritz/go-let-loose/cmd/go-let-loose-cli@latest
-```
-
-This will install `go-let-loose-cli` globally on your system, allowing you to interact with the HLL server directly from the command line.
-
 ---
 
 ## 🚨 Warning
 
 > [!WARNING]
-> The `rconv2` API is currently in **beta**. It does not yet support the full feature set of the `rcon` v1 API. Use it with caution.
-> This API will be expanded as the official `rconv2` receives updates.
-> Keep in mind that the `rcon` v1 protocol will be deprecated in the not too distant future. The new `rconv2` API aims to be as similar to v1 as possible to ease the transition.
+> **Important API Changes:**
+>
+> - **Library update required**: Since the official implementation of the legacy RCON protocol got removed, everyone needs to update to the new library version
+> - **Module rename**: The `rconv2` implementation has been renamed to the `rcon` module
+>   - Users currently using `rconv2` will need to update their import paths and code
+>   - Users who remained on the original `rcon` should experience minimal disruption
+> - **Unified event system**: The event system has been consolidated into the `rcon` module, providing a more elegant, uniform, and easy-to-use interface
 
 ---
 
@@ -61,12 +55,10 @@ Below is an example of how to use the `go-let-loose/rcon` module in a Go project
 ```go
 type Printer struct{}
 
-func (p *Printer) IsSubscribed(e event.Event) bool {
-  return true
-}
-
-func (p *Printer) Notify(e event.Event) {
-  fmt.Println(e)
+func (p *Printer) Notify(e hll.Event) {
+  if e.Type() == hll.EVENT_KILL {
+    fmt.Printf("Kill: %s -> %s (%s)\n", e.(*hll.KillEvent).Killer.Name, e.(*hll.KillEvent).Victim.Name, e.(*hll.KillEvent).Weapon.Name)
+  }
 }
 
 func main() {
@@ -79,71 +71,37 @@ func main() {
   }
 
   const workerCount = 10
-  rcn, err := rcon.NewRcon(cfg, workerCount)
+  rcn, err := rcon.NewRcon(cfg, workerCount, rcon.WithCache(), rcon.WithEvents())
   if err != nil {
     log.Fatal(err)
   }
 
   serverName, err := rcn.GetServerName()
   if err == nil {
-    fmt.Printf("Connected to the Server: %s\n", serverName)
+    fmt.Printf("Conntected to the Server: %s\n", serverName)
   } else {
     fmt.Println(err)
   }
 
   printer := Printer{}
-  infoCache := event.NewCache()
-  eventListener := event.NewEventListener(rcn, infoCache)
-  eventListener.Register(&printer)
+  rcn.Events.Register(&printer)
 
   time.Sleep(time.Second)
 
-  fmt.Printf("%+v\n", infoCache.GetGameState())
+  gameState, err := rcn.GetGameState()
+  if err == nil {
+    fmt.Printf("Current game state: %+v\n", gameState)
+  }
 
   sc := make(chan os.Signal, 1)
   signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
   <-sc
-
-  eventListener.Close()
-  rcn.Close()
-}
-```
-
-### Using the `rconv2` API
-
-Below is an example of how to use the `go-let-loose/rconv2` module in a Go project:
-
-```go
-func main() {
-  logger.DefaultLogger()
-
-  cfg := rconv2.ServerConfig{
-    Host:     "123.123.123.123",
-    Port:     "12345",
-    Password: "password",
-  }
-
-  const workerCount = 3
-  rcn, err := rconv2.NewRcon(cfg, workerCount, rconv2.WithCache())
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  serverName, err := rcn.GetServerName()
-  if err == nil {
-    fmt.Printf("Connected to the Server: %s\n", serverName)
-  } else {
-    fmt.Println(err)
-  }
 
   rcn.Close()
 }
 ```
 
 ### Lua Plugins
-
-> [!WARNING]
-> Lua plugins are only supported with the `rcon` v1 API. They are not compatible with the `rconv2` API as of now.
 
 To use Lua plugins, place your Lua scripts in the `plugins` directory. The system will automatically detect and load them.
 
@@ -182,11 +140,9 @@ go run cmd/go-let-loose-lua/main.go
 ## 🔧 Built with
 
 - [ttlcache](https://github.com/jellydator/ttlcache)
-- TUI powered by [bubbletea](https://github.com/charmbracelet/bubbletea) and its awesome ecosystem.
 
 ---
 
 ## 📄 License
 
 This project is licensed under the **MIT License**. You can view the full license [here](https://github.com/zMoooooritz/go-let-loose/blob/master/LICENSE).
-

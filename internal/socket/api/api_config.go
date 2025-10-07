@@ -5,22 +5,22 @@ type SetAutoBalance struct {
 }
 
 type SetAutoBalanceThreshold struct {
-	AutoBalanceThreshold int `json:"AutoBalanceThreshold"`
+	AutoBalanceThreshold int32 `json:"AutoBalanceThreshold"`
 }
 
-type ResetKickThreshold struct {
+type ResetVoteKickThreshold struct {
 }
 
 type SetHighPingThreshold struct {
-	HighPingThresholdMs int `json:"HighPingThresholdMs"`
+	HighPingThresholdMs int32 `json:"HighPingThresholdMs"`
 }
 
 type SetIdleKickDuration struct {
-	IdleTimeoutMinutes int `json:"IdleTimeoutMinutes"`
+	IdleTimeoutMinutes int32 `json:"IdleTimeoutMinutes"`
 }
 
 type SetTeamSwitchCooldown struct {
-	TeamSwitchTimer int `json:"TeamSwitchTimer"`
+	TeamSwitchTimer int32 `json:"TeamSwitchTimer"`
 }
 
 type SetVoteKick struct {
@@ -29,6 +29,10 @@ type SetVoteKick struct {
 
 type SetVoteKickThreshold struct {
 	ThresholdValue string `json:"ThresholdValue"`
+}
+
+type SetVipSlotCount struct {
+	VipSlotCount int32 `json:"VipSlotCount"`
 }
 
 type AddBannedWords struct {

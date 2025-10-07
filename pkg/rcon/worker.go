@@ -1,11 +1,11 @@
-package rconv2
+package rcon
 
 import (
 	"context"
 	"sync"
 	"time"
 
-	"github.com/zMoooooritz/go-let-loose/internal/socketv2"
+	"github.com/zMoooooritz/go-let-loose/internal/socket"
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
@@ -76,7 +76,7 @@ func (wm *WorkerManager) workerCount() int {
 }
 
 func (wm *WorkerManager) worker() {
-	sc, err := socketv2.NewConnection(wm.config.Host, wm.config.Port, wm.config.Password, RCON_VERSION)
+	sc, err := socket.NewConnection(wm.config.Host, wm.config.Port, wm.config.Password, RCON_VERSION)
 	if err != nil {
 		logger.Warn("worker: failed to create connection", err)
 		sc.Close()
@@ -91,7 +91,7 @@ func (wm *WorkerManager) worker() {
 	for {
 		select {
 		case job := <-wm.jobChannel:
-			ctx, cancel := context.WithTimeout(context.Background(), socketv2.CMD_TIMEOUT)
+			ctx, cancel := context.WithTimeout(context.Background(), socket.CMD_TIMEOUT)
 			resp, err := sc.Execute(ctx, job.Data.Command, job.Data.Body)
 			cancel()
 
@@ -114,7 +114,7 @@ func (wm *WorkerManager) worker() {
 				continue
 			}
 
-			ctx, cancel = context.WithTimeout(context.Background(), socketv2.CMD_TIMEOUT)
+			ctx, cancel = context.WithTimeout(context.Background(), socket.CMD_TIMEOUT)
 			resp, err = sc.Execute(ctx, job.Data.Command, job.Data.Body)
 			cancel()
 
@@ -124,11 +124,11 @@ func (wm *WorkerManager) worker() {
 				job.Error <- err
 			}
 		case <-wm.stopWorkerChannel:
-			logger.Debug("worker: received stop signal")
+			// logger.Debug("worker: received stop signal")
 			wm.modifyWorkerCount(-1)
 			return
 		case <-wm.context.Done():
-			logger.Debug("worker: received global stop signal")
+			// logger.Debug("worker: received global stop signal")
 			wm.modifyWorkerCount(-1)
 			return
 		}

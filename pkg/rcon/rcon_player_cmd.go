@@ -1,211 +1,164 @@
 package rcon
 
 import (
-	"errors"
-	"fmt"
-	"strings"
-
-	"github.com/zMoooooritz/go-let-loose/internal/util"
-	"github.com/zMoooooritz/go-let-loose/pkg/config"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
-)
-
-var (
-	caser = cases.Title(language.AmericanEnglish)
 )
 
 func (r *Rcon) GetPlayers() ([]hll.PlayerInfo, error) {
 	players := []hll.PlayerInfo{}
-	data, err := r.runListCommand("get playerids")
+	data, err := getPlayers(r)
 	if err != nil {
 		return players, err
 	}
-	nameIdSeparator := " : "
-	for _, entry := range data {
-		splitIndex := strings.LastIndex(entry, nameIdSeparator)
-		if splitIndex == -1 {
-			continue
-		}
+	for _, player := range data.Players {
 		players = append(players, hll.PlayerInfo{
-			Name: entry[:splitIndex],
-			ID:   entry[splitIndex+len(nameIdSeparator):],
+			Name: player.Name,
+			ID:   player.ID,
 		})
 	}
 	return players, nil
 }
 
 func (r *Rcon) GetPlayerNames() ([]string, error) {
-	data, err := r.runListCommand("get players")
+	names := []string{}
+	data, err := getPlayers(r)
 	if err != nil {
-		return []string{}, err
+		return names, err
 	}
-	return data, nil
+	for _, player := range data.Players {
+		names = append(names, player.Name)
+	}
+	return names, nil
 }
 
 func (r *Rcon) GetPlayerIDs() ([]string, error) {
 	playerIDs := []string{}
-	players, err := r.GetPlayers()
+	data, err := getPlayers(r)
 	if err != nil {
 		return playerIDs, err
 	}
-	for _, player := range players {
+	for _, player := range data.Players {
 		playerIDs = append(playerIDs, player.ID)
 	}
 	return playerIDs, nil
 }
 
 func (r *Rcon) GetAdmins() ([]hll.Admin, error) {
-	admins := []hll.Admin{}
-	data, err := r.runListCommand("get adminids")
+	resp, err := runCommand[api.GetAdminUsers, api.RespAdminUsers](r,
+		api.GetAdminUsers{},
+	)
 	if err != nil {
-		return admins, err
+		return []hll.Admin{}, err
 	}
-	for _, entry := range data {
-		split := strings.SplitN(entry, " ", 3)
-		if len(split) < 3 {
-			continue
-		}
-		admins = append(admins, hll.Admin{
-			PlayerInfo: hll.PlayerInfo{
-				Name: split[2],
-				ID:   split[0],
+	admins := []hll.Admin{}
+	for _, admin := range resp.AdminUsers {
+		admins = append(admins,
+			hll.Admin{
+				PlayerInfo: hll.PlayerInfo{
+					Name: "",
+					ID:   admin.UserId,
+				},
+				Role:    hll.AdminRole(admin.Group),
+				Comment: admin.Comment,
 			},
-			Role: hll.AdminRole(split[1]),
-		})
+		)
 	}
 	return admins, nil
 }
 
 func (r *Rcon) GetAdminRoles() ([]hll.AdminRole, error) {
-	roles := []hll.AdminRole{}
-	data, err := r.runListCommand("get admingroups")
+	resp, err := runCommand[api.GetAdminGroups, api.RespAdminGroups](r,
+		api.GetAdminGroups{},
+	)
 	if err != nil {
-		return roles, err
+		return []hll.AdminRole{}, err
 	}
-	for _, entry := range data {
-		roles = append(roles, hll.AdminRole(entry))
+	adminRoles := []hll.AdminRole{}
+	for _, group := range resp.GroupNames {
+		adminRoles = append(adminRoles, hll.AdminRole(group))
 	}
-	return roles, nil
+	return adminRoles, nil
 }
 
 func (r *Rcon) GetVIPs() ([]hll.PlayerInfo, error) {
-	players := []hll.PlayerInfo{}
-	data, err := r.runListCommand("get vipids")
+	vipPlayers := []hll.PlayerInfo{}
+	data, err := getVipPlayers(r)
 	if err != nil {
-		return players, err
+		return []hll.PlayerInfo{}, err
 	}
-	for _, entry := range data {
-		split := strings.SplitN(entry, " ", 2)
-		if len(split) == 2 {
-			players = append(players, hll.PlayerInfo{
-				Name: split[1],
-				ID:   split[0],
-			})
-		}
+	for _, playerID := range data.VipPlayerIDs {
+		vipPlayers = append(vipPlayers, hll.PlayerInfo{
+			Name: "",
+			ID:   playerID,
+		})
 	}
-	return players, nil
+	return vipPlayers, nil
 }
 
-func (r *Rcon) GetPlayerInfo(playerName string) (hll.DetailedPlayerInfo, error) {
-	detailedPlayer := hll.DetailedPlayerInfo{}
-	data, err := r.runBasicCommand("playerinfo " + playerName)
+func (r *Rcon) GetPlayerInfo(playerID string) (hll.DetailedPlayerInfo, error) {
+	data, err := getPlayer(r, playerID)
 	if err != nil {
-		return detailedPlayer, err
+		return hll.DetailedPlayerInfo{}, err
 	}
-	return ParsePlayerInfo(data)
+	return toDetailedPlayerInfo(data), nil
 }
 
-func ParsePlayerInfo(data string) (hll.DetailedPlayerInfo, error) {
-	var detailedPlayer hll.DetailedPlayerInfo
-
-	lines := strings.Split(data, config.NEWLINE)
-	valueMap := make(map[string]string)
-	for _, line := range lines {
-		split := strings.SplitN(line, ": ", 2)
-		if len(split) >= 2 {
-			valueMap[strings.ToLower(split[0])] = split[1]
-		}
+func (r *Rcon) GetPlayersInfo() ([]hll.DetailedPlayerInfo, error) {
+	detailedPlayers := []hll.DetailedPlayerInfo{}
+	data, err := getPlayers(r)
+	if err != nil {
+		return detailedPlayers, err
 	}
-
-	detailedPlayer.Name = valueMap["name"]
-	detailedPlayer.ID = valueMap["steamid64"]
-	detailedPlayer.Team = hll.TeamFromString(valueMap["team"])
-	detailedPlayer.Role = hll.RoleFromString(valueMap["role"])
-	if detailedPlayer.Role == hll.ArmyCommander {
-		detailedPlayer.Unit = hll.CommandUnit
-	} else {
-		if value, ok := valueMap["unit"]; ok {
-			unitSplit := strings.Split(value, " - ")
-			if len(unitSplit) == 2 {
-				detailedPlayer.Unit = hll.Unit{
-					Name: caser.String(unitSplit[1]),
-					ID:   util.ToInt(unitSplit[0]),
-				}
-			} else {
-				return detailedPlayer, errors.New("unit data invalid")
-			}
-		} else {
-			detailedPlayer.Unit = hll.NoUnit
-		}
+	for _, player := range data.Players {
+		detailedPlayers = append(detailedPlayers, toDetailedPlayerInfo(&player))
 	}
-
-	if value, ok := valueMap["loadout"]; ok {
-		detailedPlayer.Loadout = value
-	} else {
-		detailedPlayer.Loadout = "none"
-	}
-
-	kd := strings.Split(valueMap["kills"], " - Deaths: ")
-	if len(kd) == 2 {
-		detailedPlayer.Kills = util.ToInt(kd[0])
-		detailedPlayer.Deaths = util.ToInt(kd[1])
-	} else {
-		return detailedPlayer, errors.New("k/d data invalid")
-	}
-
-	score := strings.Split(valueMap["score"], ", ")
-	if len(score) < 4 {
-		return detailedPlayer, errors.New("score data invalid")
-	}
-	if len(strings.Split(score[0], " ")) < 2 || len(strings.Split(score[1], " ")) < 2 || len(strings.Split(score[2], " ")) < 2 || len(strings.Split(score[3], " ")) < 2 {
-		return detailedPlayer, errors.New("score data invalid")
-	}
-	detailedPlayer.Score = hll.Score{
-		Combat:  util.ToInt(strings.Split(score[0], " ")[1]),
-		Offense: util.ToInt(strings.Split(score[1], " ")[1]),
-		Defense: util.ToInt(strings.Split(score[2], " ")[1]),
-		Support: util.ToInt(strings.Split(score[3], " ")[1]),
-	}
-
-	detailedPlayer.Level = util.ToInt(valueMap["level"])
-
-	return detailedPlayer, nil
+	return detailedPlayers, nil
 }
 
-func (r *Rcon) AddAdmin(id, name string, role hll.AdminRole) error {
-	if id == "" {
-		return errors.New("invaild id")
+func (r *Rcon) GetServerView() (hll.ServerView, error) {
+	detailedPlayers, err := r.GetPlayersInfo()
+	if err != nil {
+		return hll.ServerView{}, err
 	}
-	name = strings.ReplaceAll(name, config.LIST_DELIMITER, "") // WARN: this would break the response
-	_, err := r.runBasicCommand(fmt.Sprintf("adminadd %s %s \"%s\"", id, role, name))
+	return *hll.PlayersToServerView(detailedPlayers), nil
+}
+
+func (r *Rcon) AddAdmin(id, comment string, role hll.AdminRole) error {
+	_, err := runCommand[api.AddAdmin, any](r,
+		api.AddAdmin{
+			PlayerId:   id,
+			Comment:    comment,
+			AdminGroup: string(role),
+		},
+	)
 	return err
 }
 
 func (r *Rcon) RemoveAdmin(id string) error {
-	return runSetCommand(r, fmt.Sprintf("admindel %s", id))
+	_, err := runCommand[api.RemoveAdmin, any](r,
+		api.RemoveAdmin{
+			PlayerId: id,
+		},
+	)
+	return err
 }
 
-func (r *Rcon) AddVip(id, name string) error {
-	if id == "" {
-		return errors.New("invaild id")
-	}
-	name = strings.ReplaceAll(name, config.LIST_DELIMITER, "") // WARN: this would break the response
-	_, err := r.runBasicCommand(fmt.Sprintf("vipadd %s \"%s\"", id, name))
+func (r *Rcon) AddVip(id, comment string) error {
+	_, err := runCommand[api.AddVip, any](r,
+		api.AddVip{
+			PlayerId:    id,
+			Description: comment,
+		},
+	)
 	return err
 }
 
 func (r *Rcon) RemoveVip(id string) error {
-	return runSetCommand(r, fmt.Sprintf("vipdel %s", id))
+	_, err := runCommand[api.RemoveVip, any](r,
+		api.RemoveVip{
+			PlayerId: id,
+		},
+	)
+	return err
 }

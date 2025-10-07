@@ -7,24 +7,24 @@ before:
   hooks:
     - go mod tidy
 
-builds:
-  - id: cli
-    main: ./cmd/go-let-loose-cli/main.go
-    binary: go-let-loose-cli
-    flags:
-      - -trimpath
-    ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
-    goos:
-      - darwin
-      - linux
-      - windows
-    goarch:
-      - amd64
-      - arm64
+# builds:
+#   - id: cli
+#     main: ./cmd/go-let-loose-cli/main.go
+#     binary: go-let-loose-cli
+#     flags:
+#       - -trimpath
+#     ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
+#     goos:
+#       - darwin
+#       - linux
+#       - windows
+#     goarch:
+#       - amd64
+#       - arm64
 
 nfpms:
-  - builds:
-      - cli
+  # - builds:
+  #     - cli
     vendor: Moooooritz
     homepage: "https://moritz.biering.dev/"
     maintainer: "Moritz Biering <moritzbiering.mb@gmail.com>"

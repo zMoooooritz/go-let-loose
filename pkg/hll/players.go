@@ -172,7 +172,8 @@ const (
 
 type Admin struct {
 	PlayerInfo
-	Role AdminRole
+	Role    AdminRole
+	Comment string
 }
 
 type ChatScope string

@@ -2,12 +2,12 @@ package api
 
 type AddMapToRotation struct {
 	MapName string `json:"MapName"`
-	Index   int    `json:"Index"`
+	Index   int32  `json:"Index"`
 }
 
 type AddMapToSequence struct {
 	MapName string `json:"MapName"`
-	Index   int    `json:"Index"`
+	Index   int32  `json:"Index"`
 }
 
 type SetSectorLayout struct {
@@ -23,30 +23,30 @@ type ChangeMap struct {
 }
 
 type MoveMapInSequence struct {
-	CurrentIndex int `json:"CurrentIndex"`
-	NewIndex     int `json:"NewIndex"`
+	CurrentIndex int32 `json:"CurrentIndex"`
+	NewIndex     int32 `json:"NewIndex"`
 }
 
 type RemoveMapFromRotation struct {
-	Index int `json:"Index"`
+	Index int32 `json:"Index"`
 }
 
 type RemoveMapFromSequence struct {
-	Index int `json:"Index"`
+	Index int32 `json:"Index"`
 }
 
-type SetShuffleMapSequence struct {
+type SetMapShuffleEnabled struct {
 	Enable bool `json:"Enable"`
 }
 
-type SetMapWeatherToggle struct {
+type SetDynamicWeatherEnabled struct {
 	MapId  string `json:"MapId"`
 	Enable bool   `json:"Enable"`
 }
 
 type SetMatchTimer struct {
 	GameMode    string `json:"GameMode"`
-	MatchLength int    `json:"MatchLength"` // in minutes
+	MatchLength int32  `json:"MatchLength"` // in minutes
 }
 type RemoveMatchTimer struct {
 	GameMode string `json:"GameMode"`
@@ -54,7 +54,7 @@ type RemoveMatchTimer struct {
 
 type SetWarmupTimer struct {
 	GameMode     string `json:"GameMode"`
-	WarmupLength int    `json:"WarmupLength"` // in minutes
+	WarmupLength int32  `json:"WarmupLength"` // in minutes
 }
 
 type RemoveWarmupTimer struct {

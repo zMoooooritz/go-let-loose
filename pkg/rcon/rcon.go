@@ -2,23 +2,22 @@ package rcon
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"strings"
-	"sync"
 	"time"
 
 	"github.com/zMoooooritz/go-let-loose/internal/socket"
-	"github.com/zMoooooritz/go-let-loose/internal/util"
-	"github.com/zMoooooritz/go-let-loose/pkg/config"
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 const (
 	jobChannelSize = 100
+
+	RCON_VERSION = 2
 )
 
 var (
-	fallbackTimeout = time.Duration(30) * time.Second
+	fallbackTimeout = 30 * time.Second
 	sleepTimeout    = time.Second
 
 	errTimeout = errors.New("timeout error")
@@ -30,165 +29,123 @@ type ServerConfig struct {
 	Password string
 }
 
-type CommandData struct {
+type commandData struct {
 	Command string
-	Format  config.ResponseFormat
+	Body    string
 }
 
-type RconJob struct {
-	Data     CommandData
-	Response chan []string
+type rconJob struct {
+	Data     commandData
+	Response chan string
+	Error    chan error
+}
+
+func newRconJob(cmd, body string) rconJob {
+	return rconJob{
+		Data: commandData{
+			Command: cmd,
+			Body:    body,
+		},
+		Response: make(chan string, 1),
+		Error:    make(chan error, 1),
+	}
 }
 
 type Rcon struct {
-	config     ServerConfig
-	jobChannel chan RconJob
-	waitGroup  *sync.WaitGroup
-	context    context.Context
-	cancel     context.CancelFunc
+	Events       *rconEvents
+	cache        *rconCache
+	verification *rconVerification
+	worker       *WorkerManager
+	jobChannel   chan rconJob
 }
 
-func NewRcon(cfg ServerConfig, workerCount int) (*Rcon, error) {
+type RconOption func(*Rcon)
+
+func NewRcon(cfg ServerConfig, workerCount int, opts ...RconOption) (*Rcon, error) {
 	// test for correct credentials
-	sc, err := socket.NewConnection(cfg.Host, cfg.Port, cfg.Password)
+	sc, err := socket.NewConnection(cfg.Host, cfg.Port, cfg.Password, RCON_VERSION)
 	if err != nil {
 		return &Rcon{}, errors.New("invalid credentials provided")
 	}
 	sc.Close()
 
-	waitGroup := sync.WaitGroup{}
-	context, cancel := context.WithCancel(context.Background())
+	jobChannel := make(chan rconJob, jobChannelSize)
+
+	workerManager := newWorkerManager(cfg, jobChannel)
 
 	rcon := Rcon{
-		config:     cfg,
-		jobChannel: make(chan RconJob, jobChannelSize),
-		waitGroup:  &waitGroup,
-		context:    context,
-		cancel:     cancel,
+		Events:       &rconEvents{},
+		cache:        &rconCache{},
+		verification: &rconVerification{},
+		worker:       workerManager,
+		jobChannel:   jobChannel,
 	}
 
-	for range workerCount {
-		waitGroup.Add(1)
-		go rcon.worker()
+	for _, opt := range opts {
+		opt(&rcon)
 	}
+
+	rcon.worker.Start(workerCount)
+
+	rcon.verification.verifyLayers(&rcon)
 
 	return &rcon, nil
 }
 
 func (r *Rcon) Close() {
-	r.cancel()
-	r.waitGroup.Wait()
-}
-
-func (r *Rcon) GetServerConfig() ServerConfig {
-	return r.config
-}
-
-func (r *Rcon) worker() {
-	sc, _ := socket.NewConnection(r.config.Host, r.config.Port, r.config.Password)
-	defer sc.Close()
-	defer r.waitGroup.Done()
-
-	for {
-		select {
-		case job := <-r.jobChannel:
-			resp, err := sc.Execute(job.Data.Command, job.Data.Format)
-			if err == nil {
-				if job.Response != nil {
-					job.Response <- resp
-				}
-				continue
-			}
-
-			if errors.Is(err, socket.ErrInvalidRconCommand) {
-				continue
-			}
-
-			logger.Warn("worker: recreating connection")
-			logger.Warn(job.Data.Command[:min(30, len(job.Data.Command)-1)], err)
-			time.Sleep(sleepTimeout)
-			err = sc.Reconnect()
-			if err != nil {
-				logger.Warn("worker: creating new connection failed", err)
-			}
-			time.Sleep(sleepTimeout)
-
-			resp, err = sc.Execute(job.Data.Command, job.Data.Format)
-			if err == nil && job.Response != nil {
-				job.Response <- resp
-			}
-		case <-r.context.Done():
-			return
-		}
+	if r.Events.enabled {
+		r.Events.close()
 	}
-}
-
-func (r *Rcon) QueueJob(job RconJob) {
-	r.jobChannel <- job
-}
-
-func (r *Rcon) runBasicCommand(command string) (string, error) {
-	data, err := r.RunCommand(command, config.RF_DIRECT)
-	if err != nil || len(data) == 0 {
-		return "", err
+	if r.cache.data != nil {
+		r.cache.data.Stop()
 	}
-	return data[0], nil
+	r.worker.Close()
+	close(r.jobChannel)
 }
 
-func (r *Rcon) runListCommand(command string) ([]string, error) {
-	return r.RunCommand(command, config.RF_INDEXEDLIST)
-}
+func runCommand[T, U any](rcn *Rcon, req T) (*U, error) {
+	request := socket.RconRequest[T]{Body: req}
+	cmd, body := request.ToArgs()
 
-func (r *Rcon) runUnindexedListCommand(command string) ([]string, error) {
-	return r.RunCommand(command, config.RF_UNINDEXEDLIST)
-}
+	cacheKey := cmd + "|" + body
 
-func (r *Rcon) RunCommand(command string, format config.ResponseFormat) ([]string, error) {
-	recvChan := make(chan []string, 1)
+	val, err := rcn.cache.get(cacheKey)
+	if err == nil {
+		cached := val.(*U)
+		return cached, nil
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), fallbackTimeout)
+	rconJob := newRconJob(cmd, body)
 	defer cancel()
 
 	go func() {
-		r.QueueJob(RconJob{CommandData{command, format}, recvChan})
+		rcn.jobChannel <- rconJob
 	}()
 
 	select {
-	case data := <-recvChan:
-		return data, nil
+	case response := <-rconJob.Response:
+		var result U
+		if _, ok := any(result).(string); ok {
+			result = any(response).(U)
+			rcn.cache.set(cacheKey, &result)
+			return &result, nil
+		}
+
+		err := json.Unmarshal([]byte(response), &result)
+
+		if err == nil {
+			rcn.cache.set(cacheKey, &result)
+		}
+
+		return &result, err
+	case err := <-rconJob.Error:
+		var result U
+		logger.Warn("runCommand: error occurred", "cmd:", cmd, "body:", body, "err:", err)
+		return &result, err
 	case <-ctx.Done():
-		command = strings.ReplaceAll(command, config.NEWLINE, config.ESCAPED_NEWLINE)
-		logger.Info("command: " + command + " timed out")
-		return nil, errTimeout
+		var result U
+		logger.Warn("runCommand: fallback timeout occurred", "cmd:", cmd, "body:", body)
+		return &result, errTimeout
 	}
-}
-
-func boolToToggleStr(enabled bool) string {
-	if enabled {
-		return "on"
-	}
-	return "off"
-}
-
-func runSetCommand(r *Rcon, cmd string) error {
-	_, err := r.runBasicCommand(cmd)
-	return err
-}
-
-func getNumVal(r *Rcon, cmd string) (int, error) {
-	resp, err := r.runBasicCommand(cmd)
-	if err != nil {
-		return 0, err
-	}
-	return util.ToInt(resp), nil
-}
-
-func getBoolVal(r *Rcon, cmd string) (bool, error) {
-	resp, err := r.runBasicCommand(cmd)
-	if err != nil {
-		return false, err
-	}
-	if resp == "1" || strings.Contains(resp, "TRUE") {
-		return true, nil
-	}
-	return false, nil
 }

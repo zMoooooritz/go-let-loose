@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/zMoooooritz/go-let-loose/internal/lua"
-	"github.com/zMoooooritz/go-let-loose/pkg/event"
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
@@ -15,7 +14,7 @@ import (
 const workerCount = 10
 
 func main() {
-	logger.NOPLogger()
+	logger.DefaultLogger()
 
 	var cfg rcon.ServerConfig
 
@@ -24,16 +23,13 @@ func main() {
 	flag.StringVar(&cfg.Password, "password", "", "password of the rcon")
 	flag.Parse()
 
-	rcn, err := rcon.NewRcon(cfg, workerCount)
+	rcn, err := rcon.NewRcon(cfg, workerCount, rcon.WithCache(), rcon.WithEvents())
 	if err != nil {
 		logger.Fatal(err)
 		os.Exit(0)
 	}
 
-	cache := event.NewCache()
-	eventListener := event.NewEventListener(rcn, cache)
-
-	lua.InitLua(rcn, cache, eventListener)
+	lua.InitLua(rcn)
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
@@ -41,6 +37,5 @@ func main() {
 
 	lua.DeinitLua()
 
-	eventListener.Close()
 	rcn.Close()
 }

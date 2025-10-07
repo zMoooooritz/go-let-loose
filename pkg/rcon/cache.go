@@ -1,10 +1,10 @@
-package rconv2
+package rcon
 
 import (
 	"errors"
 
 	"github.com/jellydator/ttlcache/v3"
-	"github.com/zMoooooritz/go-let-loose/internal/socketv2/api"
+	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 )
 
 type rconCache struct {

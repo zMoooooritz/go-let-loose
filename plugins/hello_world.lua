@@ -4,8 +4,23 @@ local function tprint(tbl, indent)
 	if not indent then
 		indent = 0
 	end
+	
+	-- First pass: find the maximum key length
+	local maxKeyLen = 0
 	for k, v in pairs(tbl) do
-		local formatting = string.rep("  ", indent) .. k .. ": "
+		local keyStr = tostring(k)
+		if #keyStr > maxKeyLen then
+			maxKeyLen = #keyStr
+		end
+	end
+	
+	-- Second pass: print with aligned formatting
+	for k, v in pairs(tbl) do
+		local keyStr = tostring(k)
+		local baseIndent = string.rep("  ", indent)
+		local padding = string.rep(" ", maxKeyLen - #keyStr)
+		local formatting = baseIndent .. padding .. keyStr .. ": "
+		
 		if type(v) == "table" then
 			print(formatting)
 			tprint(v, indent + 1)
