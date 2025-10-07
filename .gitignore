@@ -29,3 +29,4 @@ go.work
 # Custom project specific
 plugins/*
 !plugins/hello_world.lua
+!plugins/types

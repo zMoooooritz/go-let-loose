@@ -9,6 +9,8 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+var callbackPrefix = "On"
+
 func rconFunctions() []string {
 	excludedFuncs := []string{
 		"Close",
