@@ -7,35 +7,10 @@ before:
   hooks:
     - go mod tidy
 
-# builds:
-#   - id: cli
-#     main: ./cmd/go-let-loose-cli/main.go
-#     binary: go-let-loose-cli
-#     flags:
-#       - -trimpath
-#     ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
-#     goos:
-#       - darwin
-#       - linux
-#       - windows
-#     goarch:
-#       - amd64
-#       - arm64
+builds:
+  - skip: true
 
-nfpms:
-  # - builds:
-  #     - cli
-    vendor: Moooooritz
-    homepage: "https://moritz.biering.dev/"
-    maintainer: "Moritz Biering <moritzbiering.mb@gmail.com>"
-    description: "Go bindings and interface for the remote console of Hell Let Loose"
-    license: MIT
-    formats:
-      - apk
-      - deb
-      - rpm
-    bindir: /usr/bin
-
+# Generate checksum for the source code
 checksum:
   name_template: "checksums.txt"
 
