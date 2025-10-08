@@ -67,8 +67,8 @@ type SessionInfo struct {
 	ServerName         string
 	MapName            string
 	GameMode           GameMode
-	RemainingMatchTime int
-	MatchTime          int
+	RemainingMatchTime time.Duration
+	MatchTime          time.Duration
 	AlliedFaction      Faction
 	AxisFaction        Faction
 	MaxPlayerCount     int

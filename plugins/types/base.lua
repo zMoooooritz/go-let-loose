@@ -24,7 +24,7 @@ local PlayerInfo = {}
 ---@field Position Position Player's world position
 local DetailedPlayerInfo = {}
 
----Weapon information  
+---Weapon information
 ---@class Weapon
 ---@field ID string Weapon identifier (e.g., "M1_GARAND")
 ---@field Name string Human-readable weapon name (e.g., "M1 Garand")
@@ -123,8 +123,8 @@ local ServerConfig = {}
 ---@field ServerName string Server name
 ---@field MapName string Current map name
 ---@field GameMode string Current game mode
----@field RemainingMatchTime number Time remaining in match
----@field MatchTime number Total match time
+---@field RemainingMatchTime number Time remaining in match (nanoseconds - divide by 1000000000 for seconds)
+---@field MatchTime number Total match time (nanoseconds - divide by 1000000000 for seconds)
 ---@field AlliedFaction number Allied faction ID
 ---@field AxisFaction number Axis faction ID
 ---@field MaxPlayerCount number Maximum players

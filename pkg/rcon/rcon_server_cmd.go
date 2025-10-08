@@ -2,6 +2,7 @@ package rcon
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
@@ -143,8 +144,8 @@ func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
 		ServerName:         resp.ServerName,
 		MapName:            resp.MapName,
 		GameMode:           hll.GameMode(resp.GameMode),
-		RemainingMatchTime: int(resp.RemainingMatchTime),
-		MatchTime:          int(resp.MatchTime),
+		RemainingMatchTime: time.Second * time.Duration(resp.RemainingMatchTime),
+		MatchTime:          time.Second * time.Duration(resp.MatchTime),
 		AlliedFaction:      hll.FactionFromInt(int(resp.AlliedFaction)),
 		AxisFaction:        hll.FactionFromInt(int(resp.AxisFaction)),
 		MaxPlayerCount:     int(resp.MaxPlayerCount),
