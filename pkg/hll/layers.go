@@ -118,11 +118,15 @@ const (
 	FctUS         Faction = "US"
 	FctGER        Faction = "GER"
 	FctRUS        Faction = "RUS"
+	FctSOV        Faction = "SOV"
 	FctGB         Faction = "GB"
+	FctCW         Faction = "CW"
 	FctDAK        Faction = "DAK"
 	FctB8A        Faction = "B8A"
 	FctUnassigned Faction = "NON"
 )
+
+var AllFactions = []Faction{FctUS, FctGER, FctRUS, FctSOV, FctGB, FctCW, FctDAK, FctB8A}
 
 func (f Faction) Team() Team {
 	if f == FctUnassigned {

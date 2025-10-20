@@ -193,8 +193,9 @@ const (
 	WI_BOMBING_RUN                          WeaponIdentifier = "BOMBING RUN"
 	WI_STRAFING_RUN                         WeaponIdentifier = "STRAFING RUN"
 	WI_PRECISION_STRIKE                     WeaponIdentifier = "PRECISION STRIKE"
-	WI_Unknown                              WeaponIdentifier = "Unknown"
+	WI_ARTILLERY_STRIKE                     WeaponIdentifier = "Unknown"
 	WI_FLARE_GUN                            WeaponIdentifier = "FLARE GUN"
+	WI_FIRE_SPOT                            WeaponIdentifier = "FireSpot"
 	WI_INVALID                              WeaponIdentifier = "INVALID"
 )
 
@@ -419,15 +420,16 @@ var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_COAXIAL_BESA_7_92mm_Churchill_Mk_VII: {ID: WI_COAXIAL_BESA_7_92mm_Churchill_Mk_VII, Name: "GB Tank Coaxial [Churchill]", Factions: []Faction{FctGB}, Category: WcCoaxialMachinegun},
 	WI_HULL_BESA_7_92mm_Churchill_Mk_VII:    {ID: WI_HULL_BESA_7_92mm_Churchill_Mk_VII, Name: "GB Tank Hull MG [Churchill]", Factions: []Faction{FctGB}, Category: WcHullMachinegun},
 
-	WI_UNKNOWN:          {ID: WI_UNKNOWN, Name: "Unknown", Factions: []Faction{FctGER, FctUS, FctRUS, FctGB}, Category: WcUnknown},
-	WI_BOMBING_RUN:      {ID: WI_BOMBING_RUN, Name: "Bombing Run", Factions: []Faction{FctGER, FctUS, FctGB}, Category: WcCommanderAbility},
-	WI_STRAFING_RUN:     {ID: WI_STRAFING_RUN, Name: "Strafing Run", Factions: []Faction{FctGER, FctUS, FctRUS, FctGB}, Category: WcCommanderAbility},
-	WI_PRECISION_STRIKE: {ID: WI_PRECISION_STRIKE, Name: "Precision Strike", Factions: []Faction{FctGER, FctUS, FctRUS, FctGB}, Category: WcCommanderAbility},
-	WI_Unknown:          {ID: WI_Unknown, Name: "Katyusha Barrage", Factions: []Faction{FctRUS}, Category: WcCommanderAbility},
-	WI_FLARE_GUN:        {ID: WI_FLARE_GUN, Name: "Flare Gun", Factions: []Faction{FctGER, FctUS, FctRUS, FctGB}, Category: WcFlaregun},
+	WI_UNKNOWN:          {ID: WI_UNKNOWN, Name: "Unknown", Factions: AllFactions, Category: WcUnknown},
+	WI_BOMBING_RUN:      {ID: WI_BOMBING_RUN, Name: "Bombing Run", Factions: AllFactions, Category: WcCommanderAbility},
+	WI_STRAFING_RUN:     {ID: WI_STRAFING_RUN, Name: "Strafing Run", Factions: AllFactions, Category: WcCommanderAbility},
+	WI_PRECISION_STRIKE: {ID: WI_PRECISION_STRIKE, Name: "Precision Strike", Factions: AllFactions, Category: WcCommanderAbility},
+	WI_ARTILLERY_STRIKE: {ID: WI_ARTILLERY_STRIKE, Name: "Artillery Strike", Factions: AllFactions, Category: WcCommanderAbility},
+	WI_FLARE_GUN:        {ID: WI_FLARE_GUN, Name: "Flare Gun", Factions: AllFactions, Category: WcFlaregun},
+	WI_FIRE_SPOT:        {ID: WI_FIRE_SPOT, Name: "Fire", Factions: AllFactions, Category: WcUnknown},
 }
 
-var fallback_weapon = Weapon{ID: WI_INVALID, Name: "Invalid", Factions: []Faction{FctGER, FctUS, FctRUS, FctGB}, Category: WcUnknown}
+var fallback_weapon = Weapon{ID: WI_INVALID, Name: "Invalid", Factions: AllFactions, Category: WcUnknown}
 
 func ParseWeapon(weaponIdentifier string) Weapon {
 	wi := WeaponIdentifier(weaponIdentifier)
