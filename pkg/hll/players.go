@@ -2,7 +2,6 @@ package hll
 
 import (
 	"fmt"
-	"math"
 	"strings"
 	"time"
 )
@@ -109,8 +108,8 @@ func UnitIDToName(unitID int) string {
 	if unitID == CommandUnitID {
 		return CommandUnitName
 	}
-	if unitID > 0 && unitID <= len(unitNames) {
-		return unitNames[unitID-1]
+	if unitID >= 0 && unitID < len(unitNames) {
+		return unitNames[unitID]
 	}
 	return NoUnitName
 }
@@ -124,6 +123,14 @@ func UnitNameToID(name string) int {
 		return int(ch - 'a')
 	}
 	return NoUnitID
+}
+
+func UnitFromString(name string) Unit {
+	unitID := UnitNameToID(name)
+	return Unit{
+		ID:   unitID,
+		Name: UnitIDToName(unitID),
+	}
 }
 
 type ScoreCategory int
@@ -237,16 +244,6 @@ func PlayerPlatformFromString(name string) PlayerPlatform {
 	}
 }
 
-type Position struct {
-	X float64
-	Y float64
-	Z float64
-}
-
-func (p Position) IsActive() bool {
-	return p.X != 0 || p.Y != 0 || p.Z != 0
-}
-
 type DetailedPlayerInfo struct {
 	PlayerInfo
 	ClanTag  string
@@ -282,15 +279,10 @@ func (pi DetailedPlayerInfo) IsSpawned() bool {
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map
 func (pi DetailedPlayerInfo) SpacialDistanceTo(coords Position) int {
-	diffX := pi.Position.X - coords.X
-	diffY := pi.Position.Y - coords.Y
-	diffZ := pi.Position.Z - coords.Z
-	return int(math.Sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ))
+	return pi.Position.SpacialDistanceTo(coords)
 }
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map
 func (pi DetailedPlayerInfo) PlanarDistanceTo(coords Position) int {
-	diffX := pi.Position.X - coords.X
-	diffY := pi.Position.Y - coords.Y
-	return int(math.Sqrt(diffX*diffX + diffY*diffY))
+	return pi.Position.PlanarDistanceTo(coords)
 }

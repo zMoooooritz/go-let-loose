@@ -5,12 +5,6 @@ import (
 
 	"github.com/zMoooooritz/go-let-loose/internal/socket/api"
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
-)
-
-var (
-	caser = cases.Title(language.AmericanEnglish)
 )
 
 func getPlayer(r *Rcon, playerID string) (*api.RespPlayerInformation, error) {
@@ -162,8 +156,7 @@ func constructUnit(playerPlatoon string, playerRole int) hll.Unit {
 			unit = hll.NoUnit
 		}
 	} else {
-		unit.Name = caser.String(playerPlatoon)
-		unit.ID = hll.UnitNameToID(playerPlatoon)
+		unit = hll.UnitFromString(playerPlatoon)
 	}
 
 	return unit
