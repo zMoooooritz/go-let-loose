@@ -148,7 +148,7 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 func constructUnit(playerPlatoon string, playerRole int) hll.Unit {
 	role := hll.RoleFromInt(playerRole)
 
-	unit := hll.Unit{}
+	var unit hll.Unit
 	if playerPlatoon == "" {
 		if role == hll.ArmyCommander {
 			unit = hll.CommandUnit
