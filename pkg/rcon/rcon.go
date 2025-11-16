@@ -132,7 +132,10 @@ func runCommand[T, U any](rcn *Rcon, req T) (*U, error) {
 			return &result, nil
 		}
 
-		err := json.Unmarshal([]byte(response), &result)
+		var err error
+		if len(response) > 0 {
+			err = json.Unmarshal([]byte(response), &result)
+		}
 
 		if err == nil {
 			rcn.cache.set(cacheKey, &result)

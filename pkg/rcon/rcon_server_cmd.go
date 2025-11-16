@@ -61,8 +61,8 @@ func (r *Rcon) GetScore() (hll.TeamData, error) {
 }
 
 func (r *Rcon) SetWelcomeMessage(message string) error {
-	_, err := runCommand[api.SendServerMessage, any](r,
-		api.SendServerMessage{
+	_, err := runCommand[api.SetWelcomeMessage, any](r,
+		api.SetWelcomeMessage{
 			Message: message,
 		},
 	)

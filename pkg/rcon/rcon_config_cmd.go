@@ -101,9 +101,9 @@ func (r *Rcon) SetTeamSwitchCooldown(cooldown int) error {
 }
 
 func (r *Rcon) SetAutoBalanceEnabled(enabled bool) error {
-	_, err := runCommand[api.SetAutoBalance, any](r,
-		api.SetAutoBalance{
-			EnableAutoBalance: enabled,
+	_, err := runCommand[api.SetAutoBalanceEnabled, any](r,
+		api.SetAutoBalanceEnabled{
+			Enable: enabled,
 		},
 	)
 	return err
@@ -119,9 +119,9 @@ func (r *Rcon) SetAutoBalanceThreshold(threshold int) error {
 }
 
 func (r *Rcon) SetVoteKickEnabled(enabled bool) error {
-	_, err := runCommand[api.SetVoteKick, any](r,
-		api.SetVoteKick{
-			Enabled: enabled,
+	_, err := runCommand[api.SetVoteKickEnabled, any](r,
+		api.SetVoteKickEnabled{
+			Enable: enabled,
 		},
 	)
 	return err

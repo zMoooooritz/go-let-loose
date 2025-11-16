@@ -47,6 +47,14 @@ func NewRawRequest(authToken string, Version int, name string, contentBody strin
 	}
 }
 
+func (r RawRequest) String() string {
+	data, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
 func (r RawRequest) Pack() []byte {
 	body, err := json.Marshal(r)
 	if err != nil {
@@ -78,4 +86,12 @@ type RconResponse struct {
 	Version       int        `json:"Version"`
 	Name          string     `json:"Name"`
 	ContentBody   string     `json:"ContentBody"`
+}
+
+func (r RconResponse) String() string {
+	data, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }

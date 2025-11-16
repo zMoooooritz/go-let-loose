@@ -10,7 +10,7 @@ import (
 	"github.com/zMoooooritz/go-let-loose/pkg/rcon"
 )
 
-const workerCount = 10
+const workerCount = 1
 
 func main() {
 	logger.DefaultLogger()

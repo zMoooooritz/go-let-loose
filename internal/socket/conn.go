@@ -9,6 +9,8 @@ import (
 	"io"
 	"net"
 	"time"
+
+	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 const (
@@ -56,26 +58,27 @@ func (sc *ServerConnection) Execute(ctx context.Context, command, body string) (
 		_ = sc.conn.SetDeadline(time.Time{})
 	}
 
-	request := NewRawRequest(sc.authToken, sc.version, command, body)
-	err := sc.write(request.Pack())
+	rconRequest := NewRawRequest(sc.authToken, sc.version, command, body)
+	logger.Debug("Request: " + rconRequest.String())
+	err := sc.write(rconRequest.Pack())
 	if err != nil {
 		return "", err
 	}
-
 	resp, err := sc.read()
 	if err != nil {
 		return "", err
 	}
-
-	resData := RconResponse{}
-	err = json.Unmarshal(resp, &resData)
+	rconResponse := RconResponse{}
+	err = json.Unmarshal(resp, &rconResponse)
 	if err != nil {
 		return "", err
 	}
-	if resData.StatusCode != StatusOk {
-		return "", NewRconError(resData.StatusCode, resData.StatusMessage)
+	if rconResponse.StatusCode != StatusOk {
+		return "", NewRconError(rconResponse.StatusCode, rconResponse.StatusMessage)
 	}
-	return string(resData.ContentBody), nil
+	logger.Debug("Response: " + rconResponse.String())
+
+	return string(rconResponse.ContentBody), nil
 }
 
 func (sc *ServerConnection) Reconnect() error {

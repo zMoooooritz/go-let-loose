@@ -12,7 +12,7 @@ type ServerBroadcast struct {
 	Message string `json:"Message"`
 }
 
-type SendServerMessage struct {
+type SetWelcomeMessage struct {
 	Message string `json:"Message"`
 }
 
