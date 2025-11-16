@@ -7,4 +7,4 @@ require (
 	github.com/yuin/gopher-lua v1.1.1
 )
 
-require golang.org/x/sync v0.17.0 // indirect
+require golang.org/x/sync v0.18.0 // indirect
