@@ -87,10 +87,10 @@ func (r *Rcon) GetVIPs() ([]hll.PlayerInfo, error) {
 	if err != nil {
 		return []hll.PlayerInfo{}, err
 	}
-	for _, playerID := range data.VipPlayerIDs {
+	for _, vipPlayer := range data.VipPlayers {
 		vipPlayers = append(vipPlayers, hll.PlayerInfo{
-			Name: "",
-			ID:   playerID,
+			Name: vipPlayer.Comment,
+			ID:   vipPlayer.ID,
 		})
 	}
 	return vipPlayers, nil

@@ -83,7 +83,7 @@ func (r *Rcon) ClearBroadcastMessage(message string) error {
 }
 
 func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
-	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+	response, err := runCommand[api.GetAdminLog, api.RespAdminLog](r,
 		api.GetAdminLog{
 			LogBackTrackTime: int32(spanMins * 60),
 			Filters:          "",
@@ -99,7 +99,7 @@ func (r *Rcon) GetLogs(spanMins int) ([]string, error) {
 }
 
 func (r *Rcon) GetLogEntries(seconds int, filters string) ([]hll.LogEntry, error) {
-	response, err := runCommand[api.GetAdminLog, api.ResponseAdminLog](r,
+	response, err := runCommand[api.GetAdminLog, api.RespAdminLog](r,
 		api.GetAdminLog{
 			LogBackTrackTime: int32(seconds),
 			Filters:          filters,
@@ -163,7 +163,7 @@ func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
 
 func (r *Rcon) GetCommands() ([]hll.Command, error) {
 	commands := []hll.Command{}
-	resp, err := runCommand[api.GetDisplayableCommands, api.ResponseDisplayableCommands](r,
+	resp, err := runCommand[api.GetDisplayableCommands, api.RespDisplayableCommands](r,
 		api.GetDisplayableCommands{},
 	)
 	if err != nil {
@@ -180,7 +180,7 @@ func (r *Rcon) GetCommands() ([]hll.Command, error) {
 }
 
 func (r *Rcon) GetCommandDetails(commandID string) (hll.CommandDetails, error) {
-	resp, err := runCommand[api.GetClientReferenceData, api.ResponseClientReferenceData](r,
+	resp, err := runCommand[api.GetClientReferenceData, api.RespClientReferenceData](r,
 		api.GetClientReferenceData(commandID),
 	)
 	if err != nil {
@@ -205,7 +205,7 @@ func (r *Rcon) GetCommandDetails(commandID string) (hll.CommandDetails, error) {
 }
 
 func (r *Rcon) GetServerChangelist() (string, error) {
-	resp, err := runCommand[api.GetServerChangelist, api.ResponseServerChangelist](r,
+	resp, err := runCommand[api.GetServerChangelist, api.RespServerChangelist](r,
 		api.GetServerChangelist{},
 	)
 	if err != nil {

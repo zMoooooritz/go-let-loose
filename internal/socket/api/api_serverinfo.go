@@ -31,34 +31,41 @@ func (s *GetServerInformation) Pack() []byte {
 	return body
 }
 
-type ScoreData struct {
+type RespScoreData struct {
 	Combat  int32 `json:"Combat"`
 	Offense int32 `json:"Offense"`
 	Defense int32 `json:"Defense"`
 	Support int32 `json:"Support"`
 }
 
-type WorldPosition struct {
+type RespWorldPosition struct {
 	X float64 `json:"X"`
 	Y float64 `json:"Y"`
 	Z float64 `json:"Z"`
 }
 
+type RespPlayerStats struct {
+	Deaths            int32 `json:"Deaths"`
+	InfantryKills     int32 `json:"InfantryKills"`
+	VehicleKills      int32 `json:"VehicleKills"`
+	TeamKills         int32 `json:"TeamKills"`
+	VehiclesDestroyed int32 `json:"VehiclesDestroyed"`
+}
+
 type RespPlayerInformation struct {
-	Name     string        `json:"Name"`
-	ClanTag  string        `json:"ClanTag"`
-	ID       string        `json:"ID"`
-	Platform string        `json:"Platform"`
-	EpicID   string        `json:"EOSID"`
-	Level    int32         `json:"Level"`
-	Team     int32         `json:"Team"`
-	Role     int32         `json:"Role"`
-	Platoon  string        `json:"Platoon"`
-	Kills    int32         `json:"Kills"`
-	Deaths   int32         `json:"Deaths"`
-	Score    ScoreData     `json:"ScoreData"`
-	Loadout  string        `json:"Loadout"`
-	Position WorldPosition `json:"WorldPosition"`
+	Name     string            `json:"Name"`
+	ClanTag  string            `json:"ClanTag"`
+	ID       string            `json:"ID"`
+	Platform string            `json:"Platform"`
+	EpicID   string            `json:"EOSID"`
+	Level    int32             `json:"Level"`
+	Team     int32             `json:"Team"`
+	Role     int32             `json:"Role"`
+	Platoon  string            `json:"Platoon"`
+	Stats    RespPlayerStats   `json:"Stats"`
+	Score    RespScoreData     `json:"ScoreData"`
+	Loadout  string            `json:"Loadout"`
+	Position RespWorldPosition `json:"WorldPosition"`
 }
 
 func (r RespPlayerInformation) CacheTTL() time.Duration {
@@ -73,7 +80,7 @@ func (r RespPlayersInformation) CacheTTL() time.Duration {
 	return 500 * time.Millisecond
 }
 
-type MapInformation struct {
+type RespMapInformation struct {
 	Name      string `json:"Name"`
 	GameMode  string `json:"GameMode"`
 	TimeOfDay string `json:"TimeOfDay"`
@@ -82,7 +89,8 @@ type MapInformation struct {
 }
 
 type RespMapRotation struct {
-	Maps []MapInformation `json:"Maps"`
+	CurrentIndex int32                `json:"CurrentIndex"`
+	Maps         []RespMapInformation `json:"Maps"`
 }
 
 func (r RespMapRotation) CacheTTL() time.Duration {
@@ -90,7 +98,7 @@ func (r RespMapRotation) CacheTTL() time.Duration {
 }
 
 type RespMapSequence struct {
-	Maps []MapInformation `json:"Maps"`
+	Maps []RespMapInformation `json:"Maps"`
 }
 
 func (r RespMapSequence) CacheTTL() time.Duration {
@@ -100,6 +108,7 @@ func (r RespMapSequence) CacheTTL() time.Duration {
 type RespSessionInformation struct {
 	ServerName         string `json:"ServerName"`
 	MapName            string `json:"MapName"`
+	MapID              string `json:"MapId"`
 	GameMode           string `json:"GameMode"`
 	RemainingMatchTime int32  `json:"RemainingMatchTime"`
 	MatchTime          int32  `json:"MatchTime"`
@@ -141,8 +150,13 @@ func (r RespBannedWords) CacheTTL() time.Duration {
 	return 1 * time.Second
 }
 
+type RespVipPlayerEntry struct {
+	ID      string `json:"ID"`
+	Comment string `json:"Comment"`
+}
+
 type RespVipPlayers struct {
-	VipPlayerIDs []string `json:"VipPlayerIds"`
+	VipPlayers []RespVipPlayerEntry `json:"VipPlayers"`
 }
 
 func (r RespVipPlayers) CacheTTL() time.Duration {

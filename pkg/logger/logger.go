@@ -5,6 +5,8 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Logger interface {
@@ -100,6 +102,15 @@ func newSlogLogger(opts LoggerOptions) *slogLogger {
 	handlerOpts := &slog.HandlerOptions{
 		Level:     level,
 		AddSource: opts.AddSource,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			// Replace source attribute to show only filename
+			if a.Key == slog.SourceKey {
+				if source, ok := a.Value.Any().(*slog.Source); ok {
+					source.File = filepath.Base(source.File)
+				}
+			}
+			return a
+		},
 	}
 
 	var handler slog.Handler
@@ -115,23 +126,23 @@ func newSlogLogger(opts LoggerOptions) *slogLogger {
 }
 
 func (l *slogLogger) Debug(msg string) {
-	l.logger.Debug(msg)
+	l.logger.Debug(strings.TrimRight(msg, "\n"))
 }
 
 func (l *slogLogger) Info(msg string) {
-	l.logger.Info(msg)
+	l.logger.Info(strings.TrimRight(msg, "\n"))
 }
 
 func (l *slogLogger) Warn(msg string) {
-	l.logger.Warn(msg)
+	l.logger.Warn(strings.TrimRight(msg, "\n"))
 }
 
 func (l *slogLogger) Error(msg string) {
-	l.logger.Error(msg)
+	l.logger.Error(strings.TrimRight(msg, "\n"))
 }
 
 func (l *slogLogger) Fatal(msg string) {
-	l.logger.Error(msg)
+	l.logger.Error(strings.TrimRight(msg, "\n"))
 	os.Exit(1)
 }
 

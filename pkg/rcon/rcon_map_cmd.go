@@ -22,16 +22,7 @@ func (r *Rcon) GetCurrentLayer() (hll.Layer, error) {
 	if err != nil {
 		return hll.Layer{}, err
 	}
-
-	layer := hll.Layer{ID: "invalid", GameMap: hll.GameMap{ID: hll.MP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: hll.FctUS, Axis: hll.FctGER}, GameMode: hll.GmWarfare, Environment: hll.EnvDay}
-	for _, lay := range hll.AllLayers() {
-		if resp.MapName == lay.GameMap.Name && resp.GameMode == string(lay.GameMode) {
-			layer = lay
-			break
-		}
-	}
-
-	return layer, nil
+	return hll.ParseLayer(resp.MapID), nil
 }
 
 func (r *Rcon) GetGameMode() (string, error) {
@@ -44,7 +35,7 @@ func (r *Rcon) GetGameMode() (string, error) {
 
 func (r *Rcon) GetAllMaps() ([]hll.Layer, error) {
 	layers := []hll.Layer{}
-	resp, err := runCommand[api.GetClientReferenceData, api.ResponseClientReferenceData](r,
+	resp, err := runCommand[api.GetClientReferenceData, api.RespClientReferenceData](r,
 		api.GetClientReferenceData("AddMapToRotation"),
 	)
 	if err != nil {

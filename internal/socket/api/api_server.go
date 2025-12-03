@@ -4,10 +4,6 @@ import (
 	"time"
 )
 
-type SetMaxQueuedPlayers struct {
-	MaxQueuedPlayers int32 `json:"MaxQueuedPlayers"`
-}
-
 type ServerBroadcast struct {
 	Message string `json:"Message"`
 }
@@ -21,7 +17,7 @@ type GetAdminLog struct {
 	Filters          string `json:"Filters"`
 }
 
-type ResponseAdminLog struct {
+type RespAdminLog struct {
 	Entries []AdminLogEntry `json:"Entries"`
 }
 
@@ -41,14 +37,14 @@ func (a AdminLogEntry) Time() time.Time {
 type GetServerChangelist struct {
 }
 
-type ResponseServerChangelist struct {
+type RespServerChangelist struct {
 	Changelist string `json:"Changelist"`
 }
 
 type GetDisplayableCommands struct {
 }
 
-type ResponseDisplayableCommands struct {
+type RespDisplayableCommands struct {
 	Entries []DisplayableCommandEntry `json:"entries"`
 }
 
@@ -60,7 +56,7 @@ type DisplayableCommandEntry struct {
 
 type GetClientReferenceData string
 
-type ResponseClientReferenceData struct {
+type RespClientReferenceData struct {
 	Name               string              `json:"Name"`
 	Text               string              `json:"Text"`
 	Description        string              `json:"Description"`

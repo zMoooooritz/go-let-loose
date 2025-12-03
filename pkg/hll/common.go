@@ -15,6 +15,11 @@ type GameState struct {
 	NextMap          Layer
 }
 
+type ThresholdPair struct {
+	PlayerCount int
+	Threshold   int
+}
+
 type Command struct {
 	ID              string
 	Name            string

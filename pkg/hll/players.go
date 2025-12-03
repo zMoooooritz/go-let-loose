@@ -23,11 +23,14 @@ const (
 	Crewman            Role = "Crewman"
 	Spotter            Role = "Spotter"
 	Sniper             Role = "Sniper"
+	ArtilleryObserver  Role = "ArtilleryObserver"
+	ArtilleryEngineer  Role = "ArtilleryEngineer"
+	ArtillerySupport   Role = "ArtillerySupport"
 	NoRole             Role = "None"
 )
 
 var (
-	leaderRoles = []Role{ArmyCommander, Officer, Spotter, TankCommander}
+	leaderRoles = []Role{ArmyCommander, Officer, Spotter, TankCommander, ArtilleryObserver}
 	roleMap     = map[string]Role{
 		"ArmyCommander":      ArmyCommander,
 		"Officer":            Officer,
@@ -43,11 +46,15 @@ var (
 		"Crewman":            Crewman,
 		"Spotter":            Spotter,
 		"Sniper":             Sniper,
+		"ArtilleryObserver":  ArtilleryObserver,
+		"ArtilleryEngineer":  ArtilleryEngineer,
+		"ArtillerySupport":   ArtillerySupport,
 	}
 	roleIntMap = []Role{
 		Rifleman, Assault, AutomaticRifleman, Medic, Spotter, Support,
 		HeavyMachinegunner, AntiTank, Engineer, Officer, Sniper,
-		Crewman, TankCommander, ArmyCommander,
+		Crewman, TankCommander, ArmyCommander, ArtilleryObserver,
+		ArtilleryEngineer, ArtillerySupport,
 	}
 )
 
@@ -77,9 +84,10 @@ func (r Role) ToInt() int {
 type SquadType string
 
 const (
-	StInfanty SquadType = "Infantry"
-	StRecon   SquadType = "Recon"
-	StArmor   SquadType = "Armor"
+	StInfanty   SquadType = "Infantry"
+	StRecon     SquadType = "Recon"
+	StArmor     SquadType = "Armor"
+	StArtillery SquadType = "Artillery"
 )
 
 const (
@@ -246,18 +254,21 @@ func PlayerPlatformFromString(name string) PlayerPlatform {
 
 type DetailedPlayerInfo struct {
 	PlayerInfo
-	ClanTag  string
-	Platform PlayerPlatform
-	Team     Team
-	Faction  Faction
-	Role     Role
-	Unit     Unit
-	Loadout  string
-	Kills    int
-	Deaths   int
-	Score    Score
-	Level    int
-	Position Position
+	ClanTag           string
+	Platform          PlayerPlatform
+	Team              Team
+	Faction           Faction
+	Role              Role
+	Unit              Unit
+	Loadout           string
+	Kills             int
+	Deaths            int
+	TeamKills         int
+	VehicleKills      int
+	VehiclesDestroyed int
+	Score             Score
+	Level             int
+	Position          Position
 }
 
 func EmptyDetailedPlayerInfo() DetailedPlayerInfo {
@@ -275,6 +286,15 @@ func (pi DetailedPlayerInfo) String() string {
 
 func (pi DetailedPlayerInfo) IsSpawned() bool {
 	return pi.Position.IsActive()
+}
+
+func (pi DetailedPlayerInfo) IsSquadLeader() bool {
+	for _, role := range leaderRoles {
+		if pi.Role == role {
+			return true
+		}
+	}
+	return false
 }
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map

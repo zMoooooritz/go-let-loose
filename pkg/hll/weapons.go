@@ -55,6 +55,11 @@ const (
 	WI_76MM_M1_GUN_Sherman_M4A3E2_76        WeaponIdentifier = "76MM M1 GUN [Sherman M4A3E2(76)]"
 	WI_COAXIAL_M1919_Sherman_M4A3E2_76      WeaponIdentifier = "COAXIAL M1919 [Sherman M4A3E2(76)]"
 	WI_HULL_M1919_Sherman_M4A3E2_76         WeaponIdentifier = "HULL M1919 [Sherman M4A3E2(76)]"
+	WI_Sherman_SPA_105mm                    WeaponIdentifier = "Sherman SPA 105mm"
+	WI_OQF_57MM_Sherman_SPA_105mm           WeaponIdentifier = "OQF 57MM [Sherman SPA 105mm]"
+	WI_COAXIAL_M1919_Sherman_SPA_105mm      WeaponIdentifier = "COAXIAL M1919 [Sherman SPA 105mm]"
+	WI_HULL_M1919_Sherman_SPA_105mm         WeaponIdentifier = "HULL M1919 [Sherman SPA 105mm]"
+	WI_155MM_HOWITZER                       WeaponIdentifier = "155MM HOWITZER"
 	WI_M2_Browning_M3_Half_track            WeaponIdentifier = "M2 Browning [M3 Half-track]"
 	WI_KARABINER_98K                        WeaponIdentifier = "KARABINER 98K"
 	WI_GEWEHR_43                            WeaponIdentifier = "GEWEHR 43"
@@ -99,6 +104,11 @@ const (
 	WI_COAXIAL_MG34_Sd_Kfz_181_Tiger_1      WeaponIdentifier = "COAXIAL MG34 [Sd.Kfz.181 Tiger 1]"
 	WI_HULL_MG34_Sd_Kfz_181_Tiger_1         WeaponIdentifier = "HULL MG34 [Sd.Kfz.181 Tiger 1]"
 	WI_MG_42_Sd_Kfz_251_Half_track          WeaponIdentifier = "MG 42 [Sd.Kfz 251 Half-track]"
+	WI_Sturmpanzer_IV_Brummbar              WeaponIdentifier = "Strumpanzer IV Brummbar"
+	WI_OQF_57MM_Sturmpanzer_IV_Brummbar     WeaponIdentifier = "OQF 57MM [Strumpanzer IV Brummbar]"
+	WI_7_5CM_KWK_37_Sd_Kfz_141_Panzer_IV    WeaponIdentifier = "7.5CM KwK 37 [Sd.Kfz.161 Panzer IV]"
+	WI_150MM_HOWITZER                       WeaponIdentifier = "150MM HOWITZER"
+	WI_7_5CM_KWK_37                         WeaponIdentifier = "7.5CM KwK 37"
 	WI_MOSIN_NAGANT_1891                    WeaponIdentifier = "MOSIN NAGANT 1891"
 	WI_MOSIN_NAGANT_91_30                   WeaponIdentifier = "MOSIN NAGANT 91/30"
 	WI_MOSIN_NAGANT_M38                     WeaponIdentifier = "MOSIN NAGANT M38"
@@ -136,6 +146,11 @@ const (
 	WI_D_5T_85MM_IS_1                       WeaponIdentifier = "D-5T 85MM [IS-1]"
 	WI_COAXIAL_DT_IS_1                      WeaponIdentifier = "COAXIAL DT [IS-1]"
 	WI_HULL_DT_IS_1                         WeaponIdentifier = "HULL DT [IS-1]"
+	WI_KV_2                                 WeaponIdentifier = "KV-2"
+	WI_152MM_M_10T_KV_2                     WeaponIdentifier = "152MM M-10T [KV-2]"
+	WI_HULL_DT_KV_2                         WeaponIdentifier = "HULL DT [KV-2]"
+	WI_122MM_HOWITZER                       WeaponIdentifier = "122MM HOWITZER"
+	WI_152MM_M_10T                          WeaponIdentifier = "152MM M-10T"
 	WI_SMLE_No_1_Mk_III                     WeaponIdentifier = "SMLE No.1 Mk III"
 	WI_Rifle_No_5_Mk_I                      WeaponIdentifier = "Rifle No.5 Mk I"
 	WI_Rifle_No_4_Mk_I                      WeaponIdentifier = "Rifle No.4 Mk I"
@@ -189,6 +204,13 @@ const (
 	WI_OQF_75MM_Churchill_Mk_VII            WeaponIdentifier = "OQF 75MM [Churchill Mk.VII]"
 	WI_COAXIAL_BESA_7_92mm_Churchill_Mk_VII WeaponIdentifier = "COAXIAL BESA 7.92mm [Churchill Mk.VII]"
 	WI_HULL_BESA_7_92mm_Churchill_Mk_VII    WeaponIdentifier = "HULL BESA 7.92mm [Churchill Mk.VII]"
+	WI_Bishop                               WeaponIdentifier = "Bishop"
+	WI_COAXIAL_BESA_7_92mm_Churchill_AVRE   WeaponIdentifier = "COAXIAL BESA 7.92mm [Sherman SPA 105mm]"
+	WI_HULL_BESA_7_92mm_Churchill_AVRE      WeaponIdentifier = "HULL BESA 7.92mm [Sherman SPA 105mm]"
+	WI_QF_25_POUNDER_Bishop                 WeaponIdentifier = "QF 25 POUNDER [Bishop]"
+	WI_QF_6_POUNDER                         WeaponIdentifier = "QF 6-POUNDER"
+	WI_QF_25_POUNDER_Artillery              WeaponIdentifier = "QF 25-POUNDER"
+	WI_QF_25_POUNDER_Tank                   WeaponIdentifier = "QF 25 POUNDER"
 	WI_UNKNOWN                              WeaponIdentifier = "UNKNOWN"
 	WI_BOMBING_RUN                          WeaponIdentifier = "BOMBING RUN"
 	WI_STRAFING_RUN                         WeaponIdentifier = "STRAFING RUN"
@@ -226,6 +248,7 @@ const (
 	WcHullMachinegun
 	WcMountedMachinegun
 	WcCommanderAbility
+	WcSelfPropelledArtillery
 	WcUnknown
 )
 
@@ -282,6 +305,11 @@ var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_76MM_M1_GUN_Sherman_M4A3E2_76:   {ID: WI_76MM_M1_GUN_Sherman_M4A3E2_76, Name: "US Tank Cannon [Sherman 76mm]", Factions: []Faction{FctUS}, Category: WcMainCannon},
 	WI_COAXIAL_M1919_Sherman_M4A3E2_76: {ID: WI_COAXIAL_M1919_Sherman_M4A3E2_76, Name: "US Tank Coaxial [Sherman 76mm]", Factions: []Faction{FctUS}, Category: WcCoaxialMachinegun},
 	WI_HULL_M1919_Sherman_M4A3E2_76:    {ID: WI_HULL_M1919_Sherman_M4A3E2_76, Name: "US Tank Hull MG [Sherman 76mm]", Factions: []Faction{FctUS}, Category: WcHullMachinegun},
+	WI_Sherman_SPA_105mm:               {ID: WI_Sherman_SPA_105mm, Name: "US Roadkill [Sherman SPA 105mm]", Factions: []Faction{FctUS, FctGB}, Category: WcVehicle},
+	WI_OQF_57MM_Sherman_SPA_105mm:      {ID: WI_OQF_57MM_Sherman_SPA_105mm, Name: "US Tank Cannon [Sherman SPA 105mm]", Factions: []Faction{FctUS, FctGB}, Category: WcMainCannon},
+	WI_COAXIAL_M1919_Sherman_SPA_105mm: {ID: WI_COAXIAL_M1919_Sherman_SPA_105mm, Name: "US Tank Coaxial [Sherman SPA 105mm]", Factions: []Faction{FctUS}, Category: WcCoaxialMachinegun},
+	WI_HULL_M1919_Sherman_SPA_105mm:    {ID: WI_HULL_M1919_Sherman_SPA_105mm, Name: "US Tank Hull MG [Sherman SPA 105mm]", Factions: []Faction{FctUS}, Category: WcHullMachinegun},
+	WI_155MM_HOWITZER:                  {ID: WI_155MM_HOWITZER, Name: "US Artillery", Factions: []Faction{FctUS}, Category: WcArtillerygun},
 	WI_M2_Browning_M3_Half_track:       {ID: WI_M2_Browning_M3_Half_track, Name: "US Half-track MG [US Half-track]", Factions: []Faction{FctUS, FctRUS, FctGB}, Category: WcMountedMachinegun},
 
 	WI_KARABINER_98K:                     {ID: WI_KARABINER_98K, Name: "Kar98k", Factions: []Faction{FctGER}, Category: WcBoltActionRifle},
@@ -327,6 +355,11 @@ var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_COAXIAL_MG34_Sd_Kfz_181_Tiger_1:   {ID: WI_COAXIAL_MG34_Sd_Kfz_181_Tiger_1, Name: "GER Tank Coaxial [Tiger 1]", Factions: []Faction{FctGER}, Category: WcCoaxialMachinegun},
 	WI_HULL_MG34_Sd_Kfz_181_Tiger_1:      {ID: WI_HULL_MG34_Sd_Kfz_181_Tiger_1, Name: "GER Tank Hull MG [Tiger 1]", Factions: []Faction{FctGER}, Category: WcHullMachinegun},
 	WI_MG_42_Sd_Kfz_251_Half_track:       {ID: WI_MG_42_Sd_Kfz_251_Half_track, Name: "GER Half-track MG [GER Half-track]", Factions: []Faction{FctGER}, Category: WcMountedMachinegun},
+	WI_Sturmpanzer_IV_Brummbar:           {ID: WI_Sturmpanzer_IV_Brummbar, Name: "GER Roadkill [Brummbar]", Factions: []Faction{FctGER}, Category: WcVehicle},
+	WI_OQF_57MM_Sturmpanzer_IV_Brummbar:  {ID: WI_OQF_57MM_Sturmpanzer_IV_Brummbar, Name: "GER Tank Cannon [Brummbar]", Factions: []Faction{FctGER}, Category: WcMainCannon},
+	WI_7_5CM_KWK_37_Sd_Kfz_141_Panzer_IV: {ID: WI_7_5CM_KWK_37_Sd_Kfz_141_Panzer_IV, Name: "GER Tank Cannon [Panzer IV]", Factions: []Faction{FctGER}, Category: WcMainCannon},
+	WI_150MM_HOWITZER:                    {ID: WI_150MM_HOWITZER, Name: "GER Artillery", Factions: []Faction{FctGER}, Category: WcArtillerygun},
+	WI_7_5CM_KWK_37:                      {ID: WI_7_5CM_KWK_37, Name: "GER Tank Cannon", Factions: []Faction{FctGER}, Category: WcMainCannon},
 
 	WI_MOSIN_NAGANT_1891:         {ID: WI_MOSIN_NAGANT_1891, Name: "Mosin-Nagant 1891", Factions: []Faction{FctRUS}, Category: WcBoltActionRifle},
 	WI_MOSIN_NAGANT_91_30:        {ID: WI_MOSIN_NAGANT_91_30, Name: "Mosin-Nagant 91/30", Factions: []Faction{FctRUS}, Category: WcBoltActionRifle},
@@ -365,6 +398,11 @@ var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_D_5T_85MM_IS_1:            {ID: WI_D_5T_85MM_IS_1, Name: "RUS Tank Cannon [IS-1]", Factions: []Faction{FctRUS}, Category: WcMainCannon},
 	WI_COAXIAL_DT_IS_1:           {ID: WI_COAXIAL_DT_IS_1, Name: "RUS Tank Coaxial [IS-1]", Factions: []Faction{FctRUS}, Category: WcCoaxialMachinegun},
 	WI_HULL_DT_IS_1:              {ID: WI_HULL_DT_IS_1, Name: "RUS Tank Hull MG [IS-1]", Factions: []Faction{FctRUS}, Category: WcHullMachinegun},
+	WI_KV_2:                      {ID: WI_KV_2, Name: "RUS Roadkill [KV-2]", Factions: []Faction{FctRUS}, Category: WcVehicle},
+	WI_152MM_M_10T_KV_2:          {ID: WI_152MM_M_10T_KV_2, Name: "RUS Tank Cannon [KV-2]", Factions: []Faction{FctRUS}, Category: WcMainCannon},
+	WI_HULL_DT_KV_2:              {ID: WI_HULL_DT_KV_2, Name: "RUS Tank Hull MG [KV-2]", Factions: []Faction{FctRUS}, Category: WcHullMachinegun},
+	WI_122MM_HOWITZER:            {ID: WI_122MM_HOWITZER, Name: "RUS Artillery", Factions: []Faction{FctRUS}, Category: WcArtillerygun},
+	WI_152MM_M_10T:               {ID: WI_152MM_M_10T, Name: "RUS Tank Cannon", Factions: []Faction{FctRUS}, Category: WcMainCannon},
 
 	WI_SMLE_No_1_Mk_III:                     {ID: WI_SMLE_No_1_Mk_III, Name: "SMLE Mk III", Factions: []Faction{FctGB}, Category: WcBoltActionRifle},
 	WI_Rifle_No_5_Mk_I:                      {ID: WI_Rifle_No_5_Mk_I, Name: "Jungle Carbine", Factions: []Faction{FctGB}, Category: WcBoltActionRifle},
@@ -419,6 +457,13 @@ var weaponsMap = map[WeaponIdentifier]Weapon{
 	WI_OQF_75MM_Churchill_Mk_VII:            {ID: WI_OQF_75MM_Churchill_Mk_VII, Name: "GB Tank Cannon [Churchill]", Factions: []Faction{FctGB}, Category: WcMainCannon},
 	WI_COAXIAL_BESA_7_92mm_Churchill_Mk_VII: {ID: WI_COAXIAL_BESA_7_92mm_Churchill_Mk_VII, Name: "GB Tank Coaxial [Churchill]", Factions: []Faction{FctGB}, Category: WcCoaxialMachinegun},
 	WI_HULL_BESA_7_92mm_Churchill_Mk_VII:    {ID: WI_HULL_BESA_7_92mm_Churchill_Mk_VII, Name: "GB Tank Hull MG [Churchill]", Factions: []Faction{FctGB}, Category: WcHullMachinegun},
+	WI_Bishop:                               {ID: WI_Bishop, Name: "GB Roadkill [Bishop]", Factions: []Faction{FctGB}, Category: WcVehicle},
+	WI_QF_25_POUNDER_Bishop:                 {ID: WI_QF_25_POUNDER_Bishop, Name: "GB Tank Cannon [Bishop]", Factions: []Faction{FctGB}, Category: WcMainCannon},
+	WI_COAXIAL_BESA_7_92mm_Churchill_AVRE:   {ID: WI_COAXIAL_BESA_7_92mm_Churchill_AVRE, Name: "GB Tank Coaxial [Churchill AVRE]", Factions: []Faction{FctGB}, Category: WcCoaxialMachinegun},
+	WI_HULL_BESA_7_92mm_Churchill_AVRE:      {ID: WI_HULL_BESA_7_92mm_Churchill_AVRE, Name: "GB Tank Hull MG [Churchill AVRE]", Factions: []Faction{FctGB}, Category: WcHullMachinegun},
+	WI_QF_6_POUNDER:                         {ID: WI_QF_6_POUNDER, Name: "GB AT Gun", Factions: []Faction{FctGB}, Category: WcAntiTankGun},
+	WI_QF_25_POUNDER_Artillery:              {ID: WI_QF_25_POUNDER_Artillery, Name: "GB Artillery", Factions: []Faction{FctGB}, Category: WcArtillerygun},
+	WI_QF_25_POUNDER_Tank:                   {ID: WI_QF_25_POUNDER_Tank, Name: "GB Tank Cannon", Factions: []Faction{FctGB}, Category: WcMainCannon},
 
 	WI_UNKNOWN:          {ID: WI_UNKNOWN, Name: "Unknown", Factions: AllFactions, Category: WcUnknown},
 	WI_BOMBING_RUN:      {ID: WI_BOMBING_RUN, Name: "Bombing Run", Factions: AllFactions, Category: WcCommanderAbility},

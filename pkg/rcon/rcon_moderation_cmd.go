@@ -57,6 +57,15 @@ func (r *Rcon) GetPermaBans() ([]hll.ServerBan, error) {
 	return bans, nil
 }
 
+func (r *Rcon) MessageAllPlayers(message string) error {
+	_, err := runCommand[api.MessageAllPlayers, any](r,
+		api.MessageAllPlayers{
+			Message: message,
+		},
+	)
+	return err
+}
+
 func (r *Rcon) MessagePlayer(playerID string, message string) error {
 	_, err := runCommand[api.MessagePlayer, any](r,
 		api.MessagePlayer{

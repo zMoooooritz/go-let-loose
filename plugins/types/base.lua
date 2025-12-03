@@ -12,16 +12,15 @@ local PlayerInfo = {}
 ---@field ID string The player's unique identifier
 ---@field ClanTag string The player's clan tag
 ---@field Platform string Player's platform ("steam", "epic", "xbl", "none")
----@field Team string The player's team ("Allies", "Axis", "None")
----@field Faction string The player's faction ("US", "GER", "SOV", etc.)
----@field Role string The player's role ("Rifleman", "Officer", etc.)
----@field Unit Unit The player's unit/squad information
----@field Loadout string The player's current ladout
----@field Kills number Player's kill count
----@field Deaths number Player's death count
----@field Score Score Player's score breakdown
+---@field EOSID string Player's Epic Online Services ID
+---@field Team number The player's team (0=Allies, 1=Axis, 2=None)
+---@field Role number The player's role ID
+---@field Platoon string The player's platoon/squad
+---@field Stats PlayerStats Player's stats
+---@field ScoreData Score Player's score breakdown
+---@field Loadout string The player's current loadout
 ---@field Level number Player's level
----@field Position Position Player's world position
+---@field WorldPosition Position Player's world position
 local DetailedPlayerInfo = {}
 
 ---Weapon information
@@ -37,6 +36,15 @@ local Weapon = {}
 ---@field Name string Unit name (e.g., "Able", "Baker", "Command")
 ---@field ID number Unit ID
 local Unit = {}
+
+---Player statistics
+---@class PlayerStats
+---@field Deaths number Player's death count
+---@field InfantryKills number Infantry kill count
+---@field VehicleKills number Vehicle kill count
+---@field TeamKills number Team kill count
+---@field VehiclesDestroyed number Vehicles destroyed count
+local PlayerStats = {}
 
 ---Player score breakdown
 ---@class Score
@@ -92,21 +100,26 @@ local GameState = {}
 
 ---Admin information
 ---@class Admin
----@field Name string Admin's name
----@field ID string Admin's player ID
----@field Role string Admin role ("owner", "senior", "junior", "spectator")
+---@field UserId string Admin's player ID
+---@field Group string Admin group
 ---@field Comment string Admin comment/description
 local Admin = {}
 
+---VIP player information
+---@class VipPlayerEntry
+---@field PlayerId string VIP player's ID
+---@field Comment string VIP comment/description
+local VipPlayerEntry = {}
+
+
 ---Server ban information
 ---@class ServerBan
----@field Type string Ban type ("temp" or "permanent")
----@field Player PlayerInfo Banned player info
----@field Timestamp string Ban timestamp
----@field Duration number Ban duration (for temp bans)
----@field Reason string Ban reason
+---@field UserId string Banned player's user ID
+---@field UserName string Banned player's name
+---@field TimeOfBanning string Ban timestamp
+---@field DurationHours number Ban duration in hours (for temp bans)
+---@field BanReason string Ban reason
 ---@field AdminName string Admin who issued the ban
----@field RawLog string Raw log entry
 local ServerBan = {}
 
 ---Server configuration
@@ -122,9 +135,10 @@ local ServerConfig = {}
 ---@class SessionInfo
 ---@field ServerName string Server name
 ---@field MapName string Current map name
+---@field MapId string Current map ID
 ---@field GameMode string Current game mode
----@field RemainingMatchTime number Time remaining in match (nanoseconds - divide by 1000000000 for seconds)
----@field MatchTime number Total match time (nanoseconds - divide by 1000000000 for seconds)
+---@field RemainingMatchTime number Time remaining in match (seconds)
+---@field MatchTime number Total match time (seconds)
 ---@field AlliedFaction number Allied faction ID
 ---@field AxisFaction number Axis faction ID
 ---@field MaxPlayerCount number Maximum players
@@ -153,6 +167,26 @@ local Command = {}
 ---@field Description string Command description
 ---@field DialogueParameters table Array of DialogueParameter
 local CommandDetails = {}
+
+---Map information in rotation/sequence
+---@class MapInformation
+---@field Name string Map name
+---@field GameMode string Game mode
+---@field TimeOfDay string Time of day setting
+---@field Id string Map identifier
+---@field Position number Position in rotation
+local MapInformation = {}
+
+---Map rotation response
+---@class MapRotation
+---@field CurrentIndex number Current map index in rotation
+---@field Maps MapInformation[] Array of maps in rotation
+local MapRotation = {}
+
+---Map sequence response
+---@class MapSequence
+---@field Maps MapInformation[] Array of maps in sequence
+local MapSequence = {}
 
 ---Dialogue parameter for commands
 ---@class DialogueParameter
@@ -191,3 +225,9 @@ local SquadView = {}
 ---@field Message string Log message
 ---@field Raw string Raw log line
 local LogEntry = {}
+
+---Admin log entry
+---@class AdminLogEntry
+---@field Timestamp string Log timestamp (RFC3339 format)
+---@field Message string Log message
+local AdminLogEntry = {}

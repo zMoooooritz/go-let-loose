@@ -4,20 +4,20 @@
 
 ---Add an admin user
 ---@param id string Player ID to make admin
+---@param adminGroup string Admin group name
 ---@param comment string Comment describing the admin
----@param role string Admin role ("owner", "senior", "junior", "spectator")
 ---@return string|nil error Error message if any
-function addAdmin(id, comment, role) end
+function addAdmin(id, adminGroup, comment) end
 
 ---Remove an admin user
 ---@param id string Player ID to remove admin status from
 ---@return string|nil error Error message if any
 function removeAdmin(id) end
 
----Get list of admin roles
+---Get list of admin groups
 ---@return string|nil error Error message if any
----@return string[]|nil roles Array of admin role names if successful
-function getAdminRoles() end
+---@return string[]|nil groups Array of admin group names if successful
+function getAdminGroups() end
 
 ---Get list of admins
 ---@return string|nil error Error message if any
@@ -39,7 +39,7 @@ function removeVip(id) end
 
 ---Get list of VIP players
 ---@return string|nil error Error message if any
----@return PlayerInfo[]|nil vips Array of VIP player information if successful
+---@return VipPlayerEntry[]|nil vips Array of VIP player information if successful
 function getVIPs() end
 
 -- Map Management API
@@ -99,12 +99,12 @@ function getCurrentMap() end
 
 ---Get current map rotation
 ---@return string|nil error Error message if any
----@return Layer[]|nil rotation Array of layers in rotation if successful
+---@return MapRotation|nil rotation Map rotation information if successful
 function getCurrentMapRotation() end
 
 ---Get current map sequence
 ---@return string|nil error Error message if any
----@return Layer[]|nil sequence Array of layers in sequence if successful
+---@return MapSequence|nil sequence Map sequence information if successful
 function getCurrentMapSequence() end
 
 ---Get current map objectives
@@ -165,7 +165,7 @@ function kickPlayer(player, reason) end
 
 ---Temporarily ban a player
 ---@param player string Player name or ID
----@param duration number Ban duration in minutes
+---@param duration number Ban duration in hours
 ---@param reason string Reason for ban
 ---@param admin string Admin name issuing the ban
 ---@return string|nil error Error message if any
@@ -394,19 +394,18 @@ function getQueuedVips() end
 
 -- Game Management API
 
----Set game layout with objective names
----@param objs string[] Array of objective names
+---Set sector layout with objective names
+---@param sector1 string Sector 1 objective
+---@param sector2 string Sector 2 objective
+---@param sector3 string Sector 3 objective
+---@param sector4 string Sector 4 objective
+---@param sector5 string Sector 5 objective
 ---@return string|nil error Error message if any
-function setGameLayout(objs) end
-
----Set game layout with objective indices
----@param objs number[] Array of objective indices
----@return string|nil error Error message if any
-function setGameLayoutIndexed(objs) end
+function setSectorLayout(sector1, sector2, sector3, sector4, sector5) end
 
 ---Set match timer for game mode
 ---@param gameMode string Game mode
----@param duration number Timer duration in seconds
+---@param duration number Timer duration in minutes
 ---@return string|nil error Error message if any
 function setMatchTimer(gameMode, duration) end
 
@@ -417,7 +416,7 @@ function removeMatchTimer(gameMode) end
 
 ---Set warmup timer for game mode
 ---@param gameMode string Game mode
----@param duration number Timer duration in seconds
+---@param duration number Timer duration in minutes
 ---@return string|nil error Error message if any
 function setWarmupTimer(gameMode, duration) end
 
@@ -451,11 +450,11 @@ function getProfanities() end
 
 -- Logging API
 
----Get log entries
+---Get admin log entries
 ---@param seconds number Number of seconds back to retrieve logs
 ---@param filters string Log filters to apply
 ---@return string|nil error Error message if any
----@return LogEntry[]|nil entries Array of log entries if successful
+---@return AdminLogEntry[]|nil entries Array of admin log entries if successful
 function getLogEntries(seconds, filters) end
 
 ---Get raw logs

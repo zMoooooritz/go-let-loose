@@ -19,6 +19,7 @@ const (
 	MP_HILL400         Map = "hill400"
 	MP_FOY             Map = "foy"
 	MP_KURSK           Map = "kursk"
+	MP_SMOLENSK        Map = "smolensk"
 	MP_STALINGRAD      Map = "stalingrad"
 	MP_REMAGEN         Map = "remagen"
 	MP_KHARKOV         Map = "kharkov"
@@ -191,6 +192,7 @@ var mapMap = map[Map]GameMap{
 	MP_OMAHABEACH:      {ID: MP_OMAHABEACH, Name: "OMAHA BEACH", Tag: "OMA", PrettyName: "Omaha Beach", ShortName: "Omaha", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
 	MP_PURPLEHEARTLANE: {ID: MP_PURPLEHEARTLANE, Name: "PURPLE HEART LANE", Tag: "PHL", PrettyName: "Purple Heart Lane", ShortName: "PHL", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
 	MP_REMAGEN:         {ID: MP_REMAGEN, Name: "REMAGEN", Tag: "REM", PrettyName: "Remagen", ShortName: "Remagen", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
+	MP_SMOLENSK:        {ID: MP_SMOLENSK, Name: "SMOLENSK", Tag: "SMO", PrettyName: "Smolensk", ShortName: "Smolensk", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
 	MP_STMARIEDUMONT:   {ID: MP_STMARIEDUMONT, Name: "ST MARIE DU MONT", Tag: "BRC", PrettyName: "St. Marie Du Mont", ShortName: "SMDM", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
 	MP_STMEREEGLISE:    {ID: MP_STMEREEGLISE, Name: "SAINTE-MÈRE-ÉGLISE", Tag: "SME", PrettyName: "St. Mere Eglise", ShortName: "SME", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
 	MP_STALINGRAD:      {ID: MP_STALINGRAD, Name: "STALINGRAD", Tag: "STA", PrettyName: "Stalingrad", ShortName: "Stalingrad", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
@@ -313,6 +315,18 @@ var layerMap = map[string]Layer{
 	"SME_S_1944_Day_P_Skirmish":           {ID: "SME_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvDay},
 	"SME_S_1944_Morning_P_Skirmish":       {ID: "SME_S_1944_Morning_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvMorning},
 	"SME_S_1944_Night_P_Skirmish":         {ID: "SME_S_1944_Night_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvNight},
+	"smolensk_offensiveGer_Day":           {ID: "smolensk_offensiveGer_Day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
+	"smolensk_offensiveRus_day":           {ID: "smolensk_offensiveRus_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
+	"smolensk_offensiveGer_dusk":          {ID: "smolensk_offensiveGer_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDusk},
+	"smolensk_offensiveRus_dusk":          {ID: "smolensk_offensiveRus_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDusk},
+	"smolensk_offensiveGer_night":         {ID: "smolensk_offensiveGer_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvNight},
+	"smolensk_offensiveRus_night":         {ID: "smolensk_offensiveRus_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvNight},
+	"smolensk_skirmish_day":               {ID: "smolensk_skirmish_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvDay},
+	"smolensk_skirmish_dusk":              {ID: "smolensk_skirmish_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvDusk},
+	"smolensk_skirmish_night":             {ID: "smolensk_skirmish_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvNight},
+	"smolensk_warfare_day":                {ID: "smolensk_warfare_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvDay},
+	"smolensk_warfare_dusk":               {ID: "smolensk_warfare_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvDusk},
+	"smolensk_warfare_night":              {ID: "smolensk_warfare_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvNight},
 	"STA_L_1942_Warfare":                  {ID: "STA_L_1942_Warfare", GameMap: mapMap[MP_STALINGRAD], GameMode: GmWarfare, Environment: EnvDay},
 	"STA_L_1942_Warfare_Night":            {ID: "STA_L_1942_Warfare_Night", GameMap: mapMap[MP_STALINGRAD], GameMode: GmWarfare, Environment: EnvNight},
 	"STA_L_1942_OffensiveGER":             {ID: "STA_L_1942_OffensiveGER", GameMap: mapMap[MP_STALINGRAD], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},

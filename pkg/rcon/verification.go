@@ -55,7 +55,7 @@ func (v *rconVerification) verifyLayers(r *Rcon) {
 		printStr := fmt.Sprintf("Layers not in API (%d):", len(appLayersNotInAPI))
 		logger.Warn(printStr)
 		for _, layer := range appLayersNotInAPI {
-			logger.Warn("\t- ", layer)
+			logger.Warn(" -", layer)
 		}
 	} else {
 		logger.Debug("All layers in the application are present in the API.")
@@ -68,7 +68,7 @@ func (v *rconVerification) verifyLayers(r *Rcon) {
 		printStr := fmt.Sprintf("Layers not in the application (%d):", len(apiLayersNotInApp))
 		logger.Warn(printStr)
 		for _, layer := range apiLayersNotInApp {
-			logger.Warn("\t- ", layer)
+			logger.Warn(" -", layer)
 		}
 	} else {
 		logger.Debug("All layers in the API are present in the application.")

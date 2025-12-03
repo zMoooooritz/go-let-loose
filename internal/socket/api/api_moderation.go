@@ -5,6 +5,10 @@ type MessagePlayer struct {
 	PlayerID string `json:"PlayerId"`
 }
 
+type MessageAllPlayers struct {
+	Message string `json:"Message"`
+}
+
 type ForceTeamSwitch struct {
 	PlayerID  string `json:"PlayerId"`
 	ForceMode uint8  `json:"ForceMode"`
