@@ -2,6 +2,7 @@ package hll
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 )
@@ -24,42 +25,24 @@ const (
 	Spotter            Role = "Spotter"
 	Sniper             Role = "Sniper"
 	ArtilleryObserver  Role = "ArtilleryObserver"
-	ArtilleryEngineer  Role = "ArtilleryEngineer"
-	ArtillerySupport   Role = "ArtillerySupport"
+	Operator           Role = "Operator"
+	Gunner             Role = "Gunner"
 	NoRole             Role = "None"
 )
 
 var (
 	leaderRoles = []Role{ArmyCommander, Officer, Spotter, TankCommander, ArtilleryObserver}
-	roleMap     = map[string]Role{
-		"ArmyCommander":      ArmyCommander,
-		"Officer":            Officer,
-		"Rifleman":           Rifleman,
-		"Assault":            Assault,
-		"AutomaticRifleman":  AutomaticRifleman,
-		"Medic":              Medic,
-		"Support":            Support,
-		"HeavyMachineGunner": HeavyMachinegunner,
-		"AntiTank":           AntiTank,
-		"Engineer":           Engineer,
-		"TankCommander":      TankCommander,
-		"Crewman":            Crewman,
-		"Spotter":            Spotter,
-		"Sniper":             Sniper,
-		"ArtilleryObserver":  ArtilleryObserver,
-		"ArtilleryEngineer":  ArtilleryEngineer,
-		"ArtillerySupport":   ArtillerySupport,
-	}
-	roleIntMap = []Role{
+	roleIntMap  = []Role{
 		Rifleman, Assault, AutomaticRifleman, Medic, Spotter, Support,
 		HeavyMachinegunner, AntiTank, Engineer, Officer, Sniper,
 		Crewman, TankCommander, ArmyCommander, ArtilleryObserver,
-		ArtilleryEngineer, ArtillerySupport,
+		Operator, Gunner,
 	}
 )
 
 func RoleFromString(name string) Role {
-	if role, ok := roleMap[name]; ok {
+	role := Role(name)
+	if slices.Contains(roleIntMap, role) {
 		return role
 	}
 	return NoRole

@@ -82,6 +82,11 @@ function setCurrentMap(layer) end
 ---@return string|nil error Error message if any
 function shuffleMapSequence(enabled) end
 
+---Check if map sequence shuffling is enabled
+---@return string|nil error Error message if any
+---@return boolean|nil enabled Whether map sequence shuffling is enabled if successful
+function getMapShuffleEnabled() end
+
 ---Get all available maps
 ---@return string|nil error Error message if any
 ---@return Layer[]|nil maps Array of available layers if successful

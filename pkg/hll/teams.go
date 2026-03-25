@@ -277,7 +277,7 @@ func guessSquadType(players []DetailedPlayerInfo) SquadType {
 		if player.Role == Spotter || player.Role == Sniper {
 			return StRecon
 		}
-		if player.Role == ArtilleryObserver || player.Role == ArtilleryEngineer || player.Role == ArtillerySupport {
+		if player.Role == ArtilleryObserver || player.Role == Operator || player.Role == Gunner {
 			return StArtillery
 		}
 	}

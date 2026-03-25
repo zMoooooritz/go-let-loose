@@ -39,6 +39,13 @@ type SetMapShuffleEnabled struct {
 	Enable bool `json:"Enable"`
 }
 
+type GetMapShuffleEnabled struct {
+}
+
+type RespMapShuffleEnabled struct {
+	Enable bool `json:"Enable"`
+}
+
 type SetDynamicWeatherEnabled struct {
 	MapId  string `json:"MapId"`
 	Enable bool   `json:"Enable"`

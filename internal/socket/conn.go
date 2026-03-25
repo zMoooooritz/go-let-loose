@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/binary"
@@ -23,6 +24,12 @@ var (
 
 	errConnectionNotActive = errors.New("connection not active")
 )
+
+type header struct {
+	Magic     uint32
+	RequestId uint32
+	Length    uint32
+}
 
 type ServerConnection struct {
 	ip        string
@@ -153,20 +160,28 @@ func (sc *ServerConnection) write(data []byte) error {
 
 	sc.xor(data)
 
-	header := make([]byte, 8)
-	binary.LittleEndian.PutUint32(header[0:4], requestId)
-	binary.LittleEndian.PutUint32(header[4:8], uint32(len(data)))
+	hdr := header{
+		Magic:     MAGIC_HEADER_VALUE,
+		RequestId: requestId,
+		Length:    uint32(len(data)),
+	}
 
 	requestId++
 
-	fullData := append(header, data...)
+	var buf bytes.Buffer
+	err := binary.Write(&buf, binary.LittleEndian, &hdr)
+	if err != nil {
+		return err
+	}
+
+	fullData := append(buf.Bytes(), data...)
 
 	n, err := sc.conn.Write(fullData)
 	if err != nil {
 		return err
 	}
 	if n != len(fullData) {
-		return errors.New("not all data send")
+		return errors.New("not all data sent")
 	}
 	return err
 }
@@ -176,18 +191,13 @@ func (sc *ServerConnection) read() ([]byte, error) {
 		return nil, errConnectionNotActive
 	}
 
-	// Read the 8-byte header
-	header := make([]byte, 8)
-	_, err := io.ReadFull(sc.conn, header)
+	var hdr header
+	err := binary.Read(sc.conn, binary.LittleEndian, &hdr)
 	if err != nil {
 		return nil, err
 	}
 
-	respId := int32(binary.LittleEndian.Uint32(header[:4]))
-	_ = respId
-	length := int32(binary.LittleEndian.Uint32(header[4:]))
-
-	answer := make([]byte, length)
+	answer := make([]byte, hdr.Length)
 	_, err = io.ReadFull(sc.conn, answer)
 	if err != nil {
 		return nil, err

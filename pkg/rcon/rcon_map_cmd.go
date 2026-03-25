@@ -116,6 +116,16 @@ func (r *Rcon) ShuffleMapSequence(enabled bool) error {
 	return err
 }
 
+func (r *Rcon) GetMapShuffleEnabled() (bool, error) {
+	resp, err := runCommand[api.GetMapShuffleEnabled, api.RespMapShuffleEnabled](r,
+		api.GetMapShuffleEnabled{},
+	)
+	if err != nil {
+		return false, err
+	}
+	return resp.Enable, nil
+}
+
 func (r *Rcon) GetCurrentMapSequence() ([]hll.Layer, error) {
 	layers := []hll.Layer{}
 	resp, err := getMapSequence(r)

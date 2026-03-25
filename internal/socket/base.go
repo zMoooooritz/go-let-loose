@@ -15,6 +15,10 @@ const (
 	StatusInternalError StatusCode = 500
 )
 
+const (
+	MAGIC_HEADER_VALUE = 0xDE450508
+)
+
 type RconError struct {
 	Code    StatusCode
 	Message string
