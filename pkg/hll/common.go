@@ -71,11 +71,11 @@ type ServerConfig struct {
 type SessionInfo struct {
 	ServerName         string
 	MapName            string
-	GameMode           GameMode
+	GameMode           GameModeIdentifier
 	RemainingMatchTime time.Duration
 	MatchTime          time.Duration
-	AlliedFaction      Faction
-	AxisFaction        Faction
+	AlliedFaction      FactionIdentifier
+	AxisFaction        FactionIdentifier
 	MaxPlayerCount     int
 	AlliedScore        int
 	AxisScore          int

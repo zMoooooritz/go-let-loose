@@ -33,7 +33,7 @@ func (v *rconVerification) verifyLayers(r *Rcon) {
 
 	appLayers := []string{}
 	for _, layer := range hll.AllLayers() {
-		appLayers = append(appLayers, layer.ID)
+		appLayers = append(appLayers, string(layer.ID))
 	}
 
 	appLayersNotInAPI := []string{}

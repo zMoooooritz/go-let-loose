@@ -9,10 +9,10 @@ import (
 	"github.com/zMoooooritz/go-let-loose/pkg/hll"
 )
 
-func (r *Rcon) GetCurrentMap() (hll.GameMap, error) {
+func (r *Rcon) GetCurrentMap() (hll.Map, error) {
 	resp, err := getSessionInfo(r)
 	if err != nil {
-		return hll.GameMap{}, err
+		return hll.Map{}, err
 	}
 	return hll.LogMapNameToMap(resp.MapName), nil
 }
@@ -63,7 +63,7 @@ func (r *Rcon) GetCurrentMapRotation() ([]hll.Layer, error) {
 func (r *Rcon) AddMapToRotation(layer hll.Layer, index int) error {
 	_, err := runCommand[api.AddMapToRotation, any](r,
 		api.AddMapToRotation{
-			MapName: layer.ID,
+			MapName: string(layer.ID),
 			Index:   int32(index),
 		},
 	)
@@ -82,7 +82,7 @@ func (r *Rcon) RemoveMapFromRotation(index int) error {
 func (r *Rcon) AddMapToSequence(layer hll.Layer, index int) error {
 	_, err := runCommand[api.AddMapToSequence, any](r,
 		api.AddMapToSequence{
-			MapName: layer.ID,
+			MapName: string(layer.ID),
 			Index:   int32(index),
 		},
 	)
@@ -101,7 +101,7 @@ func (r *Rcon) RemoveMapToSequence(index int) error {
 func (r *Rcon) SetCurrentMap(layer hll.Layer) error {
 	_, err := runCommand[api.ChangeMap, any](r,
 		api.ChangeMap{
-			MapName: layer.ID,
+			MapName: string(layer.ID),
 		},
 	)
 	return err
@@ -163,12 +163,12 @@ func (r *Rcon) GetCurrentMapObjectives() ([][]string, error) {
 // 0    => random objective in that row/col
 // 1-3  => specific objective
 func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
-	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+	if len(objs) != hll.ObjectiveCount[hll.GAMEMODE_WARFARE] {
 		return errors.New("incorrect number of objectives provided")
 	}
 
-	for i := range hll.ObjectiveCount[hll.GmWarfare] {
-		if objs[i] < 0 || objs[i] > hll.OptionsPerObjective[hll.GmWarfare] {
+	for i := range hll.ObjectiveCount[hll.GAMEMODE_WARFARE] {
+		if objs[i] < 0 || objs[i] > hll.OptionsPerObjective[hll.GAMEMODE_WARFARE] {
 			return errors.New("provided index is invalid (0 (random) and 1-3 are valid)")
 		}
 	}
@@ -179,7 +179,7 @@ func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
 	}
 
 	objNames := []string{}
-	for i := range hll.ObjectiveCount[hll.GmWarfare] {
+	for i := range hll.ObjectiveCount[hll.GAMEMODE_WARFARE] {
 		objectiveIndex := objs[i]
 		if objectiveIndex == 0 {
 			objectiveIndex = rand.Intn(3) + 1
@@ -191,7 +191,7 @@ func (r *Rcon) SetGameLayoutIndexed(objs []int) error {
 }
 
 func (r *Rcon) SetGameLayout(objs []string) error {
-	if len(objs) != hll.ObjectiveCount[hll.GmWarfare] {
+	if len(objs) != hll.ObjectiveCount[hll.GAMEMODE_WARFARE] {
 		return errors.New("incorrect number of objectives provided")
 	}
 	_, err := runCommand[api.SetSectorLayout, any](r,
@@ -209,14 +209,14 @@ func (r *Rcon) SetGameLayout(objs []string) error {
 func (r *Rcon) SetDynamicWeatherToggle(layer hll.Layer, enabled bool) error {
 	_, err := runCommand[api.SetDynamicWeatherEnabled, any](r,
 		api.SetDynamicWeatherEnabled{
-			MapId:  layer.ID,
+			MapId:  string(layer.ID),
 			Enable: enabled,
 		},
 	)
 	return err
 }
 
-func (r *Rcon) SetMatchTimer(gameMode hll.GameMode, duration int) error {
+func (r *Rcon) SetMatchTimer(gameMode hll.GameModeIdentifier, duration int) error {
 	_, err := runCommand[api.SetMatchTimer, any](r,
 		api.SetMatchTimer{
 			GameMode:    string(gameMode),
@@ -226,7 +226,7 @@ func (r *Rcon) SetMatchTimer(gameMode hll.GameMode, duration int) error {
 	return err
 }
 
-func (r *Rcon) RemoveMatchTimer(gameMode hll.GameMode) error {
+func (r *Rcon) RemoveMatchTimer(gameMode hll.GameModeIdentifier) error {
 	_, err := runCommand[api.RemoveMatchTimer, any](r,
 		api.RemoveMatchTimer{
 			GameMode: string(gameMode),
@@ -235,7 +235,7 @@ func (r *Rcon) RemoveMatchTimer(gameMode hll.GameMode) error {
 	return err
 }
 
-func (r *Rcon) SetWarmupTimer(gameMode hll.GameMode, duration int) error {
+func (r *Rcon) SetWarmupTimer(gameMode hll.GameModeIdentifier, duration int) error {
 	_, err := runCommand[api.SetWarmupTimer, any](r,
 		api.SetWarmupTimer{
 			GameMode:     string(gameMode),
@@ -245,7 +245,7 @@ func (r *Rcon) SetWarmupTimer(gameMode hll.GameMode, duration int) error {
 	return err
 }
 
-func (r *Rcon) RemoveWarmupTimer(gameMode hll.GameMode) error {
+func (r *Rcon) RemoveWarmupTimer(gameMode hll.GameModeIdentifier) error {
 	_, err := runCommand[api.RemoveWarmupTimer, any](r,
 		api.RemoveWarmupTimer{
 			GameMode: string(gameMode),

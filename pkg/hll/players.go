@@ -2,75 +2,18 @@ package hll
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 	"time"
 )
 
-type Role string
-
-const (
-	ArmyCommander      Role = "ArmyCommander"
-	Officer            Role = "Officer"
-	Rifleman           Role = "Rifleman"
-	Assault            Role = "Assault"
-	AutomaticRifleman  Role = "AutomaticRifleman"
-	Medic              Role = "Medic"
-	Support            Role = "Support"
-	HeavyMachinegunner Role = "HeavyMachineGunner"
-	AntiTank           Role = "AntiTank"
-	Engineer           Role = "Engineer"
-	TankCommander      Role = "TankCommander"
-	Crewman            Role = "Crewman"
-	Spotter            Role = "Spotter"
-	Sniper             Role = "Sniper"
-	ArtilleryObserver  Role = "ArtilleryObserver"
-	Operator           Role = "Operator"
-	Gunner             Role = "Gunner"
-	NoRole             Role = "None"
-)
-
-var (
-	leaderRoles = []Role{ArmyCommander, Officer, Spotter, TankCommander, ArtilleryObserver}
-	roleIntMap  = []Role{
-		Rifleman, Assault, AutomaticRifleman, Medic, Spotter, Support,
-		HeavyMachinegunner, AntiTank, Engineer, Officer, Sniper,
-		Crewman, TankCommander, ArmyCommander, ArtilleryObserver,
-		Operator, Gunner,
-	}
-)
-
-func RoleFromString(name string) Role {
-	role := Role(name)
-	if slices.Contains(roleIntMap, role) {
-		return role
-	}
-	return NoRole
-}
-
-func RoleFromInt(id int) Role {
-	if id >= 0 && id < len(roleIntMap) {
-		return roleIntMap[id]
-	}
-	return NoRole
-}
-
-func (r Role) ToInt() int {
-	for i, role := range roleIntMap {
-		if r == role {
-			return i
-		}
-	}
-	return NoRoleID
-}
-
 type SquadType string
 
 const (
-	StInfanty   SquadType = "Infantry"
-	StRecon     SquadType = "Recon"
-	StArmor     SquadType = "Armor"
-	StArtillery SquadType = "Artillery"
+	SQUAD_TYPE_COMMANDER SquadType = "Commander"
+	SQUAD_TYPE_INFANTRY  SquadType = "Infantry"
+	SQUAD_TYPE_RECON     SquadType = "Recon"
+	SQUAD_TYPE_ARMOR     SquadType = "Armor"
+	SQUAD_TYPE_ARTILLERY SquadType = "Artillery"
 )
 
 const (
@@ -78,7 +21,6 @@ const (
 	CommandUnitName  = "Command"
 	NoUnitID         = -1
 	NoUnitName       = "None"
-	NoRoleID         = -1
 	NoPlayerID       = "NONE"
 	NoLoadout        = "NONE"
 	NeutralSquadName = "Neutral"
@@ -127,10 +69,10 @@ func UnitFromString(name string) Unit {
 type ScoreCategory int
 
 const (
-	ScCombat ScoreCategory = iota
-	ScOffense
-	ScDefense
-	ScSupport
+	SCORE_CATEGORY_COMBAT ScoreCategory = iota
+	SCORE_CATEGORY_OFFENSE
+	SCORE_CATEGORY_DEFENSE
+	SCORE_CATEGORY_SUPPORT
 )
 
 type Score struct {
@@ -142,13 +84,13 @@ type Score struct {
 
 func (s Score) GetScoreValue(scoreCategory ScoreCategory) int {
 	switch scoreCategory {
-	case ScCombat:
+	case SCORE_CATEGORY_COMBAT:
 		return s.Combat
-	case ScOffense:
+	case SCORE_CATEGORY_OFFENSE:
 		return s.Offense
-	case ScDefense:
+	case SCORE_CATEGORY_DEFENSE:
 		return s.Defense
-	case ScSupport:
+	case SCORE_CATEGORY_SUPPORT:
 		return s.Support
 	}
 	return 0
@@ -162,10 +104,10 @@ type PlayerInfo struct {
 type AdminRole string
 
 const (
-	ArOwner     AdminRole = "owner"
-	ArSenior    AdminRole = "senior"
-	ArJunior    AdminRole = "junior"
-	ArSpectator AdminRole = "spectator"
+	ADMIN_ROLE_OWNER     AdminRole = "owner"
+	ADMIN_ROLE_SENIOR    AdminRole = "senior"
+	ADMIN_ROLE_JUNIOR    AdminRole = "junior"
+	ADMIN_ROLE_SPECTATOR AdminRole = "spectator"
 )
 
 type Admin struct {
@@ -177,26 +119,26 @@ type Admin struct {
 type ChatScope string
 
 const (
-	CsTeam ChatScope = "Team"
-	CsUnit ChatScope = "Unit"
-	CsNone ChatScope = "None"
+	CHAT_SCOPE_TEAM ChatScope = "Team"
+	CHAT_SCOPE_UNIT ChatScope = "Unit"
+	CHAT_SCOPE_NONE ChatScope = "None"
 )
 
 func ChatScopeFromString(name string) ChatScope {
 	typed := ChatScope(name)
 	switch typed {
-	case CsTeam, CsUnit:
+	case CHAT_SCOPE_TEAM, CHAT_SCOPE_UNIT:
 		return typed
 	default:
-		return CsNone
+		return CHAT_SCOPE_NONE
 	}
 }
 
 type BanType int
 
 const (
-	TempBan BanType = iota
-	PermaBan
+	BAN_TYPE_TEMP BanType = iota
+	BAN_TYPE_PERMA
 )
 
 type ServerBan struct {
@@ -219,19 +161,19 @@ func IsNameProblematic(name string) bool {
 type PlayerPlatform string
 
 const (
-	PlayerPlatformSteam PlayerPlatform = "steam"
-	PlayerPlatformEpic  PlayerPlatform = "epic"
-	PlayerPlatformXbos  PlayerPlatform = "xbl"
-	PlayerPlatformNone  PlayerPlatform = "none"
+	PLAYER_PLATFORM_STEAM PlayerPlatform = "steam"
+	PLAYER_PLATFORM_EPIC  PlayerPlatform = "epic"
+	PLAYER_PLATFORM_XBOS  PlayerPlatform = "xbl"
+	PLAYER_PLATFORM_NONE  PlayerPlatform = "none"
 )
 
 func PlayerPlatformFromString(name string) PlayerPlatform {
 	typed := PlayerPlatform(name)
 	switch typed {
-	case PlayerPlatformSteam, PlayerPlatformEpic, PlayerPlatformXbos:
+	case PLAYER_PLATFORM_STEAM, PLAYER_PLATFORM_EPIC, PLAYER_PLATFORM_XBOS:
 		return typed
 	default:
-		return PlayerPlatformNone
+		return PLAYER_PLATFORM_NONE
 	}
 }
 
@@ -239,9 +181,9 @@ type DetailedPlayerInfo struct {
 	PlayerInfo
 	ClanTag           string
 	Platform          PlayerPlatform
-	Team              Team
-	Faction           Faction
-	Role              Role
+	Team              TeamIdentifier
+	Faction           FactionIdentifier
+	Role              RoleIdentifier
 	Unit              Unit
 	Loadout           string
 	Kills             int
@@ -256,8 +198,8 @@ type DetailedPlayerInfo struct {
 
 func EmptyDetailedPlayerInfo() DetailedPlayerInfo {
 	dpi := DetailedPlayerInfo{}
-	dpi.Team = TmNone
-	dpi.Role = NoRole
+	dpi.Team = TEAM_NONE
+	dpi.Role = ROLE_UNKNOWN
 	dpi.Unit = NoUnit
 	dpi.Loadout = NoLoadout
 	return dpi
@@ -272,12 +214,8 @@ func (pi DetailedPlayerInfo) IsSpawned() bool {
 }
 
 func (pi DetailedPlayerInfo) IsSquadLeader() bool {
-	for _, role := range leaderRoles {
-		if pi.Role == role {
-			return true
-		}
-	}
-	return false
+	role := RoleFromString(string(pi.Role))
+	return role.IsSquadLeader
 }
 
 // the distance is measured in 1 unit = 1 cm on the 2x2km map

@@ -143,7 +143,7 @@ func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
 	return hll.SessionInfo{
 		ServerName:         resp.ServerName,
 		MapName:            resp.MapName,
-		GameMode:           hll.GameMode(resp.GameMode),
+		GameMode:           hll.GameModeIdentifier(resp.GameMode),
 		RemainingMatchTime: time.Second * time.Duration(resp.RemainingMatchTime),
 		MatchTime:          time.Second * time.Duration(resp.MatchTime),
 		AlliedFaction:      hll.FactionFromInt(int(resp.AlliedFaction)),

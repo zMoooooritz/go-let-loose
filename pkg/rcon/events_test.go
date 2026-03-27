@@ -279,8 +279,8 @@ func TestLogToEvents(t *testing.T) {
 					Name: "A Player Name",
 					ID:   "12345678901234567",
 				},
-				Team:    hll.TmAllies,
-				Scope:   hll.CsTeam,
+				Team:    hll.TEAM_ALLIES,
+				Scope:   hll.CHAT_SCOPE_TEAM,
 				Message: "Please build garrisons!",
 			},
 		}
@@ -300,8 +300,8 @@ func TestLogToEvents(t *testing.T) {
 					Name: "A Player Name",
 					ID:   "12345678901234567",
 				},
-				Team:    hll.TmAxis,
-				Scope:   hll.CsUnit,
+				Team:    hll.TEAM_AXIS,
+				Scope:   hll.CHAT_SCOPE_UNIT,
 				Message: "comms working?",
 			},
 		}

@@ -129,8 +129,8 @@ func (tde TeamDeathEvent) AffectedPlayers() []PlayerInfo {
 type TeamSwitchEvent struct {
 	GenericEvent
 	Player PlayerInfo
-	From   Team
-	To     Team
+	From   TeamIdentifier
+	To     TeamIdentifier
 }
 
 func (tse TeamSwitchEvent) AffectedPlayers() []PlayerInfo {
@@ -140,7 +140,7 @@ func (tse TeamSwitchEvent) AffectedPlayers() []PlayerInfo {
 type ChatEvent struct {
 	GenericEvent
 	Player  PlayerInfo
-	Team    Team
+	Team    TeamIdentifier
 	Scope   ChatScope
 	Message string
 }
@@ -181,7 +181,7 @@ func (me MessageEvent) AffectedPlayers() []PlayerInfo {
 
 type MatchStartEvent struct {
 	GenericEvent
-	Map GameMap
+	Map Map
 }
 
 func (mse MatchStartEvent) AffectedPlayers() []PlayerInfo {
@@ -190,7 +190,7 @@ func (mse MatchStartEvent) AffectedPlayers() []PlayerInfo {
 
 type MatchEndEvent struct {
 	GenericEvent
-	Map   GameMap
+	Map   Map
 	Score TeamData
 }
 
@@ -276,8 +276,8 @@ func (psue PlayerScoreUpdateEvent) AffectedPlayers() []PlayerInfo {
 type PlayerSwitchTeamEvent struct {
 	GenericEvent
 	Player  PlayerInfo
-	OldTeam Team
-	NewTeam Team
+	OldTeam TeamIdentifier
+	NewTeam TeamIdentifier
 }
 
 func (pstee PlayerSwitchTeamEvent) AffectedPlayers() []PlayerInfo {
@@ -298,8 +298,8 @@ func (psse PlayerSwitchSquadEvent) AffectedPlayers() []PlayerInfo {
 type PlayerChangeRoleEvent struct {
 	GenericEvent
 	Player  PlayerInfo
-	OldRole Role
-	NewRole Role
+	OldRole RoleIdentifier
+	NewRole RoleIdentifier
 }
 
 func (pcre PlayerChangeRoleEvent) AffectedPlayers() []PlayerInfo {
