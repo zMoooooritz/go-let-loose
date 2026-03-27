@@ -125,7 +125,7 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 		Platform:          hll.PlayerPlatformFromString(player.Platform),
 		Team:              hll.FactionFromInt(int(player.Team)).Team(),
 		Faction:           hll.FactionFromInt(int(player.Team)),
-		Role:              hll.RoleFromInt(int(player.Role)),
+		Role:              hll.RoleIdentifierFromInt(int(player.Role)),
 		Unit:              constructUnit(player.Platoon, int(player.Role)),
 		Loadout:           player.Loadout,
 		Kills:             int(player.Stats.InfantryKills),
@@ -149,11 +149,11 @@ func toDetailedPlayerInfo(player *api.RespPlayerInformation) hll.DetailedPlayerI
 }
 
 func constructUnit(playerPlatoon string, playerRole int) hll.Unit {
-	role := hll.RoleFromInt(playerRole)
+	role := hll.RoleIdentifierFromInt(playerRole)
 
 	var unit hll.Unit
 	if playerPlatoon == "" {
-		if role == hll.ArmyCommander {
+		if role == hll.ROLE_ARMYCOMMANDER {
 			unit = hll.CommandUnit
 		} else {
 			unit = hll.NoUnit

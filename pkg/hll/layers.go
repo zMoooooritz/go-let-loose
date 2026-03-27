@@ -6,362 +6,1757 @@ import (
 	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
-type Map string
+type GameModeIdentifier string
 
 const (
-	MP_STMEREEGLISE    Map = "stmereeglise"
-	MP_STMARIEDUMONT   Map = "stmariedumont"
-	MP_UTAHBEACH       Map = "utahbeach"
-	MP_OMAHABEACH      Map = "omahabeach"
-	MP_PURPLEHEARTLANE Map = "purpleheartlane"
-	MP_CARENTAN        Map = "carentan"
-	MP_HURTGENFOREST   Map = "hurtgenforest"
-	MP_HILL400         Map = "hill400"
-	MP_FOY             Map = "foy"
-	MP_KURSK           Map = "kursk"
-	MP_SMOLENSK        Map = "smolensk"
-	MP_STALINGRAD      Map = "stalingrad"
-	MP_REMAGEN         Map = "remagen"
-	MP_KHARKOV         Map = "kharkov"
-	MP_DRIEL           Map = "driel"
-	MP_ELALAMEIN       Map = "elalamein"
-	MP_MORTAIN         Map = "mortain"
-	MP_ELSENBORNRIDGE  Map = "elsenbornridge"
-	MP_TOBRUK          Map = "tobruk"
-	MP_INVALID         Map = "invalid"
+	GAMEMODE_WARFARE   GameModeIdentifier = "Warfare"
+	GAMEMODE_OFFENSIVE GameModeIdentifier = "Offensive"
+	GAMEMODE_SKIRMISH  GameModeIdentifier = "Skirmish"
+	GAMEMODE_CONQUEST  GameModeIdentifier = "Conquest"
 )
 
-type GameMode string
+var ObjectiveCount = map[GameModeIdentifier]int{
+	GAMEMODE_WARFARE:   5,
+	GAMEMODE_OFFENSIVE: 5,
+	GAMEMODE_SKIRMISH:  1,
+}
+
+var OptionsPerObjective = map[GameModeIdentifier]int{
+	GAMEMODE_WARFARE:   3,
+	GAMEMODE_OFFENSIVE: 3,
+	GAMEMODE_SKIRMISH:  1,
+}
+
+type TimeOfDay string
 
 const (
-	GmWarfare   GameMode = "Warfare"
-	GmOffensive GameMode = "Offensive"
-	GmSkirmish  GameMode = "Skirmish"
+	TOD_NIGHT TimeOfDay = "Night"
+	TOD_DAY   TimeOfDay = "Day"
+	TOD_DUSK  TimeOfDay = "Dusk"
+	TOD_DAWN  TimeOfDay = "Dawn"
 )
 
-var ObjectiveCount = map[GameMode]int{
-	GmWarfare:   5,
-	GmOffensive: 5,
-	GmSkirmish:  1,
-}
-
-var OptionsPerObjective = map[GameMode]int{
-	GmWarfare:   3,
-	GmOffensive: 3,
-	GmSkirmish:  1,
-}
-
-type Orientation string
+type Weather string
 
 const (
-	OriHorizontal Orientation = "Horizontal"
-	OriVertical   Orientation = "Vertical"
+	WEATHER_CLEAR    Weather = "Clear"
+	WEATHER_RAIN     Weather = "Rain"
+	WEATHER_OVERCAST Weather = "Overcast"
+	WEATHER_SNOW     Weather = "Snow"
 )
 
-type Team string
+type LayerIdentifier string
 
 const (
-	TmAllies Team = "Allies"
-	TmAxis   Team = "Axis"
-	TmNone   Team = "None"
-
-	NoTeamID = 0
+	LAYER_CARENTAN_WARFARE                    LayerIdentifier = "carentan_warfare"
+	LAYER_CARENTAN_WARFARE_NIGHT              LayerIdentifier = "carentan_warfare_night"
+	LAYER_CARENTAN_OFFENSIVE_US               LayerIdentifier = "carentan_offensive_us"
+	LAYER_CARENTAN_OFFENSIVE_GER              LayerIdentifier = "carentan_offensive_ger"
+	LAYER_CAR_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "CAR_S_1944_Day_P_Skirmish"
+	LAYER_CAR_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "CAR_S_1944_Rain_P_Skirmish"
+	LAYER_CAR_S_1944_DUSK_P_SKIRMISH          LayerIdentifier = "CAR_S_1944_Dusk_P_Skirmish"
+	LAYER_DRIEL_WARFARE                       LayerIdentifier = "driel_warfare"
+	LAYER_DRIEL_WARFARE_NIGHT                 LayerIdentifier = "driel_warfare_night"
+	LAYER_DRIEL_OFFENSIVE_US                  LayerIdentifier = "driel_offensive_us"
+	LAYER_DRIEL_OFFENSIVE_GER                 LayerIdentifier = "driel_offensive_ger"
+	LAYER_DRL_S_1944_P_SKIRMISH               LayerIdentifier = "DRL_S_1944_P_Skirmish"
+	LAYER_DRL_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "DRL_S_1944_Night_P_Skirmish"
+	LAYER_DRL_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "DRL_S_1944_Day_P_Skirmish"
+	LAYER_ELALAMEIN_WARFARE                   LayerIdentifier = "elalamein_warfare"
+	LAYER_ELALAMEIN_WARFARE_NIGHT             LayerIdentifier = "elalamein_warfare_night"
+	LAYER_ELALAMEIN_OFFENSIVE_CW              LayerIdentifier = "elalamein_offensive_CW"
+	LAYER_ELALAMEIN_OFFENSIVE_GER             LayerIdentifier = "elalamein_offensive_ger"
+	LAYER_ELA_S_1942_P_SKIRMISH               LayerIdentifier = "ELA_S_1942_P_Skirmish"
+	LAYER_ELA_S_1942_NIGHT_P_SKIRMISH         LayerIdentifier = "ELA_S_1942_Night_P_Skirmish"
+	LAYER_ELSENBORNRIDGE_WARFARE_DAY          LayerIdentifier = "elsenbornridge_warfare_day"
+	LAYER_ELSENBORNRIDGE_WARFARE_MORNING      LayerIdentifier = "elsenbornridge_warfare_morning"
+	LAYER_ELSENBORNRIDGE_WARFARE_NIGHT        LayerIdentifier = "elsenbornridge_warfare_night"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_DAY      LayerIdentifier = "elsenbornridge_offensiveUS_day"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_MORNING  LayerIdentifier = "elsenbornridge_offensiveUS_morning"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_NIGHT    LayerIdentifier = "elsenbornridge_offensiveUS_night"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_DAY     LayerIdentifier = "elsenbornridge_offensiveger_day"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_MORNING LayerIdentifier = "elsenbornridge_offensiveger_morning"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_NIGHT   LayerIdentifier = "elsenbornridge_offensiveger_night"
+	LAYER_ELSENBORNRIDGE_SKIRMISH_DAY         LayerIdentifier = "elsenbornridge_skirmish_day"
+	LAYER_ELSENBORNRIDGE_SKIRMISH_MORNING     LayerIdentifier = "elsenbornridge_skirmish_morning"
+	LAYER_ELSENBORNRIDGE_SKIRMISH_NIGHT       LayerIdentifier = "elsenbornridge_skirmish_night"
+	LAYER_FOY_WARFARE                         LayerIdentifier = "foy_warfare"
+	LAYER_FOY_WARFARE_NIGHT                   LayerIdentifier = "foy_warfare_night"
+	LAYER_FOY_OFFENSIVE_US                    LayerIdentifier = "foy_offensive_us"
+	LAYER_FOY_OFFENSIVE_GER                   LayerIdentifier = "foy_offensive_ger"
+	LAYER_HURTGENFOREST_WARFARE_V2            LayerIdentifier = "hurtgenforest_warfare_V2"
+	LAYER_HURTGENFOREST_WARFARE_V2_NIGHT      LayerIdentifier = "hurtgenforest_warfare_V2_night"
+	LAYER_HURTGENFOREST_OFFENSIVE_US          LayerIdentifier = "hurtgenforest_offensive_US"
+	LAYER_HURTGENFOREST_OFFENSIVE_GER         LayerIdentifier = "hurtgenforest_offensive_ger"
+	LAYER_HILL400_WARFARE                     LayerIdentifier = "hill400_warfare"
+	LAYER_HILL400_OFFENSIVE_US                LayerIdentifier = "hill400_offensive_US"
+	LAYER_HILL400_OFFENSIVE_GER               LayerIdentifier = "hill400_offensive_ger"
+	LAYER_HIL_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "HIL_S_1944_Day_P_Skirmish"
+	LAYER_HIL_S_1944_DUSK_P_SKIRMISH          LayerIdentifier = "HIL_S_1944_Dusk_P_Skirmish"
+	LAYER_KHARKOV_WARFARE                     LayerIdentifier = "kharkov_warfare"
+	LAYER_KHARKOV_WARFARE_NIGHT               LayerIdentifier = "kharkov_warfare_night"
+	LAYER_KHARKOV_OFFENSIVE_RUS               LayerIdentifier = "kharkov_offensive_rus"
+	LAYER_KHARKOV_OFFENSIVE_GER               LayerIdentifier = "kharkov_offensive_ger"
+	LAYER_KURSK_WARFARE                       LayerIdentifier = "kursk_warfare"
+	LAYER_KURSK_WARFARE_NIGHT                 LayerIdentifier = "kursk_warfare_night"
+	LAYER_KURSK_OFFENSIVE_RUS                 LayerIdentifier = "kursk_offensive_rus"
+	LAYER_KURSK_OFFENSIVE_GER                 LayerIdentifier = "kursk_offensive_ger"
+	LAYER_MORTAIN_WARFARE_DAY                 LayerIdentifier = "mortain_warfare_day"
+	LAYER_MORTAIN_WARFARE_DUSK                LayerIdentifier = "mortain_warfare_dusk"
+	LAYER_MORTAIN_WARFARE_OVERCAST            LayerIdentifier = "mortain_warfare_overcast"
+	LAYER_MORTAIN_OFFENSIVEUS_DAY             LayerIdentifier = "mortain_offensiveUS_day"
+	LAYER_MORTAIN_OFFENSIVEUS_OVERCAST        LayerIdentifier = "mortain_offensiveUS_overcast"
+	LAYER_MORTAIN_OFFENSIVEUS_DUSK            LayerIdentifier = "mortain_offensiveUS_dusk"
+	LAYER_MORTAIN_OFFENSIVEGER_DAY            LayerIdentifier = "mortain_offensiveger_day"
+	LAYER_MORTAIN_OFFENSIVEGER_OVERCAST       LayerIdentifier = "mortain_offensiveger_overcast"
+	LAYER_MORTAIN_OFFENSIVEGER_DUSK           LayerIdentifier = "mortain_offensiveger_dusk"
+	LAYER_MORTAIN_SKIRMISH_DAY                LayerIdentifier = "mortain_skirmish_day"
+	LAYER_MORTAIN_SKIRMISH_OVERCAST           LayerIdentifier = "mortain_skirmish_overcast"
+	LAYER_MORTAIN_SKIRMISH_DUSK               LayerIdentifier = "mortain_skirmish_dusk"
+	LAYER_OMAHABEACH_WARFARE                  LayerIdentifier = "omahabeach_warfare"
+	LAYER_OMAHABEACH_WARFARE_NIGHT            LayerIdentifier = "omahabeach_warfare_night"
+	LAYER_OMAHABEACH_OFFENSIVE_US             LayerIdentifier = "omahabeach_offensive_us"
+	LAYER_OMAHABEACH_OFFENSIVE_GER            LayerIdentifier = "omahabeach_offensive_ger"
+	LAYER_PHL_L_1944_WARFARE                  LayerIdentifier = "PHL_L_1944_Warfare"
+	LAYER_PHL_L_1944_WARFARE_NIGHT            LayerIdentifier = "PHL_L_1944_Warfare_Night"
+	LAYER_PHL_L_1944_OFFENSIVEUS              LayerIdentifier = "PHL_L_1944_OffensiveUS"
+	LAYER_PHL_L_1944_OFFENSIVEGER             LayerIdentifier = "PHL_L_1944_OffensiveGER"
+	LAYER_PHL_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "PHL_S_1944_Rain_P_Skirmish"
+	LAYER_PHL_S_1944_MORNING_P_SKIRMISH       LayerIdentifier = "PHL_S_1944_Morning_P_Skirmish"
+	LAYER_PHL_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "PHL_S_1944_Night_P_Skirmish"
+	LAYER_REM_L_1945_WARFARE                  LayerIdentifier = "REM_L_1945_Warfare"
+	LAYER_REM_L_1945_WARFARENIGHT             LayerIdentifier = "REM_L_1945_WarfareNight"
+	LAYER_REM_L_1945_OFFENSIVEUS              LayerIdentifier = "REM_L_1945_OffensiveUS"
+	LAYER_REM_L_1945_OFFENSIVEGER             LayerIdentifier = "REM_L_1945_OffensiveGER"
+	LAYER_REM_S_1945_P_SKIRMISH_DAY           LayerIdentifier = "REM_S_1945_P_Skirmish_Day"
+	LAYER_REM_S_1945_P_SKIRMISH_NIGHT         LayerIdentifier = "REM_S_1945_P_Skirmish_Night"
+	LAYER_SMOLENSK_WARFARE_DAY                LayerIdentifier = "smolensk_warfare_day"
+	LAYER_SMOLENSK_WARFARE_DUSK               LayerIdentifier = "smolensk_warfare_dusk"
+	LAYER_SMOLENSK_WARFARE_NIGHT              LayerIdentifier = "smolensk_warfare_night"
+	LAYER_SMOLENSK_OFFENSIVERUS_DAY           LayerIdentifier = "smolensk_offensiveRus_day"
+	LAYER_SMOLENSK_OFFENSIVERUS_DUSK          LayerIdentifier = "smolensk_offensiveRus_dusk"
+	LAYER_SMOLENSK_OFFENSIVERUS_NIGHT         LayerIdentifier = "smolensk_offensiveRus_night"
+	LAYER_SMOLENSK_OFFENSIVEGER_DAY           LayerIdentifier = "smolensk_offensiveGer_Day"
+	LAYER_SMOLENSK_OFFENSIVEGER_DUSK          LayerIdentifier = "smolensk_offensiveGer_dusk"
+	LAYER_SMOLENSK_OFFENSIVEGER_NIGHT         LayerIdentifier = "smolensk_offensiveGer_night"
+	LAYER_SMOLENSK_SKIRMISH_DAY               LayerIdentifier = "smolensk_skirmish_day"
+	LAYER_SMOLENSK_SKIRMISH_DUSK              LayerIdentifier = "smolensk_skirmish_dusk"
+	LAYER_SMOLENSK_SKIRMISH_NIGHT             LayerIdentifier = "smolensk_skirmish_night"
+	LAYER_STA_L_1942_WARFARE                  LayerIdentifier = "STA_L_1942_Warfare"
+	LAYER_STA_L_1942_WARFARE_NIGHT            LayerIdentifier = "STA_L_1942_Warfare_Night"
+	LAYER_STA_L_1942_OFFENSIVERUS             LayerIdentifier = "STA_L_1942_OffensiveRUS"
+	LAYER_STA_L_1942_OFFENSIVEGER             LayerIdentifier = "STA_L_1942_OffensiveGER"
+	LAYER_STA_S_1942_P_SKIRMISH_DUSK          LayerIdentifier = "STA_S_1942_P_Skirmish_Dusk"
+	LAYER_STA_S_1942_P_SKIRMISH_OVERCAST      LayerIdentifier = "STA_S_1942_P_Skirmish_Overcast"
+	LAYER_STMARIEDUMONT_WARFARE               LayerIdentifier = "stmariedumont_warfare"
+	LAYER_STMARIEDUMONT_WARFARE_NIGHT         LayerIdentifier = "stmariedumont_warfare_night"
+	LAYER_STMARIEDUMONT_OFF_US                LayerIdentifier = "stmariedumont_off_us"
+	LAYER_STMARIEDUMONT_OFF_GER               LayerIdentifier = "stmariedumont_off_ger"
+	LAYER_SMDM_S_1944_DAY_P_SKIRMISH          LayerIdentifier = "SMDM_S_1944_Day_P_Skirmish"
+	LAYER_SMDM_S_1944_NIGHT_P_SKIRMISH        LayerIdentifier = "SMDM_S_1944_Night_P_Skirmish"
+	LAYER_SMDM_S_1944_RAIN_P_SKIRMISH         LayerIdentifier = "SMDM_S_1944_Rain_P_Skirmish"
+	LAYER_STMEREEGLISE_WARFARE                LayerIdentifier = "stmereeglise_warfare"
+	LAYER_STMEREEGLISE_WARFARE_NIGHT          LayerIdentifier = "stmereeglise_warfare_night"
+	LAYER_STMEREEGLISE_OFFENSIVE_US           LayerIdentifier = "stmereeglise_offensive_us"
+	LAYER_STMEREEGLISE_OFFENSIVE_GER          LayerIdentifier = "stmereeglise_offensive_ger"
+	LAYER_SME_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "SME_S_1944_Day_P_Skirmish"
+	LAYER_SME_S_1944_MORNING_P_SKIRMISH       LayerIdentifier = "SME_S_1944_Morning_P_Skirmish"
+	LAYER_SME_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "SME_S_1944_Night_P_Skirmish"
+	LAYER_TOBRUK_WARFARE_DAY                  LayerIdentifier = "tobruk_warfare_day"
+	LAYER_TOBRUK_WARFARE_DUSK                 LayerIdentifier = "tobruk_warfare_dusk"
+	LAYER_TOBRUK_WARFARE_MORNING              LayerIdentifier = "tobruk_warfare_morning"
+	LAYER_TOBRUK_OFFENSIVEBRITISH_DAY         LayerIdentifier = "tobruk_offensivebritish_day"
+	LAYER_TOBRUK_OFFENSIVEGER_DAY             LayerIdentifier = "tobruk_offensiveger_day"
+	LAYER_TOBRUK_OFFENSIVEBRITISH_DUSK        LayerIdentifier = "tobruk_offensivebritish_dusk"
+	LAYER_TOBRUK_OFFENSIVEGER_DUSK            LayerIdentifier = "tobruk_offensiveger_dusk"
+	LAYER_TOBRUK_OFFENSIVEBRITISH_MORNING     LayerIdentifier = "tobruk_offensivebritish_morning"
+	LAYER_TOBRUK_OFFENSIVEGER_MORNING         LayerIdentifier = "tobruk_offensiveger_morning"
+	LAYER_TOBRUK_SKIRMISH_DAY                 LayerIdentifier = "tobruk_skirmish_day"
+	LAYER_TOBRUK_SKIRMISH_DUSK                LayerIdentifier = "tobruk_skirmish_dusk"
+	LAYER_TOBRUK_SKIRMISH_MORNING             LayerIdentifier = "tobruk_skirmish_morning"
+	LAYER_UTAHBEACH_WARFARE                   LayerIdentifier = "utahbeach_warfare"
+	LAYER_UTAHBEACH_WARFARE_NIGHT             LayerIdentifier = "utahbeach_warfare_night"
+	LAYER_UTAHBEACH_OFFENSIVE_US              LayerIdentifier = "utahbeach_offensive_us"
+	LAYER_UTAHBEACH_OFFENSIVE_GER             LayerIdentifier = "utahbeach_offensive_ger"
 )
-
-func (t Team) ToInt() int {
-	switch t {
-	case TmAllies:
-		return 1
-	case TmAxis:
-		return 2
-	default:
-		return NoTeamID
-	}
-}
-
-func TeamFromString(name string) Team {
-	typed := Team(name)
-	switch typed {
-	case TmAllies, TmAxis:
-		return typed
-	default:
-		return TmNone
-	}
-}
-
-func TeamFromInt(team int) Team {
-	switch team {
-	case 1:
-		return TmAllies
-	case 2:
-		return TmAxis
-	default:
-		return TmNone
-	}
-}
-
-type Environment string
-
-const (
-	EnvDay      Environment = "Day"
-	EnvDusk     Environment = "Dusk"
-	EnvDawn     Environment = "Dawn"
-	EnvNight    Environment = "Night"
-	EnvOvercast Environment = "Overcast"
-	EnvRain     Environment = "Rain"
-	EnvFoggy    Environment = "Foggy"
-	EnvMorning  Environment = "Morning"
-)
-
-type Faction string
-
-const (
-	FctUS         Faction = "US"
-	FctGER        Faction = "GER"
-	FctRUS        Faction = "RUS"
-	FctSOV        Faction = "SOV"
-	FctGB         Faction = "GB"
-	FctCW         Faction = "CW"
-	FctDAK        Faction = "DAK"
-	FctB8A        Faction = "B8A"
-	FctUnassigned Faction = "NON"
-)
-
-var AllFactions = []Faction{FctUS, FctGER, FctRUS, FctSOV, FctGB, FctCW, FctDAK, FctB8A}
-
-func (f Faction) Team() Team {
-	if f == FctUnassigned {
-		return TmNone
-	}
-	if f == FctGER || f == FctDAK {
-		return TmAxis
-	}
-	return TmAllies
-}
-
-func FactionFromInt(id int) Faction {
-	switch id {
-	case 0:
-		return FctGER
-	case 1:
-		return FctUS
-	case 2:
-		return FctRUS
-	case 3:
-		return FctGB
-	case 4:
-		return FctDAK
-	case 5:
-		return FctB8A
-	default:
-		return FctUnassigned
-	}
-}
-
-type GameMap struct {
-	ID               Map
-	Name             string
-	Tag              string
-	PrettyName       string
-	ShortName        string
-	Allies           Faction
-	Axis             Faction
-	Orientation      Orientation // Whether the sectors are arranged horizontally (left-to-right) or vertically (top-to-bottom)
-	MirroredFactions bool        // If the start side of the factions is mirrored or not. By default, Allies start left/top and Axis start right/bottom
-}
 
 type Layer struct {
-	ID          string
-	GameMap     GameMap
-	GameMode    GameMode
-	Attackers   Team
-	Environment Environment
+	ID                 LayerIdentifier
+	MapIdentifier      MapIdentifier
+	GameModeIdentifier GameModeIdentifier
+	TimeOfDay          TimeOfDay
+	Weather            Weather
+	PrettyName         string
+	AttackingTeam      TeamIdentifier
+	DefendingTeam      TeamIdentifier
+	AttackingFaction   FactionIdentifier
+	DefendingFaction   FactionIdentifier
 }
 
-var mapMap = map[Map]GameMap{
-	MP_CARENTAN:        {ID: MP_CARENTAN, Name: "CARENTAN", Tag: "CAR", PrettyName: "Carentan", ShortName: "Carentan", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
-	MP_DRIEL:           {ID: MP_DRIEL, Name: "DRIEL", Tag: "DRL", PrettyName: "Driel", ShortName: "Driel", Allies: FctGB, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
-	MP_ELALAMEIN:       {ID: MP_ELALAMEIN, Name: "EL ALAMEIN", Tag: "ELA", PrettyName: "El Alamein", ShortName: "Alamein", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_ELSENBORNRIDGE:  {ID: MP_ELSENBORNRIDGE, Name: "ELSENBORN RIDGE", Tag: "EBR", PrettyName: "Elsenborn Ridge", ShortName: "Elsenborn", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
-	MP_FOY:             {ID: MP_FOY, Name: "FOY", Tag: "FOY", PrettyName: "Foy", ShortName: "Foy", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
-	MP_HILL400:         {ID: MP_HILL400, Name: "HILL 400", Tag: "HIL", PrettyName: "Hill 400", ShortName: "Hill 400", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
-	MP_HURTGENFOREST:   {ID: MP_HURTGENFOREST, Name: "HÜRTGEN FOREST", Tag: "HUR", PrettyName: "Hurtgen Forest", ShortName: "Hurtgen", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
-	MP_KHARKOV:         {ID: MP_KHARKOV, Name: "Kharkov", Tag: "KHA", PrettyName: "Kharkov", ShortName: "Kharkov", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
-	MP_KURSK:           {ID: MP_KURSK, Name: "KURSK", Tag: "KUR", PrettyName: "Kursk", ShortName: "Kursk", Allies: FctRUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
-	MP_MORTAIN:         {ID: MP_MORTAIN, Name: "MORTAIN", Tag: "MOR", PrettyName: "Mortain", ShortName: "Mortain", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: false},
-	MP_OMAHABEACH:      {ID: MP_OMAHABEACH, Name: "OMAHA BEACH", Tag: "OMA", PrettyName: "Omaha Beach", ShortName: "Omaha", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_PURPLEHEARTLANE: {ID: MP_PURPLEHEARTLANE, Name: "PURPLE HEART LANE", Tag: "PHL", PrettyName: "Purple Heart Lane", ShortName: "PHL", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
-	MP_REMAGEN:         {ID: MP_REMAGEN, Name: "REMAGEN", Tag: "REM", PrettyName: "Remagen", ShortName: "Remagen", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: true},
-	MP_SMOLENSK:        {ID: MP_SMOLENSK, Name: "SMOLENSK", Tag: "SMO", PrettyName: "Smolensk", ShortName: "Smolensk", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_STMARIEDUMONT:   {ID: MP_STMARIEDUMONT, Name: "ST MARIE DU MONT", Tag: "BRC", PrettyName: "St. Marie Du Mont", ShortName: "SMDM", Allies: FctUS, Axis: FctGER, Orientation: OriVertical, MirroredFactions: false},
-	MP_STMEREEGLISE:    {ID: MP_STMEREEGLISE, Name: "SAINTE-MÈRE-ÉGLISE", Tag: "SME", PrettyName: "St. Mere Eglise", ShortName: "SME", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_STALINGRAD:      {ID: MP_STALINGRAD, Name: "STALINGRAD", Tag: "STA", PrettyName: "Stalingrad", ShortName: "Stalingrad", Allies: FctRUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_TOBRUK:          {ID: MP_TOBRUK, Name: "TOBRUK", Tag: "TBK", PrettyName: "Tobruk", ShortName: "Tobruk", Allies: FctGB, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
-	MP_UTAHBEACH:       {ID: MP_UTAHBEACH, Name: "UTAH BEACH", Tag: "UTA", PrettyName: "Utah Beach", ShortName: "Utah", Allies: FctUS, Axis: FctGER, Orientation: OriHorizontal, MirroredFactions: true},
+var layerMap = map[LayerIdentifier]Layer{
+	LAYER_CARENTAN_WARFARE: {
+		ID:                 LAYER_CARENTAN_WARFARE,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_CARENTAN_WARFARE_NIGHT: {
+		ID:                 LAYER_CARENTAN_WARFARE_NIGHT,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_CARENTAN_OFFENSIVE_US: {
+		ID:                 LAYER_CARENTAN_OFFENSIVE_US,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_CARENTAN_OFFENSIVE_GER: {
+		ID:                 LAYER_CARENTAN_OFFENSIVE_GER,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_CAR_S_1944_DAY_P_SKIRMISH: {
+		ID:                 LAYER_CAR_S_1944_DAY_P_SKIRMISH,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_CAR_S_1944_RAIN_P_SKIRMISH: {
+		ID:                 LAYER_CAR_S_1944_RAIN_P_SKIRMISH,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_RAIN,
+		PrettyName:         "Carentan Skirmish (Rain)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_CAR_S_1944_DUSK_P_SKIRMISH: {
+		ID:                 LAYER_CAR_S_1944_DUSK_P_SKIRMISH,
+		MapIdentifier:      MAP_CARENTAN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Carentan Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_DRIEL_WARFARE: {
+		ID:                 LAYER_DRIEL_WARFARE,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_DRIEL_WARFARE_NIGHT: {
+		ID:                 LAYER_DRIEL_WARFARE_NIGHT,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_DRIEL_OFFENSIVE_US: {
+		ID:                 LAYER_DRIEL_OFFENSIVE_US,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Off. CW",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_CW,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_DRIEL_OFFENSIVE_GER: {
+		ID:                 LAYER_DRIEL_OFFENSIVE_GER,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_CW,
+	},
+	LAYER_DRL_S_1944_P_SKIRMISH: {
+		ID:                 LAYER_DRL_S_1944_P_SKIRMISH,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Skirmish (Dawn)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_DRL_S_1944_NIGHT_P_SKIRMISH: {
+		ID:                 LAYER_DRL_S_1944_NIGHT_P_SKIRMISH,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_DRL_S_1944_DAY_P_SKIRMISH: {
+		ID:                 LAYER_DRL_S_1944_DAY_P_SKIRMISH,
+		MapIdentifier:      MAP_DRIEL,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Driel Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELALAMEIN_WARFARE: {
+		ID:                 LAYER_ELALAMEIN_WARFARE,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELALAMEIN_WARFARE_NIGHT: {
+		ID:                 LAYER_ELALAMEIN_WARFARE_NIGHT,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Warfare (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELALAMEIN_OFFENSIVE_CW: {
+		ID:                 LAYER_ELALAMEIN_OFFENSIVE_CW,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Off. B8A",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_B8A,
+		DefendingFaction:   FACTION_DAK,
+	},
+	LAYER_ELALAMEIN_OFFENSIVE_GER: {
+		ID:                 LAYER_ELALAMEIN_OFFENSIVE_GER,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Off. DAK",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_DAK,
+		DefendingFaction:   FACTION_B8A,
+	},
+	LAYER_ELA_S_1942_P_SKIRMISH: {
+		ID:                 LAYER_ELA_S_1942_P_SKIRMISH,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELA_S_1942_NIGHT_P_SKIRMISH: {
+		ID:                 LAYER_ELA_S_1942_NIGHT_P_SKIRMISH,
+		MapIdentifier:      MAP_ELALAMEIN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "El Alamein Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_WARFARE_DAY: {
+		ID:                 LAYER_ELSENBORNRIDGE_WARFARE_DAY,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Warfare (Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_WARFARE_MORNING: {
+		ID:                 LAYER_ELSENBORNRIDGE_WARFARE_MORNING,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Warfare (Dawn, Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_WARFARE_NIGHT: {
+		ID:                 LAYER_ELSENBORNRIDGE_WARFARE_NIGHT,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Warfare (Night, Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_DAY: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEUS_DAY,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. US (Snow)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_MORNING: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEUS_MORNING,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. US (Dawn, Snow)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_NIGHT: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEUS_NIGHT,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. US (Night, Snow)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_DAY: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEGER_DAY,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. GER (Snow)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_MORNING: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEGER_MORNING,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. GER (Dawn, Snow)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_NIGHT: {
+		ID:                 LAYER_ELSENBORNRIDGE_OFFENSIVEGER_NIGHT,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Off. GER (Night, Snow)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_ELSENBORNRIDGE_SKIRMISH_DAY: {
+		ID:                 LAYER_ELSENBORNRIDGE_SKIRMISH_DAY,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Skirmish (Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_SKIRMISH_MORNING: {
+		ID:                 LAYER_ELSENBORNRIDGE_SKIRMISH_MORNING,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Skirmish (Dawn, Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_ELSENBORNRIDGE_SKIRMISH_NIGHT: {
+		ID:                 LAYER_ELSENBORNRIDGE_SKIRMISH_NIGHT,
+		MapIdentifier:      MAP_ELSENBORNRIDGE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_SNOW,
+		PrettyName:         "Elsenborn Ridge Skirmish (Night, Snow)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_FOY_WARFARE: {
+		ID:                 LAYER_FOY_WARFARE,
+		MapIdentifier:      MAP_FOY,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Foy Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_FOY_WARFARE_NIGHT: {
+		ID:                 LAYER_FOY_WARFARE_NIGHT,
+		MapIdentifier:      MAP_FOY,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Foy Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_FOY_OFFENSIVE_US: {
+		ID:                 LAYER_FOY_OFFENSIVE_US,
+		MapIdentifier:      MAP_FOY,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Foy Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_FOY_OFFENSIVE_GER: {
+		ID:                 LAYER_FOY_OFFENSIVE_GER,
+		MapIdentifier:      MAP_FOY,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Foy Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_HURTGENFOREST_WARFARE_V2: {
+		ID:                 LAYER_HURTGENFOREST_WARFARE_V2,
+		MapIdentifier:      MAP_HURTGENFOREST,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hurtgen Forest Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_HURTGENFOREST_WARFARE_V2_NIGHT: {
+		ID:                 LAYER_HURTGENFOREST_WARFARE_V2_NIGHT,
+		MapIdentifier:      MAP_HURTGENFOREST,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hurtgen Forest Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_HURTGENFOREST_OFFENSIVE_US: {
+		ID:                 LAYER_HURTGENFOREST_OFFENSIVE_US,
+		MapIdentifier:      MAP_HURTGENFOREST,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hurtgen Forest Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_HURTGENFOREST_OFFENSIVE_GER: {
+		ID:                 LAYER_HURTGENFOREST_OFFENSIVE_GER,
+		MapIdentifier:      MAP_HURTGENFOREST,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hurtgen Forest Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_HILL400_WARFARE: {
+		ID:                 LAYER_HILL400_WARFARE,
+		MapIdentifier:      MAP_HILL400,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hill 400 Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_HILL400_OFFENSIVE_US: {
+		ID:                 LAYER_HILL400_OFFENSIVE_US,
+		MapIdentifier:      MAP_HILL400,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hill 400 Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_HILL400_OFFENSIVE_GER: {
+		ID:                 LAYER_HILL400_OFFENSIVE_GER,
+		MapIdentifier:      MAP_HILL400,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hill 400 Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_HIL_S_1944_DAY_P_SKIRMISH: {
+		ID:                 LAYER_HIL_S_1944_DAY_P_SKIRMISH,
+		MapIdentifier:      MAP_HILL400,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hill 400 Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_HIL_S_1944_DUSK_P_SKIRMISH: {
+		ID:                 LAYER_HIL_S_1944_DUSK_P_SKIRMISH,
+		MapIdentifier:      MAP_HILL400,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Hill 400 Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_KHARKOV_WARFARE: {
+		ID:                 LAYER_KHARKOV_WARFARE,
+		MapIdentifier:      MAP_KHARKOV,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kharkov Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_KHARKOV_WARFARE_NIGHT: {
+		ID:                 LAYER_KHARKOV_WARFARE_NIGHT,
+		MapIdentifier:      MAP_KHARKOV,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kharkov Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_KHARKOV_OFFENSIVE_RUS: {
+		ID:                 LAYER_KHARKOV_OFFENSIVE_RUS,
+		MapIdentifier:      MAP_KHARKOV,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kharkov Off. SOV",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_KHARKOV_OFFENSIVE_GER: {
+		ID:                 LAYER_KHARKOV_OFFENSIVE_GER,
+		MapIdentifier:      MAP_KHARKOV,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kharkov Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_KURSK_WARFARE: {
+		ID:                 LAYER_KURSK_WARFARE,
+		MapIdentifier:      MAP_KURSK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kursk Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_KURSK_WARFARE_NIGHT: {
+		ID:                 LAYER_KURSK_WARFARE_NIGHT,
+		MapIdentifier:      MAP_KURSK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kursk Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_KURSK_OFFENSIVE_RUS: {
+		ID:                 LAYER_KURSK_OFFENSIVE_RUS,
+		MapIdentifier:      MAP_KURSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kursk Off. SOV",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_KURSK_OFFENSIVE_GER: {
+		ID:                 LAYER_KURSK_OFFENSIVE_GER,
+		MapIdentifier:      MAP_KURSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Kursk Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_MORTAIN_WARFARE_DAY: {
+		ID:                 LAYER_MORTAIN_WARFARE_DAY,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_MORTAIN_WARFARE_DUSK: {
+		ID:                 LAYER_MORTAIN_WARFARE_DUSK,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Warfare (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_MORTAIN_WARFARE_OVERCAST: {
+		ID:                 LAYER_MORTAIN_WARFARE_OVERCAST,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Mortain Warfare (Overcast)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_MORTAIN_OFFENSIVEUS_DAY: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEUS_DAY,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_MORTAIN_OFFENSIVEUS_OVERCAST: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEUS_OVERCAST,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Mortain Off. US (Overcast)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_MORTAIN_OFFENSIVEUS_DUSK: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEUS_DUSK,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Off. US (Dusk)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_MORTAIN_OFFENSIVEGER_DAY: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEGER_DAY,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_MORTAIN_OFFENSIVEGER_OVERCAST: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEGER_OVERCAST,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Mortain Off. GER (Overcast)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_MORTAIN_OFFENSIVEGER_DUSK: {
+		ID:                 LAYER_MORTAIN_OFFENSIVEGER_DUSK,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Off. GER (Dusk)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_MORTAIN_SKIRMISH_DAY: {
+		ID:                 LAYER_MORTAIN_SKIRMISH_DAY,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_MORTAIN_SKIRMISH_OVERCAST: {
+		ID:                 LAYER_MORTAIN_SKIRMISH_OVERCAST,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Mortain Skirmish (Overcast)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_MORTAIN_SKIRMISH_DUSK: {
+		ID:                 LAYER_MORTAIN_SKIRMISH_DUSK,
+		MapIdentifier:      MAP_MORTAIN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Mortain Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_OMAHABEACH_WARFARE: {
+		ID:                 LAYER_OMAHABEACH_WARFARE,
+		MapIdentifier:      MAP_OMAHABEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Omaha Beach Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_OMAHABEACH_WARFARE_NIGHT: {
+		ID:                 LAYER_OMAHABEACH_WARFARE_NIGHT,
+		MapIdentifier:      MAP_OMAHABEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Omaha Beach Warfare (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_OMAHABEACH_OFFENSIVE_US: {
+		ID:                 LAYER_OMAHABEACH_OFFENSIVE_US,
+		MapIdentifier:      MAP_OMAHABEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Omaha Beach Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_OMAHABEACH_OFFENSIVE_GER: {
+		ID:                 LAYER_OMAHABEACH_OFFENSIVE_GER,
+		MapIdentifier:      MAP_OMAHABEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Omaha Beach Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_PHL_L_1944_WARFARE: {
+		ID:                 LAYER_PHL_L_1944_WARFARE,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_PHL_L_1944_WARFARE_NIGHT: {
+		ID:                 LAYER_PHL_L_1944_WARFARE_NIGHT,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_PHL_L_1944_OFFENSIVEUS: {
+		ID:                 LAYER_PHL_L_1944_OFFENSIVEUS,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_PHL_L_1944_OFFENSIVEGER: {
+		ID:                 LAYER_PHL_L_1944_OFFENSIVEGER,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_PHL_S_1944_RAIN_P_SKIRMISH: {
+		ID:                 LAYER_PHL_S_1944_RAIN_P_SKIRMISH,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_RAIN,
+		PrettyName:         "Purple Heart Lane Skirmish (Rain)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_PHL_S_1944_MORNING_P_SKIRMISH: {
+		ID:                 LAYER_PHL_S_1944_MORNING_P_SKIRMISH,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Skirmish (Dawn)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_PHL_S_1944_NIGHT_P_SKIRMISH: {
+		ID:                 LAYER_PHL_S_1944_NIGHT_P_SKIRMISH,
+		MapIdentifier:      MAP_PURPLEHEARTLANE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Purple Heart Lane Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_REM_L_1945_WARFARE: {
+		ID:                 LAYER_REM_L_1945_WARFARE,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_REM_L_1945_WARFARENIGHT: {
+		ID:                 LAYER_REM_L_1945_WARFARENIGHT,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_REM_L_1945_OFFENSIVEUS: {
+		ID:                 LAYER_REM_L_1945_OFFENSIVEUS,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_REM_L_1945_OFFENSIVEGER: {
+		ID:                 LAYER_REM_L_1945_OFFENSIVEGER,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_REM_S_1945_P_SKIRMISH_DAY: {
+		ID:                 LAYER_REM_S_1945_P_SKIRMISH_DAY,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_REM_S_1945_P_SKIRMISH_NIGHT: {
+		ID:                 LAYER_REM_S_1945_P_SKIRMISH_NIGHT,
+		MapIdentifier:      MAP_REMAGEN,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Remagen Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_WARFARE_DAY: {
+		ID:                 LAYER_SMOLENSK_WARFARE_DAY,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_WARFARE_DUSK: {
+		ID:                 LAYER_SMOLENSK_WARFARE_DUSK,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Warfare (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_WARFARE_NIGHT: {
+		ID:                 LAYER_SMOLENSK_WARFARE_NIGHT,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_OFFENSIVERUS_DAY: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVERUS_DAY,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. SOV",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_SMOLENSK_OFFENSIVERUS_DUSK: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVERUS_DUSK,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. SOV (Dusk)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_SMOLENSK_OFFENSIVERUS_NIGHT: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVERUS_NIGHT,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. SOV (Night)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_SMOLENSK_OFFENSIVEGER_DAY: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVEGER_DAY,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_SMOLENSK_OFFENSIVEGER_DUSK: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVEGER_DUSK,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. GER (Dusk)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_SMOLENSK_OFFENSIVEGER_NIGHT: {
+		ID:                 LAYER_SMOLENSK_OFFENSIVEGER_NIGHT,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Off. GER (Night)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_SMOLENSK_SKIRMISH_DAY: {
+		ID:                 LAYER_SMOLENSK_SKIRMISH_DAY,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_SKIRMISH_DUSK: {
+		ID:                 LAYER_SMOLENSK_SKIRMISH_DUSK,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMOLENSK_SKIRMISH_NIGHT: {
+		ID:                 LAYER_SMOLENSK_SKIRMISH_NIGHT,
+		MapIdentifier:      MAP_SMOLENSK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Smolensk Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STA_L_1942_WARFARE: {
+		ID:                 LAYER_STA_L_1942_WARFARE,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Stalingrad Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STA_L_1942_WARFARE_NIGHT: {
+		ID:                 LAYER_STA_L_1942_WARFARE_NIGHT,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Stalingrad Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STA_L_1942_OFFENSIVERUS: {
+		ID:                 LAYER_STA_L_1942_OFFENSIVERUS,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Stalingrad Off. SOV (Overcast)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_SOV,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_STA_L_1942_OFFENSIVEGER: {
+		ID:                 LAYER_STA_L_1942_OFFENSIVEGER,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Stalingrad Off. GER (Dawn)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_SOV,
+	},
+	LAYER_STA_S_1942_P_SKIRMISH_DUSK: {
+		ID:                 LAYER_STA_S_1942_P_SKIRMISH_DUSK,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Stalingrad Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STA_S_1942_P_SKIRMISH_OVERCAST: {
+		ID:                 LAYER_STA_S_1942_P_SKIRMISH_OVERCAST,
+		MapIdentifier:      MAP_STALINGRAD,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_OVERCAST,
+		PrettyName:         "Stalingrad Skirmish (Overcast)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMARIEDUMONT_WARFARE: {
+		ID:                 LAYER_STMARIEDUMONT_WARFARE,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMARIEDUMONT_WARFARE_NIGHT: {
+		ID:                 LAYER_STMARIEDUMONT_WARFARE_NIGHT,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMARIEDUMONT_OFF_US: {
+		ID:                 LAYER_STMARIEDUMONT_OFF_US,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_STMARIEDUMONT_OFF_GER: {
+		ID:                 LAYER_STMARIEDUMONT_OFF_GER,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_SMDM_S_1944_DAY_P_SKIRMISH: {
+		ID:                 LAYER_SMDM_S_1944_DAY_P_SKIRMISH,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMDM_S_1944_NIGHT_P_SKIRMISH: {
+		ID:                 LAYER_SMDM_S_1944_NIGHT_P_SKIRMISH,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Marie Du Mont Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SMDM_S_1944_RAIN_P_SKIRMISH: {
+		ID:                 LAYER_SMDM_S_1944_RAIN_P_SKIRMISH,
+		MapIdentifier:      MAP_STMARIEDUMONT,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_RAIN,
+		PrettyName:         "St. Marie Du Mont Skirmish (Rain)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMEREEGLISE_WARFARE: {
+		ID:                 LAYER_STMEREEGLISE_WARFARE,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMEREEGLISE_WARFARE_NIGHT: {
+		ID:                 LAYER_STMEREEGLISE_WARFARE_NIGHT,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_STMEREEGLISE_OFFENSIVE_US: {
+		ID:                 LAYER_STMEREEGLISE_OFFENSIVE_US,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_STMEREEGLISE_OFFENSIVE_GER: {
+		ID:                 LAYER_STMEREEGLISE_OFFENSIVE_GER,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
+	LAYER_SME_S_1944_DAY_P_SKIRMISH: {
+		ID:                 LAYER_SME_S_1944_DAY_P_SKIRMISH,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SME_S_1944_MORNING_P_SKIRMISH: {
+		ID:                 LAYER_SME_S_1944_MORNING_P_SKIRMISH,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Skirmish (Dawn)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_SME_S_1944_NIGHT_P_SKIRMISH: {
+		ID:                 LAYER_SME_S_1944_NIGHT_P_SKIRMISH,
+		MapIdentifier:      MAP_STMEREEGLISE,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "St. Mere Eglise Skirmish (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_WARFARE_DAY: {
+		ID:                 LAYER_TOBRUK_WARFARE_DAY,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_WARFARE_DUSK: {
+		ID:                 LAYER_TOBRUK_WARFARE_DUSK,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Warfare (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_WARFARE_MORNING: {
+		ID:                 LAYER_TOBRUK_WARFARE_MORNING,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Warfare (Dawn)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_OFFENSIVEBRITISH_DAY: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEBRITISH_DAY,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. B8A",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_B8A,
+		DefendingFaction:   FACTION_DAK,
+	},
+	LAYER_TOBRUK_OFFENSIVEGER_DAY: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEGER_DAY,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. DAK",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_DAK,
+		DefendingFaction:   FACTION_B8A,
+	},
+	LAYER_TOBRUK_OFFENSIVEBRITISH_DUSK: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEBRITISH_DUSK,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. B8A (Dusk)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_B8A,
+		DefendingFaction:   FACTION_DAK,
+	},
+	LAYER_TOBRUK_OFFENSIVEGER_DUSK: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEGER_DUSK,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. DAK (Dusk)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_DAK,
+		DefendingFaction:   FACTION_B8A,
+	},
+	LAYER_TOBRUK_OFFENSIVEBRITISH_MORNING: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEBRITISH_MORNING,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. B8A (Dawn)",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_B8A,
+		DefendingFaction:   FACTION_DAK,
+	},
+	LAYER_TOBRUK_OFFENSIVEGER_MORNING: {
+		ID:                 LAYER_TOBRUK_OFFENSIVEGER_MORNING,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Off. DAK (Dawn)",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_DAK,
+		DefendingFaction:   FACTION_B8A,
+	},
+	LAYER_TOBRUK_SKIRMISH_DAY: {
+		ID:                 LAYER_TOBRUK_SKIRMISH_DAY,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Skirmish",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_SKIRMISH_DUSK: {
+		ID:                 LAYER_TOBRUK_SKIRMISH_DUSK,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DUSK,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Skirmish (Dusk)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_TOBRUK_SKIRMISH_MORNING: {
+		ID:                 LAYER_TOBRUK_SKIRMISH_MORNING,
+		MapIdentifier:      MAP_TOBRUK,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Tobruk Skirmish (Dawn)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_UTAHBEACH_WARFARE: {
+		ID:                 LAYER_UTAHBEACH_WARFARE,
+		MapIdentifier:      MAP_UTAHBEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Utah Beach Warfare",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_UTAHBEACH_WARFARE_NIGHT: {
+		ID:                 LAYER_UTAHBEACH_WARFARE_NIGHT,
+		MapIdentifier:      MAP_UTAHBEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Utah Beach Warfare (Night)",
+		AttackingTeam:      TEAM_NONE,
+		DefendingTeam:      TEAM_NONE,
+		AttackingFaction:   FACTION_UNASSIGNED,
+		DefendingFaction:   FACTION_UNASSIGNED,
+	},
+	LAYER_UTAHBEACH_OFFENSIVE_US: {
+		ID:                 LAYER_UTAHBEACH_OFFENSIVE_US,
+		MapIdentifier:      MAP_UTAHBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Utah Beach Off. US",
+		AttackingTeam:      TEAM_ALLIES,
+		DefendingTeam:      TEAM_AXIS,
+		AttackingFaction:   FACTION_US,
+		DefendingFaction:   FACTION_GER,
+	},
+	LAYER_UTAHBEACH_OFFENSIVE_GER: {
+		ID:                 LAYER_UTAHBEACH_OFFENSIVE_GER,
+		MapIdentifier:      MAP_UTAHBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Utah Beach Off. GER",
+		AttackingTeam:      TEAM_AXIS,
+		DefendingTeam:      TEAM_ALLIES,
+		AttackingFaction:   FACTION_GER,
+		DefendingFaction:   FACTION_US,
+	},
 }
 
-var fallback_gamemap = GameMap{ID: MP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: FctUS, Axis: FctGER}
-
-func MapToGameMap(mapName Map) GameMap {
-	if gameMap, ok := mapMap[mapName]; ok {
-		return gameMap
-	}
-	logger.Warn("Map not found:", mapName)
-	return fallback_gamemap
-}
-
-func LogMapNameToMap(logMapName string) GameMap {
-	for _, v := range mapMap {
-		if strings.HasPrefix(logMapName, v.Name) {
-			return v
-		}
-	}
-	logger.Warn("LogMapName not found:", logMapName)
-	return fallback_gamemap
-}
-
-func AllMaps() []GameMap {
-	maps := []GameMap{}
-	for _, m := range mapMap {
-		maps = append(maps, m)
-	}
-	return maps
-}
-
-var layerMap = map[string]Layer{
-	"CAR_S_1944_Day_P_Skirmish":           {ID: "CAR_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvDay},
-	"CAR_S_1944_Dusk_P_Skirmish":          {ID: "CAR_S_1944_Dusk_P_Skirmish", GameMap: mapMap[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvDusk},
-	"CAR_S_1944_Rain_P_Skirmish":          {ID: "CAR_S_1944_Rain_P_Skirmish", GameMap: mapMap[MP_CARENTAN], GameMode: GmSkirmish, Environment: EnvRain},
-	"carentan_offensive_ger":              {ID: "carentan_offensive_ger", GameMap: mapMap[MP_CARENTAN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"carentan_offensive_us":               {ID: "carentan_offensive_us", GameMap: mapMap[MP_CARENTAN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"carentan_warfare":                    {ID: "carentan_warfare", GameMap: mapMap[MP_CARENTAN], GameMode: GmWarfare, Environment: EnvDay},
-	"carentan_warfare_night":              {ID: "carentan_warfare_night", GameMap: mapMap[MP_CARENTAN], GameMode: GmWarfare, Environment: EnvNight},
-	"driel_offensive_ger":                 {ID: "driel_offensive_ger", GameMap: mapMap[MP_DRIEL], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"driel_offensive_us":                  {ID: "driel_offensive_us", GameMap: mapMap[MP_DRIEL], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"driel_warfare":                       {ID: "driel_warfare", GameMap: mapMap[MP_DRIEL], GameMode: GmWarfare, Environment: EnvDawn},
-	"driel_warfare_night":                 {ID: "driel_warfare_night", GameMap: mapMap[MP_DRIEL], GameMode: GmWarfare, Environment: EnvNight},
-	"DRL_S_1944_P_Skirmish":               {ID: "DRL_S_1944_P_Skirmish", GameMap: mapMap[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvDawn},
-	"DRL_S_1944_Day_P_Skirmish":           {ID: "DRL_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvDay},
-	"DRL_S_1944_Night_P_Skirmish":         {ID: "DRL_S_1944_Night_P_Skirmish", GameMap: mapMap[MP_DRIEL], GameMode: GmSkirmish, Environment: EnvNight},
-	"ELA_S_1942_P_Skirmish":               {ID: "ELA_S_1942_P_Skirmish", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmSkirmish, Environment: EnvDay},
-	"ELA_S_1942_Night_P_Skirmish":         {ID: "ELA_S_1942_Night_P_Skirmish", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmSkirmish, Environment: EnvDusk},
-	"elalamein_offensive_CW":              {ID: "elalamein_offensive_CW", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"elalamein_offensive_ger":             {ID: "elalamein_offensive_ger", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"elalamein_warfare":                   {ID: "elalamein_warfare", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmWarfare, Environment: EnvDay},
-	"elalamein_warfare_night":             {ID: "elalamein_warfare_night", GameMap: mapMap[MP_ELALAMEIN], GameMode: GmWarfare, Environment: EnvDusk},
-	"elsenbornridge_offensiveger_day":     {ID: "elsenbornridge_offensiveger_day", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"elsenbornridge_offensiveger_morning": {ID: "elsenbornridge_offensiveger_morning", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDawn},
-	"elsenbornridge_offensiveger_night":   {ID: "elsenbornridge_offensiveger_night", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvNight},
-	"elsenbornridge_offensiveUS_day":      {ID: "elsenbornridge_offensiveUS_day", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"elsenbornridge_offensiveUS_morning":  {ID: "elsenbornridge_offensiveUS_morning", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDawn},
-	"elsenbornridge_offensiveUS_night":    {ID: "elsenbornridge_offensiveUS_night", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvNight},
-	"elsenbornridge_skirmish_day":         {ID: "elsenbornridge_skirmish_day", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmSkirmish, Environment: EnvDay},
-	"elsenbornridge_skirmish_morning":     {ID: "elsenbornridge_skirmish_morning", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmSkirmish, Environment: EnvDawn},
-	"elsenbornridge_skirmish_night":       {ID: "elsenbornridge_skirmish_night", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmSkirmish, Environment: EnvNight},
-	"elsenbornridge_warfare_day":          {ID: "elsenbornridge_warfare_day", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmWarfare, Environment: EnvDay},
-	"elsenbornridge_warfare_morning":      {ID: "elsenbornridge_warfare_morning", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmWarfare, Environment: EnvDawn},
-	"elsenbornridge_warfare_night":        {ID: "elsenbornridge_warfare_night", GameMap: mapMap[MP_ELSENBORNRIDGE], GameMode: GmWarfare, Environment: EnvNight},
-	"foy_offensive_ger":                   {ID: "foy_offensive_ger", GameMap: mapMap[MP_FOY], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"foy_offensive_us":                    {ID: "foy_offensive_us", GameMap: mapMap[MP_FOY], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"foy_warfare":                         {ID: "foy_warfare", GameMap: mapMap[MP_FOY], GameMode: GmWarfare, Environment: EnvDay},
-	"foy_warfare_night":                   {ID: "foy_warfare_night", GameMap: mapMap[MP_FOY], GameMode: GmWarfare, Environment: EnvNight},
-	"HIL_S_1944_Day_P_Skirmish":           {ID: "HIL_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_HILL400], GameMode: GmSkirmish, Environment: EnvDay},
-	"HIL_S_1944_Dusk_P_Skirmish":          {ID: "HIL_S_1944_Dusk_P_Skirmish", GameMap: mapMap[MP_HILL400], GameMode: GmSkirmish, Environment: EnvNight},
-	"hill400_offensive_ger":               {ID: "hill400_offensive_ger", GameMap: mapMap[MP_HILL400], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvFoggy},
-	"hill400_offensive_US":                {ID: "hill400_offensive_US", GameMap: mapMap[MP_HILL400], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"hill400_warfare":                     {ID: "hill400_warfare", GameMap: mapMap[MP_HILL400], GameMode: GmWarfare, Environment: EnvDay},
-	"hurtgenforest_offensive_ger":         {ID: "hurtgenforest_offensive_ger", GameMap: mapMap[MP_HURTGENFOREST], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvFoggy},
-	"hurtgenforest_offensive_US":          {ID: "hurtgenforest_offensive_US", GameMap: mapMap[MP_HURTGENFOREST], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"hurtgenforest_warfare_V2":            {ID: "hurtgenforest_warfare_V2", GameMap: mapMap[MP_HURTGENFOREST], GameMode: GmWarfare, Environment: EnvDay},
-	"hurtgenforest_warfare_V2_night":      {ID: "hurtgenforest_warfare_V2_night", GameMap: mapMap[MP_HURTGENFOREST], GameMode: GmWarfare, Environment: EnvNight},
-	"kharkov_offensive_ger":               {ID: "kharkov_offensive_ger", GameMap: mapMap[MP_KHARKOV], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"kharkov_offensive_rus":               {ID: "kharkov_offensive_rus", GameMap: mapMap[MP_KHARKOV], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"kharkov_warfare":                     {ID: "kharkov_warfare", GameMap: mapMap[MP_KHARKOV], GameMode: GmWarfare, Environment: EnvDay},
-	"kharkov_warfare_night":               {ID: "kharkov_warfare_night", GameMap: mapMap[MP_KHARKOV], GameMode: GmWarfare, Environment: EnvNight},
-	"kursk_offensive_ger":                 {ID: "kursk_offensive_ger", GameMap: mapMap[MP_KURSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"kursk_offensive_rus":                 {ID: "kursk_offensive_rus", GameMap: mapMap[MP_KURSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"kursk_warfare":                       {ID: "kursk_warfare", GameMap: mapMap[MP_KURSK], GameMode: GmWarfare, Environment: EnvDay},
-	"kursk_warfare_night":                 {ID: "kursk_warfare_night", GameMap: mapMap[MP_KURSK], GameMode: GmWarfare, Environment: EnvNight},
-	"mortain_offensiveger_day":            {ID: "mortain_offensiveger_day", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"mortain_offensiveger_dusk":           {ID: "mortain_offensiveger_dusk", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDusk},
-	"mortain_offensiveger_overcast":       {ID: "mortain_offensiveger_overcast", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvOvercast},
-	"mortain_offensiveUS_day":             {ID: "mortain_offensiveUS_day", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"mortain_offensiveUS_dusk":            {ID: "mortain_offensiveUS_dusk", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDusk},
-	"mortain_offensiveUS_overcast":        {ID: "mortain_offensiveUS_overcast", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvOvercast},
-	"mortain_warfare_day":                 {ID: "mortain_warfare_day", GameMap: mapMap[MP_MORTAIN], GameMode: GmWarfare, Environment: EnvDay},
-	"mortain_warfare_dusk":                {ID: "mortain_warfare_dusk", GameMap: mapMap[MP_MORTAIN], GameMode: GmWarfare, Environment: EnvDusk},
-	"mortain_warfare_overcast":            {ID: "mortain_warfare_overcast", GameMap: mapMap[MP_MORTAIN], GameMode: GmOffensive, Environment: EnvOvercast},
-	"mortain_skirmish_day":                {ID: "mortain_skirmish_day", GameMap: mapMap[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvDay},
-	"mortain_skirmish_dusk":               {ID: "mortain_skirmish_dusk", GameMap: mapMap[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvDusk},
-	"mortain_skirmish_overcast":           {ID: "mortain_skirmish_overcast", GameMap: mapMap[MP_MORTAIN], GameMode: GmSkirmish, Environment: EnvOvercast},
-	"omahabeach_offensive_ger":            {ID: "omahabeach_offensive_ger", GameMap: mapMap[MP_OMAHABEACH], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"omahabeach_offensive_us":             {ID: "omahabeach_offensive_us", GameMap: mapMap[MP_OMAHABEACH], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"omahabeach_warfare":                  {ID: "omahabeach_warfare", GameMap: mapMap[MP_OMAHABEACH], GameMode: GmWarfare, Environment: EnvDay},
-	"omahabeach_warfare_night":            {ID: "omahabeach_warfare_night", GameMap: mapMap[MP_OMAHABEACH], GameMode: GmWarfare, Environment: EnvDusk},
-	"PHL_L_1944_OffensiveGER":             {ID: "PHL_L_1944_OffensiveGER", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"PHL_L_1944_OffensiveUS":              {ID: "PHL_L_1944_OffensiveUS", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"PHL_L_1944_Warfare":                  {ID: "PHL_L_1944_Warfare", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmWarfare, Environment: EnvRain},
-	"PHL_L_1944_Warfare_Night":            {ID: "PHL_L_1944_Warfare_Night", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmWarfare, Environment: EnvNight},
-	"PHL_S_1944_Morning_P_Skirmish":       {ID: "PHL_S_1944_Morning_P_Skirmish", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmSkirmish, Environment: EnvMorning},
-	"PHL_S_1944_Night_P_Skirmish":         {ID: "PHL_S_1944_Night_P_Skirmish", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmSkirmish, Environment: EnvNight},
-	"PHL_S_1944_Rain_P_Skirmish":          {ID: "PHL_S_1944_Rain_P_Skirmish", GameMap: mapMap[MP_PURPLEHEARTLANE], GameMode: GmSkirmish, Environment: EnvRain},
-	"REM_L_1945_OffensiveGER":             {ID: "REM_L_1945_OffensiveGER", GameMap: mapMap[MP_REMAGEN], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvFoggy},
-	"REM_L_1945_OffensiveUS":              {ID: "REM_L_1945_OffensiveUS", GameMap: mapMap[MP_REMAGEN], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"REM_L_1945_Warfare":                  {ID: "REM_L_1945_Warfare", GameMap: mapMap[MP_REMAGEN], GameMode: GmWarfare, Environment: EnvDay},
-	"REM_L_1945_WarfareNight":             {ID: "REM_L_1945_WarfareNight", GameMap: mapMap[MP_REMAGEN], GameMode: GmWarfare, Environment: EnvNight},
-	"REM_S_1945_P_Skirmish_Day":           {ID: "REM_S_1945_P_Skirmish_Day", GameMap: mapMap[MP_REMAGEN], GameMode: GmSkirmish, Environment: EnvDay},
-	"REM_S_1945_P_Skirmish_Night":         {ID: "REM_S_1945_P_Skirmish_Night", GameMap: mapMap[MP_REMAGEN], GameMode: GmSkirmish, Environment: EnvNight},
-	"SMDM_S_1944_Day_P_Skirmish":          {ID: "SMDM_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvDay},
-	"SMDM_S_1944_Rain_P_Skirmish":         {ID: "SMDM_S_1944_Rain_P_Skirmish", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvRain},
-	"SMDM_S_1944_Night_P_Skirmish":        {ID: "SMDM_S_1944_Night_P_Skirmish", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmSkirmish, Environment: EnvNight},
-	"SME_S_1944_Day_P_Skirmish":           {ID: "SME_S_1944_Day_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvDay},
-	"SME_S_1944_Morning_P_Skirmish":       {ID: "SME_S_1944_Morning_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvMorning},
-	"SME_S_1944_Night_P_Skirmish":         {ID: "SME_S_1944_Night_P_Skirmish", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmSkirmish, Environment: EnvNight},
-	"smolensk_offensiveGer_Day":           {ID: "smolensk_offensiveGer_Day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"smolensk_offensiveRus_day":           {ID: "smolensk_offensiveRus_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"smolensk_offensiveGer_dusk":          {ID: "smolensk_offensiveGer_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDusk},
-	"smolensk_offensiveRus_dusk":          {ID: "smolensk_offensiveRus_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDusk},
-	"smolensk_offensiveGer_night":         {ID: "smolensk_offensiveGer_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvNight},
-	"smolensk_offensiveRus_night":         {ID: "smolensk_offensiveRus_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvNight},
-	"smolensk_skirmish_day":               {ID: "smolensk_skirmish_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvDay},
-	"smolensk_skirmish_dusk":              {ID: "smolensk_skirmish_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvDusk},
-	"smolensk_skirmish_night":             {ID: "smolensk_skirmish_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmSkirmish, Environment: EnvNight},
-	"smolensk_warfare_day":                {ID: "smolensk_warfare_day", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvDay},
-	"smolensk_warfare_dusk":               {ID: "smolensk_warfare_dusk", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvDusk},
-	"smolensk_warfare_night":              {ID: "smolensk_warfare_night", GameMap: mapMap[MP_SMOLENSK], GameMode: GmWarfare, Environment: EnvNight},
-	"STA_L_1942_Warfare":                  {ID: "STA_L_1942_Warfare", GameMap: mapMap[MP_STALINGRAD], GameMode: GmWarfare, Environment: EnvDay},
-	"STA_L_1942_Warfare_Night":            {ID: "STA_L_1942_Warfare_Night", GameMap: mapMap[MP_STALINGRAD], GameMode: GmWarfare, Environment: EnvNight},
-	"STA_L_1942_OffensiveGER":             {ID: "STA_L_1942_OffensiveGER", GameMap: mapMap[MP_STALINGRAD], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"STA_L_1942_OffensiveRUS":             {ID: "STA_L_1942_OffensiveRUS", GameMap: mapMap[MP_STALINGRAD], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"STA_S_1942_P_Skirmish_Dusk":          {ID: "STA_S_1942_P_Skirmish_Dusk", GameMap: mapMap[MP_STALINGRAD], GameMode: GmSkirmish, Environment: EnvDusk},
-	"STA_S_1942_P_Skirmish_Overcast":      {ID: "STA_S_1942_P_Skirmish_Overcast", GameMap: mapMap[MP_STALINGRAD], GameMode: GmSkirmish, Environment: EnvOvercast},
-	"stmariedumont_off_ger":               {ID: "stmariedumont_off_ger", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"stmariedumont_off_us":                {ID: "stmariedumont_off_us", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"stmariedumont_warfare":               {ID: "stmariedumont_warfare", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmWarfare, Environment: EnvDay},
-	"stmariedumont_warfare_night":         {ID: "stmariedumont_warfare_night", GameMap: mapMap[MP_STMARIEDUMONT], GameMode: GmWarfare, Environment: EnvNight},
-	"stmereeglise_offensive_ger":          {ID: "stmereeglise_offensive_ger", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDawn},
-	"stmereeglise_offensive_us":           {ID: "stmereeglise_offensive_us", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"stmereeglise_warfare":                {ID: "stmereeglise_warfare", GameMap: mapMap[MP_STMEREEGLISE], GameMode: GmWarfare, Environment: EnvDay},
-	"stmereeglise_warfare_night":          {ID: "stmereeglise_warfare_night", GameMap: mapMap[MP_STMEREEGLISE], Environment: EnvNight},
-	"tobruk_offensivebritish_day":         {ID: "tobruk_offensivebritish_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"tobruk_offensivebritish_dusk":        {ID: "tobruk_offensivebritish_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDusk},
-	"tobruk_offensivebritish_morning":     {ID: "tobruk_offensivebritish_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDawn},
-	"tobruk_offensiveger_day":             {ID: "tobruk_offensiveger_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"tobruk_offensiveger_dusk":            {ID: "tobruk_offensiveger_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDusk},
-	"tobruk_offensiveger_morning":         {ID: "tobruk_offensiveger_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDawn},
-	"tobruk_skirmish_day":                 {ID: "tobruk_skirmish_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDay},
-	"tobruk_skirmish_dusk":                {ID: "tobruk_skirmish_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDusk},
-	"tobruk_skirmish_morning":             {ID: "tobruk_skirmish_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmSkirmish, Environment: EnvDawn},
-	"tobruk_warfare_day":                  {ID: "tobruk_warfare_day", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDay},
-	"tobruk_warfare_dusk":                 {ID: "tobruk_warfare_dusk", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDusk},
-	"tobruk_warfare_morning":              {ID: "tobruk_warfare_morning", GameMap: mapMap[MP_TOBRUK], GameMode: GmWarfare, Environment: EnvDawn},
-	"utahbeach_offensive_ger":             {ID: "utahbeach_offensive_ger", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmOffensive, Attackers: TmAxis, Environment: EnvDay},
-	"utahbeach_offensive_us":              {ID: "utahbeach_offensive_us", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmOffensive, Attackers: TmAllies, Environment: EnvDay},
-	"utahbeach_warfare":                   {ID: "utahbeach_warfare", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmWarfare, Environment: EnvDay},
-	"utahbeach_warfare_night":             {ID: "utahbeach_warfare_night", GameMap: mapMap[MP_UTAHBEACH], GameMode: GmWarfare, Environment: EnvNight},
-}
-
-var fallback_layer = Layer{ID: "invalid", GameMap: fallback_gamemap, GameMode: GmWarfare, Environment: EnvDay}
+var fallback_layer = Layer{ID: "invalid", MapIdentifier: "invalid", GameModeIdentifier: GAMEMODE_WARFARE, TimeOfDay: TOD_DAY, Weather: WEATHER_CLEAR}
 var previousLayer = fallback_layer
 
 const (
@@ -370,6 +1765,10 @@ const (
 	loadingMap    = "Loading"
 )
 
+func (l LayerIdentifier) Layer() Layer {
+	return ParseLayer(string(l))
+}
+
 func ParseLayer(layerName string) Layer {
 	layerName, _ = strings.CutSuffix(layerName, restartSuffix)
 
@@ -377,7 +1776,7 @@ func ParseLayer(layerName string) Layer {
 		return previousLayer
 	}
 
-	if lay, ok := layerMap[layerName]; ok {
+	if lay, ok := layerMap[LayerIdentifier(layerName)]; ok {
 		previousLayer = lay
 		return lay
 	}
@@ -393,20 +1792,20 @@ func AllLayers() []Layer {
 	return layers
 }
 
-func LayersByMap(gmap GameMap) []Layer {
+func LayersByMap(mapIdentifier MapIdentifier) []Layer {
 	layers := []Layer{}
 	for _, l := range layerMap {
-		if l.GameMap == gmap {
+		if l.MapIdentifier == mapIdentifier {
 			layers = append(layers, l)
 		}
 	}
 	return layers
 }
 
-func LayersByMode(gmode GameMode) []Layer {
+func LayersByMode(gameModeIdentifier GameModeIdentifier) []Layer {
 	layers := []Layer{}
 	for _, l := range layerMap {
-		if l.GameMode == gmode {
+		if l.GameModeIdentifier == gameModeIdentifier {
 			layers = append(layers, l)
 		}
 	}

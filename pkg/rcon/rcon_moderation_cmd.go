@@ -26,15 +26,15 @@ func (r *Rcon) GetTempBans() ([]hll.ServerBan, error) {
 			AdminName: ban.AdminName,
 			Timestamp: timestamp,
 			Duration:  time.Duration(ban.Duration) * time.Minute,
-			Type:      hll.TempBan,
+			Type:      hll.BAN_TYPE_TEMP,
 		})
 	}
 	return bans, nil
 }
 
 func (r *Rcon) GetPermaBans() ([]hll.ServerBan, error) {
-	data, err := runCommand[api.GetTemporaryBans, api.RespTemporaryBans](r,
-		api.GetTemporaryBans{},
+	data, err := runCommand[api.GetPermanentBans, api.RespPermanentBans](r,
+		api.GetPermanentBans{},
 	)
 	if err != nil {
 		return []hll.ServerBan{}, err
@@ -51,7 +51,7 @@ func (r *Rcon) GetPermaBans() ([]hll.ServerBan, error) {
 			AdminName: ban.AdminName,
 			Timestamp: timestamp,
 			Duration:  time.Duration(ban.Duration) * time.Minute,
-			Type:      hll.PermaBan,
+			Type:      hll.BAN_TYPE_PERMA,
 		})
 	}
 	return bans, nil
@@ -96,7 +96,7 @@ func (r *Rcon) RemovePlayerFromPlatoon(player, reason string) error {
 	return err
 }
 
-func (r *Rcon) DisbandPlatoon(team hll.Team, unit hll.Unit, reason string) error {
+func (r *Rcon) DisbandPlatoon(team hll.TeamIdentifier, unit hll.Unit, reason string) error {
 	_, err := runCommand[api.DisbandPlatoon, any](r,
 		api.DisbandPlatoon{
 			TeamIndex:  int8(team.ToInt()),
