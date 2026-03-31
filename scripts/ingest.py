@@ -137,6 +137,70 @@ class FieldRenderer:
 renderer = FieldRenderer()
 
 # ============================================================================
+# RENDERING COMPLEX NESTED STRUCTURES
+# ============================================================================
+
+def render_grid_coordinate(coord: List[int], depth: int = 0) -> str:
+    """Render a GridCoordinate struct."""
+    return f'{indent(depth)}GridCoordinate{{X: {coord[0]}, Y: {coord[1]}}}'
+
+def render_position(pos: List[float], depth: int = 0) -> str:
+    """Render a Position struct."""
+    return f'{indent(depth)}Position{{X: {pos[0]}, Y: {pos[1]}, Z: {pos[2]}}}'
+
+def render_grid(grid_data: Dict, depth: int = 2) -> str:
+    """Render a Grid struct."""
+    lines = []
+    lines.append(f'{indent(depth)}Grid: Grid{{')
+    lines.append(f'{indent(depth+1)}Scale: {grid_data["scale"]},')
+    lines.append(f'{indent(depth+1)}OffsetX: {grid_data["offset"][0]},')
+    lines.append(f'{indent(depth+1)}OffsetY: {grid_data["offset"][1]},')
+    lines.append(f'{indent(depth+1)}Min: GridCoordinate{{X: {grid_data["size"][0][0]}, Y: {grid_data["size"][0][1]}}},')
+    lines.append(f'{indent(depth+1)}Max: GridCoordinate{{X: {grid_data["size"][1][0]}, Y: {grid_data["size"][1][1]}}},')
+    lines.append(f'{indent(depth)}}},')
+    return '\n'.join(lines)
+
+def render_strongpoint(strongpoint: Dict, depth: int = 4) -> str:
+    """Render a Strongpoint struct."""
+    lines = []
+    lines.append(f'{indent(depth)}Strongpoint: Strongpoint{{')
+    lines.append(f'{indent(depth+1)}ID: "{strongpoint["id"]}",')
+    lines.append(f'{indent(depth+1)}Name: "{strongpoint["name"]}",')
+    lines.append(f'{indent(depth+1)}Center: Position{{X: {strongpoint["center"][0]}, Y: {strongpoint["center"][1]}, Z: {strongpoint["center"][2]}}},')
+    lines.append(f'{indent(depth+1)}Radius: {strongpoint["radius"]},')
+    lines.append(f'{indent(depth)}}},')
+    return '\n'.join(lines)
+
+def render_capture_zone(zone: Dict, depth: int = 3) -> str:
+    """Render a CaptureZone struct."""
+    lines = []
+    lines.append(f'{indent(depth)}{{')
+    lines.append(f'{indent(depth+1)}From: GridCoordinate{{X: {zone["grid_from"][0]}, Y: {zone["grid_from"][1]}}},')
+    lines.append(f'{indent(depth+1)}To: GridCoordinate{{X: {zone["grid_to"][0]}, Y: {zone["grid_to"][1]}}},')
+    lines.append(render_strongpoint(zone["strongpoint"], depth+1))
+    lines.append(f'{indent(depth)}}},')
+    return '\n'.join(lines)
+
+def render_sector(sector: Dict, depth: int = 2) -> str:
+    """Render a Sector struct."""
+    lines = []
+    lines.append(f'{indent(depth)}{{')
+    lines.append(f'{indent(depth+1)}From: GridCoordinate{{X: {sector["grid_from"][0]}, Y: {sector["grid_from"][1]}}},')
+    lines.append(f'{indent(depth+1)}To: GridCoordinate{{X: {sector["grid_to"][0]}, Y: {sector["grid_to"][1]}}},')
+    
+    # Render capture zones
+    if sector['capture_zones']:
+        lines.append(f'{indent(depth+1)}CaptureZones: []CaptureZone{{')
+        for zone in sector['capture_zones']:
+            lines.append(render_capture_zone(zone, depth+2))
+        lines.append(f'{indent(depth+1)}}},')
+    else:
+        lines.append(f'{indent(depth+1)}CaptureZones: []CaptureZone{{}},')
+    
+    lines.append(f'{indent(depth)}}},')
+    return '\n'.join(lines)
+
+# ============================================================================
 # CONST GENERATION - Generate Go const declarations
 # ============================================================================
 
@@ -202,6 +266,36 @@ def print_struct_field(field_name: str, field_value: Any, field_type: str, depth
 # ============================================================================
 # ENTITY-SPECIFIC GENERATORS
 # ============================================================================
+
+def extract_unique_sectors(layers: Dict) -> Dict[str, List]:
+    """Extract unique sector configurations from layers and assign keys."""
+    import hashlib
+    from collections import defaultdict
+    
+    sector_hashes = {}
+    sectors_by_key = {}
+    
+    for layer_id, layer_data in layers.items():
+        map_name = layer_data['map']['id']
+        game_mode = layer_data['game_mode']['id']
+        sectors = layer_data['sectors']
+        
+        # Create a hash to identify unique sector configurations
+        sector_json = json.dumps(sectors, sort_keys=True)
+        shash = hashlib.md5(sector_json.encode()).hexdigest()
+        
+        # Determine the key: map name for large modes, map_skirmish for skirmish
+        if game_mode == 'skirmish':
+            key = f"{map_name}_small"
+        else:
+            key = f"{map_name}_large"
+        
+        # Store the first occurrence of each unique sector configuration
+        if shash not in sector_hashes:
+            sector_hashes[shash] = key
+            sectors_by_key[key] = sectors
+    
+    return sectors_by_key
 
 def render_vehicle_seat(seat: Dict, depth: int = 3):
     """Render a single vehicle seat struct."""
@@ -341,6 +435,33 @@ def do_role(roles: Dict):
     
     print_go_map_footer()
 
+def do_sectors(layers: Dict):
+    """Generate Go code for sectors map."""
+    # Extract unique sector configurations
+    sectors_by_key = extract_unique_sectors(layers)
+    
+    # Generate SectorKey type and constants
+    print("const (")
+    for key in sorted(sectors_by_key.keys()):
+        const_name = to_identifier("SECTORS", key)
+        print(f'    {const_name} SectorsIdentifier = "{key}"')
+    print(")")
+    print()
+    
+    # Generate the sectors map
+    print_go_map_header("sectorsMap", "SectorsIdentifier", "[]Sector")
+    
+    for key in sorted(sectors_by_key.keys()):
+        const_name = to_identifier("SECTORS", key)
+        sectors = sectors_by_key[key]
+        
+        print(f"    {const_name}: {{")
+        for sector in sectors:
+            print(render_sector(sector))
+        print(f"    }},")
+    
+    print_go_map_footer()
+
 def do_layer(layers: Dict):
     """Generate Go code for layer map."""
     # Generate layer identifier constants
@@ -369,6 +490,23 @@ def do_layer(layers: Dict):
         print_struct_field('Weather', weather_const, 'const')
         
         print_struct_field('PrettyName', layer_data['pretty_name'], 'string')
+        
+        # Render Grid
+        print(render_grid(layer_data['grid']))
+        
+        # Embed sectors directly by looking up from the sectors map
+        map_name = layer_data['map']['id']
+        game_mode = layer_data['game_mode']['id']
+        
+        if game_mode == 'skirmish':
+            sector_key = f"{map_name}_small"
+        else:
+            sector_key = f"{map_name}_large"
+        
+        sector_const = to_identifier("SECTORS", sector_key)
+        
+        # Render sectors inline by referencing the sectorsMap
+        print(f'        SectorsIdentifier: {sector_const},')
         
         attacking_team = TEAM_MAP.get(layer_data['attacking_team']['id'], 'TEAM_NONE') if layer_data['attacking_team'] else 'TEAM_NONE'
         print_struct_field('AttackingTeam', attacking_team, 'const')
@@ -450,12 +588,13 @@ def main():
     with open('formatted_data.json', 'r') as f:
         data = json.load(f)
     
-    # Uncomment the generators you want to use:
+    # Other available generators:
     # do_weapon(data.get('weapon', {}))
     # do_vehicle(data.get('vehicle', {}))
     # do_role(data.get('role', {}))
-    # do_layer(data.get('layer', {}))
     # do_loadouts(data.get('loadout', {}))
+    # do_sectors(data.get('layer', {}))
+    # do_layer(data.get('layer', {}))
     
 
 if __name__ == "__main__":
