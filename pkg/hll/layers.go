@@ -3,8 +3,6 @@ package hll
 import (
 	"fmt"
 	"strings"
-
-	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 type GameModeIdentifier string
@@ -2854,30 +2852,29 @@ const (
 )
 
 func (l LayerIdentifier) Layer() Layer {
-	return ParseLayer(string(l))
+	layer, _ := ParseLayer(string(l))
+	return layer
 }
 
-func ParseLayer(layerName string) Layer {
+func ParseLayer(layerName string) (Layer, error) {
 	layerName, _ = strings.CutSuffix(layerName, restartSuffix)
 
 	if strings.HasPrefix(layerName, loadingMap) || strings.HasPrefix(layerName, untitledMap) {
-		return previousLayer
+		return previousLayer, nil
 	}
 
 	if lay, ok := layerMap[LayerIdentifier(layerName)]; ok {
 		previousLayer = lay
-		return lay
+		return lay, nil
 	}
-	logger.Warn("Layer not found:", layerName)
-	return fallback_layer
+	return fallback_layer, fmt.Errorf("layer not found: %s", layerName)
 }
 
-func (l Layer) Sectors() []Sector {
+func (l Layer) Sectors() ([]Sector, error) {
 	if sectors, ok := sectorsMap[l.SectorsIdentifier]; ok {
-		return sectors
+		return sectors, nil
 	}
-	logger.Warn("Sectors not found for layer:", l.ID)
-	return []Sector{}
+	return []Sector{}, fmt.Errorf("sectors not found for layer: %s", l.ID)
 }
 
 func AllLayers() []Layer {

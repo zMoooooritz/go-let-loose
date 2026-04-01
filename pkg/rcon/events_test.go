@@ -13,8 +13,8 @@ func TestGameStateDiffToEvents(t *testing.T) {
 		PlayerCount:      hll.TeamData{Axis: 49, Allies: 49},
 		GameScore:        hll.TeamData{Axis: 2, Allies: 3},
 		RemainingSeconds: 100,
-		CurrentMap:       hll.ParseLayer("carentan_warfare"),
-		NextMap:          hll.ParseLayer("carentan_warfare"),
+		CurrentMap:       hll.LAYER_CARENTAN_WARFARE.Layer(),
+		NextMap:          hll.LAYER_CARENTAN_WARFARE.Layer(),
 	}
 
 	t.Run("Empty oldData should return no events", func(t *testing.T) {
@@ -189,6 +189,7 @@ func TestLogToEvents(t *testing.T) {
 	// })
 
 	t.Run("Parse KILL log line", func(t *testing.T) {
+		mp40, _ := hll.ParseWeapon("MP40")
 		expected := []hll.Event{
 			hll.KillEvent{
 				GenericEvent: hll.GenericEvent{
@@ -203,7 +204,7 @@ func TestLogToEvents(t *testing.T) {
 					Name: "Another Player name",
 					ID:   "98765432109876543",
 				},
-				Weapon: hll.ParseWeapon("MP40"),
+				Weapon: mp40,
 			},
 			hll.DeathEvent{
 				GenericEvent: hll.GenericEvent{
@@ -218,7 +219,7 @@ func TestLogToEvents(t *testing.T) {
 					Name: "Another Player name",
 					ID:   "98765432109876543",
 				},
-				Weapon: hll.ParseWeapon("MP40"),
+				Weapon: mp40,
 			},
 		}
 
@@ -229,6 +230,7 @@ func TestLogToEvents(t *testing.T) {
 	})
 
 	t.Run("Parse TEAMKILL log line", func(t *testing.T) {
+		garand, _ := hll.ParseWeapon("M1 GARAND")
 		expected := []hll.Event{
 			hll.TeamKillEvent{
 				GenericEvent: hll.GenericEvent{
@@ -243,7 +245,7 @@ func TestLogToEvents(t *testing.T) {
 					Name: "Another Player name",
 					ID:   "98765432109876543",
 				},
-				Weapon: hll.ParseWeapon("M1 GARAND"),
+				Weapon: garand,
 			},
 			hll.TeamDeathEvent{
 				GenericEvent: hll.GenericEvent{
@@ -258,7 +260,7 @@ func TestLogToEvents(t *testing.T) {
 					Name: "Another Player name",
 					ID:   "98765432109876543",
 				},
-				Weapon: hll.ParseWeapon("M1 GARAND"),
+				Weapon: garand,
 			},
 		}
 
@@ -414,13 +416,14 @@ func TestLogToEvents(t *testing.T) {
 	})
 
 	t.Run("Parse Match Start log line", func(t *testing.T) {
+		gameMap, _ := hll.LogMapNameToMap("SAINTE-MÈRE-ÉGLISE Warfare")
 		expected := []hll.Event{
 			hll.MatchStartEvent{
 				GenericEvent: hll.GenericEvent{
 					EventType: hll.EVENT_MATCHSTART,
 					EventTime: time.Unix(1639148969, 0),
 				},
-				Map: hll.LogMapNameToMap("SAINTE-MÈRE-ÉGLISE Warfare"),
+				Map: gameMap,
 			},
 		}
 
@@ -431,13 +434,14 @@ func TestLogToEvents(t *testing.T) {
 	})
 
 	t.Run("Parse Match End log line", func(t *testing.T) {
+		gameMap, _ := hll.LogMapNameToMap("SAINTE-MÈRE-ÉGLISE Warfare")
 		expected := []hll.Event{
 			hll.MatchEndEvent{
 				GenericEvent: hll.GenericEvent{
 					EventType: hll.EVENT_MATCHEND,
 					EventTime: time.Unix(1639148969, 0),
 				},
-				Map: hll.LogMapNameToMap("SAINTE-MÈRE-ÉGLISE Warfare"),
+				Map: gameMap,
 				Score: hll.TeamData{
 					Allies: 2,
 					Axis:   3,

@@ -1,6 +1,7 @@
 package hll
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 
@@ -1959,22 +1960,22 @@ var fallback_weapon = Weapon{
 }
 
 func (w WeaponIdentifier) Weapon() Weapon {
-	return ParseWeapon(string(w))
+	weapon, _ := ParseWeapon(string(w))
+	return weapon
 }
 
-func ParseWeapon(weaponIdentifier string) Weapon {
+func ParseWeapon(weaponIdentifier string) (Weapon, error) {
 	wi := WeaponIdentifier(weaponIdentifier)
 	if weapon, ok := weaponMap[wi]; ok {
-		return weapon
+		return weapon, nil
 	}
 	for _, v := range weaponMap {
 		if strings.HasPrefix(string(v.ID), weaponIdentifier) {
-			logger.Info("Using", v.ID, "as fallback for", weaponIdentifier)
-			return v
+			logger.Debug("Using", v.ID, "as fallback for", weaponIdentifier)
+			return v, nil
 		}
 	}
-	logger.Error("Weapon unparseable:", weaponIdentifier)
-	return fallback_weapon
+	return fallback_weapon, fmt.Errorf("weapon not found: %s", weaponIdentifier)
 }
 
 func AllWeapons() []Weapon {

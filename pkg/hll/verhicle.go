@@ -1,6 +1,7 @@
 package hll
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 
@@ -1853,22 +1854,22 @@ var fallback_vehicle = Vehicle{
 }
 
 func (v VehicleIdentifier) Vehicle() Vehicle {
-	return ParseVehicle(string(v))
+	vehicle, _ := ParseVehicle(string(v))
+	return vehicle
 }
 
-func ParseVehicle(vehicleIdentifier string) Vehicle {
+func ParseVehicle(vehicleIdentifier string) (Vehicle, error) {
 	vi := VehicleIdentifier(vehicleIdentifier)
 	if vehicle, ok := vehicleMap[vi]; ok {
-		return vehicle
+		return vehicle, nil
 	}
 	for _, v := range vehicleMap {
 		if strings.HasPrefix(string(v.ID), vehicleIdentifier) {
-			logger.Info("Using", v.ID, "as fallback for", vehicleIdentifier)
-			return v
+			logger.Debug("Using", v.ID, "as fallback for", vehicleIdentifier)
+			return v, nil
 		}
 	}
-	logger.Error("Vehicle unparseable:", vehicleIdentifier)
-	return fallback_vehicle
+	return fallback_vehicle, fmt.Errorf("vehicle not found: %s", vehicleIdentifier)
 }
 
 func AllVehicles() []Vehicle {

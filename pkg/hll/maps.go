@@ -1,9 +1,8 @@
 package hll
 
 import (
+	"fmt"
 	"strings"
-
-	"github.com/zMoooooritz/go-let-loose/pkg/logger"
 )
 
 type MapIdentifier string
@@ -75,25 +74,24 @@ var mapMap = map[MapIdentifier]Map{
 var fallback_map = Map{ID: MAP_INVALID, Name: "INVALID", Tag: "INV", PrettyName: "Invalid", ShortName: "Invalid", Allies: FACTION_US, Axis: FACTION_GER}
 
 func (m MapIdentifier) Map() Map {
-	return ParseMap(string(m))
+	gameMap, _ := ParseMap(string(m))
+	return gameMap
 }
 
-func ParseMap(mapName string) Map {
+func ParseMap(mapName string) (Map, error) {
 	if gameMap, ok := mapMap[MapIdentifier(mapName)]; ok {
-		return gameMap
+		return gameMap, nil
 	}
-	logger.Warn("Map not found:", mapName)
-	return fallback_map
+	return fallback_map, fmt.Errorf("map not found: %s", mapName)
 }
 
-func LogMapNameToMap(logMapName string) Map {
+func LogMapNameToMap(logMapName string) (Map, error) {
 	for _, v := range mapMap {
 		if strings.HasPrefix(logMapName, v.Name) {
-			return v
+			return v, nil
 		}
 	}
-	logger.Warn("LogMapName not found:", logMapName)
-	return fallback_map
+	return fallback_map, fmt.Errorf("log map name not found: %s", logMapName)
 }
 
 func AllMaps() []Map {

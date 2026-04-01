@@ -93,6 +93,7 @@ func logToKillEvents(time time.Time, eventdata string) []hll.Event {
 		logger.Error("Event data unparseable:", eventdata)
 		return []hll.Event{}
 	}
+	weapon, _ := hll.ParseWeapon(match[5])
 	killEvent := hll.KillEvent{
 		GenericEvent: hll.GenericEvent{
 			EventType: hll.EVENT_KILL,
@@ -106,7 +107,7 @@ func logToKillEvents(time time.Time, eventdata string) []hll.Event {
 			Name: match[3],
 			ID:   match[4],
 		},
-		Weapon: hll.ParseWeapon(match[5]),
+		Weapon: weapon,
 	}
 	return []hll.Event{killEvent, killToDeatchEvent(killEvent)}
 }
@@ -129,6 +130,7 @@ func logToTeamKillEvents(time time.Time, eventdata string) []hll.Event {
 		logger.Error("Event data unparseable:", eventdata)
 		return []hll.Event{}
 	}
+	weapon, _ := hll.ParseWeapon(match[5])
 	teamKillEvent := hll.TeamKillEvent{
 		GenericEvent: hll.GenericEvent{
 			EventType: hll.EVENT_TEAMKILL,
@@ -142,7 +144,7 @@ func logToTeamKillEvents(time time.Time, eventdata string) []hll.Event {
 			Name: match[3],
 			ID:   match[4],
 		},
-		Weapon: hll.ParseWeapon(match[5]),
+		Weapon: weapon,
 	}
 	return []hll.Event{teamKillEvent, teamKillToTeamDeathEvent(teamKillEvent)}
 }
@@ -266,12 +268,13 @@ func logToMatchStartEvent(time time.Time, eventdata string) []hll.Event {
 		logger.Error("Event data unparseable:", eventdata)
 		return []hll.Event{}
 	}
+	gameMap, _ := hll.LogMapNameToMap(match[1])
 	return []hll.Event{hll.MatchStartEvent{
 		GenericEvent: hll.GenericEvent{
 			EventType: hll.EVENT_MATCHSTART,
 			EventTime: time,
 		},
-		Map: hll.LogMapNameToMap(match[1]),
+		Map: gameMap,
 	}}
 }
 
@@ -281,12 +284,13 @@ func logToMatchEndEvent(time time.Time, eventdata string) []hll.Event {
 		logger.Error("Event data unparseable:", eventdata)
 		return []hll.Event{}
 	}
+	gameMap, _ := hll.LogMapNameToMap(match[1])
 	return []hll.Event{hll.MatchEndEvent{
 		GenericEvent: hll.GenericEvent{
 			EventType: hll.EVENT_MATCHEND,
 			EventTime: time,
 		},
-		Map: hll.LogMapNameToMap(match[1]),
+		Map: gameMap,
 		Score: hll.TeamData{
 			Allies: util.ToInt(match[2]),
 			Axis:   util.ToInt(match[3]),

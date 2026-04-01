@@ -14,7 +14,7 @@ func (r *Rcon) GetCurrentMap() (hll.Map, error) {
 	if err != nil {
 		return hll.Map{}, err
 	}
-	return hll.LogMapNameToMap(resp.MapName), nil
+	return hll.LogMapNameToMap(resp.MapName)
 }
 
 func (r *Rcon) GetCurrentLayer() (hll.Layer, error) {
@@ -22,7 +22,7 @@ func (r *Rcon) GetCurrentLayer() (hll.Layer, error) {
 	if err != nil {
 		return hll.Layer{}, err
 	}
-	return hll.ParseLayer(resp.MapID), nil
+	return hll.ParseLayer(resp.MapID)
 }
 
 func (r *Rcon) GetGameMode() (string, error) {
@@ -43,7 +43,10 @@ func (r *Rcon) GetAllMaps() ([]hll.Layer, error) {
 	}
 	layer_names := strings.Split(resp.DialogueParameters[0].DisplayMember, ",")
 	for _, layer_name := range layer_names {
-		layers = append(layers, hll.ParseLayer(layer_name))
+		layer, err := hll.ParseLayer(layer_name)
+		if err == nil {
+			layers = append(layers, layer)
+		}
 	}
 	return layers, nil
 }
@@ -55,7 +58,10 @@ func (r *Rcon) GetCurrentMapRotation() ([]hll.Layer, error) {
 		return layers, err
 	}
 	for _, entry := range resp.Maps {
-		layers = append(layers, hll.ParseLayer(entry.ID))
+		layer, err := hll.ParseLayer(entry.ID)
+		if err == nil {
+			layers = append(layers, layer)
+		}
 	}
 	return layers, nil
 }
@@ -133,7 +139,10 @@ func (r *Rcon) GetCurrentMapSequence() ([]hll.Layer, error) {
 		return layers, err
 	}
 	for _, entry := range resp.Maps {
-		layers = append(layers, hll.ParseLayer(entry.ID))
+		layer, err := hll.ParseLayer(entry.ID)
+		if err == nil {
+			layers = append(layers, layer)
+		}
 	}
 	return layers, nil
 }
