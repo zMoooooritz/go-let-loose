@@ -23,22 +23,32 @@ func getAPIStructNames(apiPackagePath string) (map[string]bool, error) {
 	structNames := make(map[string]bool)
 
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, apiPackagePath, nil, 0)
+
+	// Read all .go files in the directory
+	entries, err := os.ReadDir(apiPackagePath)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-			ast.Inspect(file, func(n ast.Node) bool {
-				if typeSpec, ok := n.(*ast.TypeSpec); ok {
-					if _, isStruct := typeSpec.Type.(*ast.StructType); isStruct {
-						structNames[strings.ToLower(typeSpec.Name.Name)] = true
-					}
-				}
-				return true
-			})
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".go") {
+			continue
 		}
+
+		filePath := filepath.Join(apiPackagePath, entry.Name())
+		file, err := parser.ParseFile(fset, filePath, nil, 0)
+		if err != nil {
+			return nil, err
+		}
+
+		ast.Inspect(file, func(n ast.Node) bool {
+			if typeSpec, ok := n.(*ast.TypeSpec); ok {
+				if _, isStruct := typeSpec.Type.(*ast.StructType); isStruct {
+					structNames[strings.ToLower(typeSpec.Name.Name)] = true
+				}
+			}
+			return true
+		})
 	}
 
 	return structNames, nil
