@@ -10,6 +10,8 @@ type TeamData struct {
 type GameState struct {
 	PlayerCount      TeamData
 	GameScore        TeamData
+	TeamMorale       TeamData
+	InitialMorale    int
 	RemainingSeconds int
 	CurrentMap       Layer
 	NextMap          Layer
@@ -82,6 +84,9 @@ type SessionInfo struct {
 	PlayerCount        int
 	AlliedPlayerCount  int
 	AxisPlayerCount    int
+	AlliedMorale       int
+	AxisMorale         int
+	InitialMorale      int
 	MaxQueueCount      int
 	QueueCount         int
 	MaxVIPQueueCount   int

@@ -19,7 +19,8 @@ FACTION_MAP = {
     2: "FACTION_SOV",
     3: "FACTION_CW",
     4: "FACTION_DAK",
-    5: "FACTION_B8A"
+    5: "FACTION_B8A",
+    6: "FACTION_CAN"
 }
 
 FACTION_SHORT_MAP = {
@@ -28,7 +29,8 @@ FACTION_SHORT_MAP = {
     2: "SOV",
     3: "CW",
     4: "DAK",
-    5: "B8A"
+    5: "B8A",
+    6: "CAN"
 }
 
 ROLE_MAP = {
@@ -107,7 +109,7 @@ class FieldRenderer:
     def render_faction_list(self, name: str, factions: List[Dict], depth: int = 2) -> str:
         """Render a list of faction constants."""
         faction_consts = [FACTION_MAP[f['id']] for f in factions]
-        return f'{indent(depth)}{name}: []Faction{{{", ".join(faction_consts)}}},'
+        return f'{indent(depth)}{name}: []FactionIdentifier{{{", ".join(faction_consts)}}},'
     
     def render_role_list(self, name: str, roles: List[Dict], depth: int = 2) -> str:
         """Render a list of role constants."""
@@ -396,6 +398,8 @@ def do_weapon(weapons: Dict):
         
         # Magnification (optional field)
         magnification = weapon_data.get('magnification', 0)
+        if magnification is None:
+            magnification = 0
         print_struct_field('Magnification', magnification, 'int')
         
         print(f"    }},")
@@ -588,7 +592,6 @@ def main():
     with open('formatted_data.json', 'r') as f:
         data = json.load(f)
     
-    # Other available generators:
     # do_weapon(data.get('weapon', {}))
     # do_vehicle(data.get('vehicle', {}))
     # do_role(data.get('role', {}))

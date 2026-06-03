@@ -9,6 +9,7 @@ const (
 	FACTION_CW         FactionIdentifier = "GB"
 	FACTION_DAK        FactionIdentifier = "DAK"
 	FACTION_B8A        FactionIdentifier = "B8A"
+	FACTION_CAN        FactionIdentifier = "CAN"
 	FACTION_UNASSIGNED FactionIdentifier = "NON"
 )
 
@@ -70,9 +71,15 @@ var factionMap = map[FactionIdentifier]Faction{
 		ShortName: FACTION_B8A,
 		Team:      TEAM_ALLIES,
 	},
+	FACTION_CAN: {
+		ID:        6,
+		Name:      "Canada",
+		ShortName: FACTION_CAN,
+		Team:      TEAM_ALLIES,
+	},
 }
 
-var AllFactions = []FactionIdentifier{FACTION_US, FACTION_GER, FACTION_SOV, FACTION_CW, FACTION_DAK, FACTION_B8A}
+var AllFactions = []FactionIdentifier{FACTION_US, FACTION_GER, FACTION_SOV, FACTION_CW, FACTION_DAK, FACTION_B8A, FACTION_CAN}
 
 func FactionFromInt(id int) FactionIdentifier {
 	for _, faction := range factionMap {

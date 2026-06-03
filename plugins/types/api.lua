@@ -271,6 +271,18 @@ function getSlots() end
 ---@return TeamData|nil scores Team scores if successful
 function getScore() end
 
+---Get initial morale
+---@return string|nil error Error message if any
+---@return number|nil morale Initial morale if successful
+function getInitialMorale() end
+
+
+---Get team morale
+---@return string|nil error Error message if any
+---@return TeamData|nil morale Team morale if successful
+function getMorale() end
+
+
 ---Get server changelist/version
 ---@return string|nil error Error message if any
 ---@return string|nil changelist Server changelist if successful

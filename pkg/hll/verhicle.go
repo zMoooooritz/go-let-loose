@@ -11,72 +11,76 @@ import (
 type VehicleIdentifier string
 
 const (
-	VEHICLE_M1_57MM                  VehicleIdentifier = "M1 57mm"
-	VEHICLE_M114                     VehicleIdentifier = "M114"
-	VEHICLE_M8_GREYHOUND             VehicleIdentifier = "M8 Greyhound"
-	VEHICLE_STUART_M5A1              VehicleIdentifier = "Stuart M5A1"
-	VEHICLE_SHERMAN_M4A3_75_W        VehicleIdentifier = "Sherman M4A3(75)W"
-	VEHICLE_SHERMAN_M4A3E2           VehicleIdentifier = "Sherman M4A3E2"
-	VEHICLE_SHERMAN_M4A3E2_76        VehicleIdentifier = "Sherman M4A3E2(76)"
+	VEHICLE_60L_SUPPLY               VehicleIdentifier = "60L (Supply)"
+	VEHICLE_60L_TRANSPORT            VehicleIdentifier = "60L (Transport)"
+	VEHICLE_BA_10                    VehicleIdentifier = "BA-10"
+	VEHICLE_BEDFORD_OYD_SUPPLY       VehicleIdentifier = "Bedford OYD (Supply)"
+	VEHICLE_BEDFORD_OYD_TRANSPORT    VehicleIdentifier = "Bedford OYD (Transport)"
+	VEHICLE_BISHOP_SP_25PDR          VehicleIdentifier = "Bishop SP 25pdr"
+	VEHICLE_CHURCHILL_MK_III         VehicleIdentifier = "Churchill Mk.III"
+	VEHICLE_CHURCHILL_MK_III_A_V_R_E VehicleIdentifier = "Churchill Mk III A.V.R.E."
+	VEHICLE_CHURCHILL_MK_VII         VehicleIdentifier = "Churchill Mk.VII"
+	VEHICLE_CROMWELL                 VehicleIdentifier = "Cromwell"
+	VEHICLE_CRUSADER_MK_III          VehicleIdentifier = "Crusader Mk.III"
+	VEHICLE_DAIMLER                  VehicleIdentifier = "Daimler"
+	VEHICLE_FIREFLY                  VehicleIdentifier = "Firefly"
+	VEHICLE_GAZ_67                   VehicleIdentifier = "GAZ-67"
 	VEHICLE_GMC_CCKW_353_SUPPLY      VehicleIdentifier = "GMC CCKW 353 (Supply)"
 	VEHICLE_GMC_CCKW_353_TRANSPORT   VehicleIdentifier = "GMC CCKW 353 (Transport)"
-	VEHICLE_M3_HALF_TRACK            VehicleIdentifier = "M3 Half-track"
+	VEHICLE_HALF_TRACK               VehicleIdentifier = "Half-track"
+	VEHICLE_IS_1                     VehicleIdentifier = "IS-1"
+	VEHICLE_JEEP                     VehicleIdentifier = "Jeep"
 	VEHICLE_JEEP_WILLYS              VehicleIdentifier = "Jeep Willys"
+	VEHICLE_KUBELWAGEN               VehicleIdentifier = "Kubelwagen"
+	VEHICLE_KV_2                     VehicleIdentifier = "KV-2"
+	VEHICLE_M114                     VehicleIdentifier = "M114"
+	VEHICLE_M1938_M_30               VehicleIdentifier = "M1938 (M-30)"
+	VEHICLE_M1_57MM                  VehicleIdentifier = "M1 57mm"
+	VEHICLE_M3_HALF_TRACK            VehicleIdentifier = "M3 Half-track"
+	VEHICLE_M3_STUART_HONEY          VehicleIdentifier = "M3 Stuart Honey"
 	VEHICLE_M4A3_105MM               VehicleIdentifier = "M4A3 (105mm)"
+	VEHICLE_M8_GREYHOUND             VehicleIdentifier = "M8 Greyhound"
+	VEHICLE_OPEL_BLITZ_SUPPLY        VehicleIdentifier = "Opel Blitz (Supply)"
+	VEHICLE_OPEL_BLITZ_TRANSPORT     VehicleIdentifier = "Opel Blitz (Transport)"
 	VEHICLE_PAK_40                   VehicleIdentifier = "PAK 40"
-	VEHICLE_SFH_18                   VehicleIdentifier = "sFH 18"
-	VEHICLE_SD_KFZ_234_PUMA          VehicleIdentifier = "Sd.Kfz.234 Puma"
+	VEHICLE_PANZER_III_AUSF_N        VehicleIdentifier = "Panzer III Ausf.N"
+	VEHICLE_QF_25_POUNDER            VehicleIdentifier = "QF 25-Pounder"
+	VEHICLE_QF_6_POUNDER             VehicleIdentifier = "QF 6-Pounder"
 	VEHICLE_SD_KFZ_121_LUCHS         VehicleIdentifier = "Sd.Kfz.121 Luchs"
 	VEHICLE_SD_KFZ_161_PANZER_IV     VehicleIdentifier = "Sd.Kfz.161 Panzer IV"
 	VEHICLE_SD_KFZ_171_PANTHER       VehicleIdentifier = "Sd.Kfz.171 Panther"
 	VEHICLE_SD_KFZ_181_TIGER_1       VehicleIdentifier = "Sd.Kfz.181 Tiger 1"
-	VEHICLE_OPEL_BLITZ_SUPPLY        VehicleIdentifier = "Opel Blitz (Supply)"
-	VEHICLE_OPEL_BLITZ_TRANSPORT     VehicleIdentifier = "Opel Blitz (Transport)"
+	VEHICLE_SD_KFZ_234_PUMA          VehicleIdentifier = "Sd.Kfz.234 Puma"
 	VEHICLE_SD_KFZ_251_HALF_TRACK    VehicleIdentifier = "Sd.Kfz 251 Half-track"
-	VEHICLE_KUBELWAGEN               VehicleIdentifier = "Kubelwagen"
+	VEHICLE_SFH_18                   VehicleIdentifier = "sFH 18"
+	VEHICLE_SHERMAN_M4A3E2           VehicleIdentifier = "Sherman M4A3E2"
+	VEHICLE_SHERMAN_M4A3E2_76        VehicleIdentifier = "Sherman M4A3E2(76)"
+	VEHICLE_SHERMAN_M4A3_75_W        VehicleIdentifier = "Sherman M4A3(75)W"
+	VEHICLE_STUART_M5A1              VehicleIdentifier = "Stuart M5A1"
 	VEHICLE_STURMPANZER_IV           VehicleIdentifier = "Sturmpanzer IV"
-	VEHICLE_PANZER_III_AUSF_N        VehicleIdentifier = "Panzer III Ausf.N"
-	VEHICLE_ZIS_2                    VehicleIdentifier = "ZiS-2"
-	VEHICLE_M1938_M_30               VehicleIdentifier = "M1938 (M-30)"
-	VEHICLE_BA_10                    VehicleIdentifier = "BA-10"
-	VEHICLE_T70                      VehicleIdentifier = "T70"
 	VEHICLE_T34_76                   VehicleIdentifier = "T34/76"
-	VEHICLE_IS_1                     VehicleIdentifier = "IS-1"
+	VEHICLE_T70                      VehicleIdentifier = "T70"
+	VEHICLE_TETRARCH                 VehicleIdentifier = "Tetrarch"
+	VEHICLE_ZIS_2                    VehicleIdentifier = "ZiS-2"
 	VEHICLE_ZIS_5_SUPPLY             VehicleIdentifier = "ZIS-5 (Supply)"
 	VEHICLE_ZIS_5_TRANSPORT          VehicleIdentifier = "ZIS-5 (Transport)"
-	VEHICLE_GAZ_67                   VehicleIdentifier = "GAZ-67"
-	VEHICLE_KV_2                     VehicleIdentifier = "KV-2"
-	VEHICLE_QF_6_POUNDER             VehicleIdentifier = "QF 6-Pounder"
-	VEHICLE_QF_25_POUNDER            VehicleIdentifier = "QF 25-Pounder"
-	VEHICLE_DAIMLER                  VehicleIdentifier = "Daimler"
-	VEHICLE_TETRARCH                 VehicleIdentifier = "Tetrarch"
-	VEHICLE_M3_STUART_HONEY          VehicleIdentifier = "M3 Stuart Honey"
-	VEHICLE_CROMWELL                 VehicleIdentifier = "Cromwell"
-	VEHICLE_CRUSADER_MK_III          VehicleIdentifier = "Crusader Mk.III"
-	VEHICLE_FIREFLY                  VehicleIdentifier = "Firefly"
-	VEHICLE_CHURCHILL_MK_III         VehicleIdentifier = "Churchill Mk.III"
-	VEHICLE_CHURCHILL_MK_VII         VehicleIdentifier = "Churchill Mk.VII"
-	VEHICLE_BEDFORD_OYD_SUPPLY       VehicleIdentifier = "Bedford OYD (Supply)"
-	VEHICLE_BEDFORD_OYD_TRANSPORT    VehicleIdentifier = "Bedford OYD (Transport)"
-	VEHICLE_CHURCHILL_MK_III_A_V_R_E VehicleIdentifier = "Churchill Mk III A.V.R.E."
-	VEHICLE_BISHOP_SP_25PDR          VehicleIdentifier = "Bishop SP 25pdr"
 	VEHICLE_UNKNOWN                  VehicleIdentifier = "Unknown"
 )
 
 type VehicleType string
 
 const (
+	VEHICLE_TYPE_ANTI_TANK_GUN            VehicleType = "Anti-Tank Gun"
+	VEHICLE_TYPE_ARTILLERY                VehicleType = "Artillery"
+	VEHICLE_TYPE_HALF_TRACK               VehicleType = "Half-Track"
+	VEHICLE_TYPE_HEAVY_TANK               VehicleType = "Heavy Tank"
 	VEHICLE_TYPE_JEEP                     VehicleType = "Jeep"
 	VEHICLE_TYPE_LIGHT_TANK               VehicleType = "Light Tank"
-	VEHICLE_TYPE_ARTILLERY                VehicleType = "Artillery"
 	VEHICLE_TYPE_MEDIUM_TANK              VehicleType = "Medium Tank"
-	VEHICLE_TYPE_SUPPLY_TRUCK             VehicleType = "Supply Truck"
-	VEHICLE_TYPE_SELF_PROPELLED_ARTILLERY VehicleType = "Self-Propelled Artillery"
-	VEHICLE_TYPE_HEAVY_TANK               VehicleType = "Heavy Tank"
-	VEHICLE_TYPE_HALF_TRACK               VehicleType = "Half-Track"
 	VEHICLE_TYPE_RECON_VEHICLE            VehicleType = "Recon Vehicle"
+	VEHICLE_TYPE_SELF_PROPELLED_ARTILLERY VehicleType = "Self-Propelled Artillery"
+	VEHICLE_TYPE_SUPPLY_TRUCK             VehicleType = "Supply Truck"
 	VEHICLE_TYPE_TRANSPORT_TRUCK          VehicleType = "Transport Truck"
-	VEHICLE_TYPE_ANTI_TANK_GUN            VehicleType = "Anti-Tank Gun"
 	VEHICLE_TYPE_UNKNOWN                  VehicleType = "Unknown"
 )
 
@@ -84,10 +88,10 @@ type VehicleSeatType string
 
 const (
 	VEHICLE_SEAT_TYPE_DRIVER    VehicleSeatType = "Driver"
-	VEHICLE_SEAT_TYPE_LOADER    VehicleSeatType = "Loader"
 	VEHICLE_SEAT_TYPE_GUNNER    VehicleSeatType = "Gunner"
-	VEHICLE_SEAT_TYPE_SPOTTER   VehicleSeatType = "Spotter"
+	VEHICLE_SEAT_TYPE_LOADER    VehicleSeatType = "Loader"
 	VEHICLE_SEAT_TYPE_PASSENGER VehicleSeatType = "Passenger"
+	VEHICLE_SEAT_TYPE_SPOTTER   VehicleSeatType = "Spotter"
 )
 
 type VehicleSeat struct {
@@ -197,7 +201,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_STUART_M5A1: {
 		ID:       VEHICLE_STUART_M5A1,
 		Name:     "M5A1 Stuart",
-		Factions: []FactionIdentifier{FACTION_US},
+		Factions: []FactionIdentifier{FACTION_US, FACTION_CAN},
 		Type:     VEHICLE_TYPE_LIGHT_TANK,
 		Seats: []VehicleSeat{
 			{
@@ -226,7 +230,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_SHERMAN_M4A3_75_W: {
 		ID:       VEHICLE_SHERMAN_M4A3_75_W,
 		Name:     "M4A3(75)W Sherman",
-		Factions: []FactionIdentifier{FACTION_US},
+		Factions: []FactionIdentifier{FACTION_US, FACTION_CAN},
 		Type:     VEHICLE_TYPE_MEDIUM_TANK,
 		Seats: []VehicleSeat{
 			{
@@ -427,7 +431,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_M3_HALF_TRACK: {
 		ID:       VEHICLE_M3_HALF_TRACK,
 		Name:     "M3 Half-track",
-		Factions: []FactionIdentifier{FACTION_US},
+		Factions: []FactionIdentifier{FACTION_US, FACTION_SOV, FACTION_CW, FACTION_B8A},
 		Type:     VEHICLE_TYPE_HALF_TRACK,
 		Seats: []VehicleSeat{
 			{
@@ -491,7 +495,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_JEEP_WILLYS: {
 		ID:       VEHICLE_JEEP_WILLYS,
 		Name:     "Willy's Jeep",
-		Factions: []FactionIdentifier{FACTION_US},
+		Factions: []FactionIdentifier{FACTION_US, FACTION_CW, FACTION_B8A},
 		Type:     VEHICLE_TYPE_JEEP,
 		Seats: []VehicleSeat{
 			{
@@ -1384,7 +1388,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_QF_6_POUNDER: {
 		ID:       VEHICLE_QF_6_POUNDER,
 		Name:     "QF 6-Pounder",
-		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A},
+		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A, FACTION_CAN},
 		Type:     VEHICLE_TYPE_ANTI_TANK_GUN,
 		Seats: []VehicleSeat{
 			{
@@ -1406,7 +1410,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_QF_25_POUNDER: {
 		ID:       VEHICLE_QF_25_POUNDER,
 		Name:     "QF 25-Pounder",
-		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A},
+		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A, FACTION_CAN},
 		Type:     VEHICLE_TYPE_ARTILLERY,
 		Seats: []VehicleSeat{
 			{
@@ -1428,7 +1432,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_DAIMLER: {
 		ID:       VEHICLE_DAIMLER,
 		Name:     "Daimler",
-		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A},
+		Factions: []FactionIdentifier{FACTION_CW, FACTION_B8A, FACTION_CAN},
 		Type:     VEHICLE_TYPE_RECON_VEHICLE,
 		Seats: []VehicleSeat{
 			{
@@ -1587,7 +1591,7 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 	VEHICLE_FIREFLY: {
 		ID:       VEHICLE_FIREFLY,
 		Name:     "Sherman Firefly",
-		Factions: []FactionIdentifier{FACTION_CW},
+		Factions: []FactionIdentifier{FACTION_CW, FACTION_CAN},
 		Type:     VEHICLE_TYPE_HEAVY_TANK,
 		Seats: []VehicleSeat{
 			{
@@ -1785,10 +1789,224 @@ var vehicleMap = map[VehicleIdentifier]Vehicle{
 			},
 		},
 	},
+	VEHICLE_60L_SUPPLY: {
+		ID:       VEHICLE_60L_SUPPLY,
+		Name:     "Ford F60L",
+		Factions: []FactionIdentifier{FACTION_CAN},
+		Type:     VEHICLE_TYPE_SUPPLY_TRUCK,
+		Seats: []VehicleSeat{
+			{
+				Index:         0,
+				Type:          VEHICLE_SEAT_TYPE_DRIVER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         1,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+		},
+	},
+	VEHICLE_60L_TRANSPORT: {
+		ID:       VEHICLE_60L_TRANSPORT,
+		Name:     "Ford F60L",
+		Factions: []FactionIdentifier{FACTION_CAN},
+		Type:     VEHICLE_TYPE_TRANSPORT_TRUCK,
+		Seats: []VehicleSeat{
+			{
+				Index:         0,
+				Type:          VEHICLE_SEAT_TYPE_DRIVER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         1,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         2,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         3,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         4,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         5,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         6,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         7,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         8,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         9,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         10,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         11,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+		},
+	},
+	VEHICLE_HALF_TRACK: {
+		ID:       VEHICLE_HALF_TRACK,
+		Name:     "Half-track",
+		Factions: []FactionIdentifier{FACTION_CAN},
+		Type:     VEHICLE_TYPE_HALF_TRACK,
+		Seats: []VehicleSeat{
+			{
+				Index:         0,
+				Type:          VEHICLE_SEAT_TYPE_DRIVER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         1,
+				Type:          VEHICLE_SEAT_TYPE_GUNNER,
+				Weapons:       []WeaponIdentifier{WEAPON_M2_BROWNING_M3_HALF_TRACK},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         2,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         3,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         4,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         5,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         6,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         7,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+		},
+	},
+	VEHICLE_JEEP: {
+		ID:       VEHICLE_JEEP,
+		Name:     "Jeep",
+		Factions: []FactionIdentifier{FACTION_CAN},
+		Type:     VEHICLE_TYPE_JEEP,
+		Seats: []VehicleSeat{
+			{
+				Index:         0,
+				Type:          VEHICLE_SEAT_TYPE_DRIVER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         1,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         2,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+			{
+				Index:         3,
+				Type:          VEHICLE_SEAT_TYPE_PASSENGER,
+				Weapons:       []WeaponIdentifier{},
+				RequiresRoles: []RoleIdentifier{},
+				Exposed:       true,
+			},
+		},
+	},
 	VEHICLE_CHURCHILL_MK_III_A_V_R_E: {
 		ID:       VEHICLE_CHURCHILL_MK_III_A_V_R_E,
 		Name:     "Churchill AVRE",
-		Factions: []FactionIdentifier{FACTION_CW},
+		Factions: []FactionIdentifier{FACTION_CW, FACTION_CAN},
 		Type:     VEHICLE_TYPE_SELF_PROPELLED_ARTILLERY,
 		Seats: []VehicleSeat{
 			{

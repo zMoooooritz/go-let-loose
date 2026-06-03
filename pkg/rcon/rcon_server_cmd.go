@@ -32,6 +32,11 @@ func (r *Rcon) GetGameState() (hll.GameState, error) {
 			Allies: int(resp.AlliedScore),
 			Axis:   int(resp.AxisScore),
 		},
+		TeamMorale: hll.TeamData{
+			Allies: int(resp.AlliedMorale),
+			Axis:   int(resp.AxisMorale),
+		},
+		InitialMorale:    int(resp.InitialMorale),
 		RemainingSeconds: int(resp.RemainingMatchTime),
 		CurrentMap:       hll.Layer{},
 		NextMap:          hll.Layer{},
@@ -57,6 +62,25 @@ func (r *Rcon) GetScore() (hll.TeamData, error) {
 	return hll.TeamData{
 		Allies: int(resp.AlliedScore),
 		Axis:   int(resp.AxisScore),
+	}, nil
+}
+
+func (r *Rcon) GetInitialMorale() (int, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return 0, err
+	}
+	return int(resp.InitialMorale), nil
+}
+
+func (r *Rcon) GetTeamMorale() (hll.TeamData, error) {
+	resp, err := getSessionInfo(r)
+	if err != nil {
+		return hll.TeamData{}, err
+	}
+	return hll.TeamData{
+		Allies: int(resp.AlliedMorale),
+		Axis:   int(resp.AxisMorale),
 	}, nil
 }
 
@@ -154,6 +178,9 @@ func (r *Rcon) GetSessionInfo() (hll.SessionInfo, error) {
 		PlayerCount:        int(resp.PlayerCount),
 		AlliedPlayerCount:  int(resp.AlliedPlayerCount),
 		AxisPlayerCount:    int(resp.AxisPlayerCount),
+		AlliedMorale:       int(resp.AlliedMorale),
+		AxisMorale:         int(resp.AxisMorale),
+		InitialMorale:      int(resp.InitialMorale),
 		MaxQueueCount:      int(resp.MaxQueueCount),
 		QueueCount:         int(resp.QueueCount),
 		MaxVIPQueueCount:   int(resp.MaxVipQueueCount),

@@ -93,6 +93,8 @@ local Layer = {}
 ---@class GameState
 ---@field PlayerCount TeamData Player count per team
 ---@field GameScore TeamData Current scores
+---@field TeamMorale TeamData Current morale levels
+---@field InitialMorale number Initial morale at match start
 ---@field RemainingSeconds number Time remaining in match
 ---@field CurrentMap Layer Current map/layer
 ---@field NextMap Layer Next map/layer
@@ -147,6 +149,9 @@ local ServerConfig = {}
 ---@field PlayerCount number Current player count
 ---@field AlliedPlayerCount number Allied player count
 ---@field AxisPlayerCount number Axis player count
+---@field AlliedMorale number Allied team morale
+---@field AxisMorale number Axis team morale
+---@field InitialMorale number Initial morale at match start
 ---@field MaxQueueCount number Maximum queue size
 ---@field QueueCount number Current queue size
 ---@field MaxVipQueueCount number Maximum VIP queue size

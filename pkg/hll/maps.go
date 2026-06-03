@@ -27,6 +27,7 @@ const (
 	MAP_MORTAIN         MapIdentifier = "mortain"
 	MAP_ELSENBORNRIDGE  MapIdentifier = "elsenbornridge"
 	MAP_TOBRUK          MapIdentifier = "tobruk"
+	MAP_JUNOBEACH       MapIdentifier = "junobeach"
 	MAP_INVALID         MapIdentifier = "invalid"
 )
 

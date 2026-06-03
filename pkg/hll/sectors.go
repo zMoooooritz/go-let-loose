@@ -15,6 +15,8 @@ const (
 	SECTORS_HILL400_LARGE         SectorsIdentifier = "hill400_large"
 	SECTORS_HILL400_SMALL         SectorsIdentifier = "hill400_small"
 	SECTORS_HURTGENFOREST_LARGE   SectorsIdentifier = "hurtgenforest_large"
+	SECTORS_JUNOBEACH_LARGE       SectorsIdentifier = "junobeach_large"
+	SECTORS_JUNOBEACH_SMALL       SectorsIdentifier = "junobeach_small"
 	SECTORS_KHARKOV_LARGE         SectorsIdentifier = "kharkov_large"
 	SECTORS_KURSK_LARGE           SectorsIdentifier = "kursk_large"
 	SECTORS_MORTAIN_LARGE         SectorsIdentifier = "mortain_large"
@@ -1484,6 +1486,216 @@ var sectorsMap = map[SectorsIdentifier][]Sector{
 					},
 				},
 			},
+		},
+	},
+	SECTORS_JUNOBEACH_LARGE: {
+		{
+			From: GridCoordinate{X: -3, Y: -5},
+			To:   GridCoordinate{X: 2, Y: -4},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -3, Y: -5},
+					To:   GridCoordinate{X: -2, Y: -4},
+					Strongpoint: Strongpoint{
+						ID:     "REGINA LANDING",
+						Name:   "Regina Landing",
+						Center: Position{X: -39610.0, Y: -68715.0, Z: -4463.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: -1, Y: -5},
+					To:   GridCoordinate{X: 0, Y: -4},
+					Strongpoint: Strongpoint{
+						ID:     "BUNKER R612",
+						Name:   "Bunker R612",
+						Center: Position{X: -10.0, Y: -68715.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: 1, Y: -5},
+					To:   GridCoordinate{X: 2, Y: -4},
+					Strongpoint: Strongpoint{
+						ID:     "WN29",
+						Name:   "WN29",
+						Center: Position{X: 39765.0, Y: -69319.0, Z: -4388.0},
+						Radius: 7000.0,
+					},
+				},
+			},
+		},
+		{
+			From: GridCoordinate{X: -3, Y: -3},
+			To:   GridCoordinate{X: 2, Y: -2},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -3, Y: -3},
+					To:   GridCoordinate{X: -2, Y: -2},
+					Strongpoint: Strongpoint{
+						ID:     "LA PLATINE",
+						Name:   "La Platine",
+						Center: Position{X: -39610.0, Y: -40340.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: -1, Y: -3},
+					To:   GridCoordinate{X: 0, Y: -2},
+					Strongpoint: Strongpoint{
+						ID:     "LA MARINA",
+						Name:   "La Marina",
+						Center: Position{X: -10.0, Y: -40340.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: 1, Y: -3},
+					To:   GridCoordinate{X: 2, Y: -2},
+					Strongpoint: Strongpoint{
+						ID:     "HÉROULT HOUSE",
+						Name:   "Héroult House",
+						Center: Position{X: 50583.223, Y: -44190.965, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+			},
+		},
+		{
+			From: GridCoordinate{X: -3, Y: -1},
+			To:   GridCoordinate{X: 2, Y: 0},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -3, Y: -1},
+					To:   GridCoordinate{X: -2, Y: 0},
+					Strongpoint: Strongpoint{
+						ID:     "GRAYE-SUR-MER",
+						Name:   "Graye-sur-Mer",
+						Center: Position{X: -39610.0, Y: 4660.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: -1, Y: -1},
+					To:   GridCoordinate{X: 0, Y: 0},
+					Strongpoint: Strongpoint{
+						ID:     "LA SEULLES RIVER",
+						Name:   "La Seulles River",
+						Center: Position{X: -10.0, Y: 4660.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: 1, Y: -1},
+					To:   GridCoordinate{X: 2, Y: 0},
+					Strongpoint: Strongpoint{
+						ID:     "MARKET SQUARE",
+						Name:   "Market Square",
+						Center: Position{X: 39765.0, Y: 4660.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+			},
+		},
+		{
+			From: GridCoordinate{X: -3, Y: 1},
+			To:   GridCoordinate{X: 2, Y: 2},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -3, Y: 1},
+					To:   GridCoordinate{X: -2, Y: 2},
+					Strongpoint: Strongpoint{
+						ID:     "WEAPONS FACTORY",
+						Name:   "Weapons Factory",
+						Center: Position{X: -39610.0, Y: 41685.0, Z: -3988.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: -1, Y: 1},
+					To:   GridCoordinate{X: 0, Y: 2},
+					Strongpoint: Strongpoint{
+						ID:     "LE SENTIER SUELLES",
+						Name:   "Le Sentier Seulles",
+						Center: Position{X: -10.0, Y: 41685.0, Z: -4388.0},
+						Radius: 8000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: 1, Y: 1},
+					To:   GridCoordinate{X: 2, Y: 2},
+					Strongpoint: Strongpoint{
+						ID:     "ROAD TO BÉNY-SUR-MER",
+						Name:   "Road to Bény-sur-Mer",
+						Center: Position{X: 39765.0, Y: 41685.0, Z: -3913.0},
+						Radius: 8000.0,
+					},
+				},
+			},
+		},
+		{
+			From: GridCoordinate{X: -3, Y: 3},
+			To:   GridCoordinate{X: 2, Y: 4},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -3, Y: 3},
+					To:   GridCoordinate{X: -2, Y: 4},
+					Strongpoint: Strongpoint{
+						ID:     "GRAYE-SUR-MER OUTSKIRTS",
+						Name:   "Graye-sur-Mer Outskirts",
+						Center: Position{X: -39670.0, Y: 69078.0, Z: -4708.0},
+						Radius: 5500.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: -1, Y: 3},
+					To:   GridCoordinate{X: 0, Y: 4},
+					Strongpoint: Strongpoint{
+						ID:     "RADAR STATION",
+						Name:   "Radar Station",
+						Center: Position{X: -2611.0, Y: 67760.0, Z: -4388.0},
+						Radius: 6000.0,
+					},
+				},
+				{
+					From: GridCoordinate{X: 1, Y: 3},
+					To:   GridCoordinate{X: 2, Y: 4},
+					Strongpoint: Strongpoint{
+						ID:     "CHEM DE LA LAMPE",
+						Name:   "Chem de la Lampe",
+						Center: Position{X: 39765.0, Y: 70210.0, Z: -3938.0},
+						Radius: 8000.0,
+					},
+				},
+			},
+		},
+	},
+	SECTORS_JUNOBEACH_SMALL: {
+		{
+			From:         GridCoordinate{X: -4, Y: -5},
+			To:           GridCoordinate{X: 3, Y: -2},
+			CaptureZones: []CaptureZone{},
+		},
+		{
+			From: GridCoordinate{X: -4, Y: -1},
+			To:   GridCoordinate{X: 3, Y: 0},
+			CaptureZones: []CaptureZone{
+				{
+					From: GridCoordinate{X: -1, Y: -1},
+					To:   GridCoordinate{X: 0, Y: 0},
+					Strongpoint: Strongpoint{
+						ID:     "LA SEULLES RIVER",
+						Name:   "La Seulles River",
+						Center: Position{X: -2850.0, Y: -50.0, Z: 250.0},
+						Radius: 5000.0,
+					},
+				},
+			},
+		},
+		{
+			From:         GridCoordinate{X: -4, Y: 1},
+			To:           GridCoordinate{X: 3, Y: 4},
+			CaptureZones: []CaptureZone{},
 		},
 	},
 	SECTORS_KHARKOV_LARGE: {

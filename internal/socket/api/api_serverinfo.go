@@ -124,6 +124,9 @@ type RespSessionInformation struct {
 	QueueCount         int32  `json:"QueueCount"`
 	MaxVipQueueCount   int32  `json:"MaxVipQueueCount"`
 	VipQueueCount      int32  `json:"VipQueueCount"`
+	AlliedMorale       int32  `json:"AlliedMorale"`
+	AxisMorale         int32  `json:"AxisMorale"`
+	InitialMorale      int32  `json:"InitialMorale"`
 }
 
 func (r RespSessionInformation) CacheTTL() time.Duration {

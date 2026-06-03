@@ -47,136 +47,148 @@ const (
 type LayerIdentifier string
 
 const (
+	LAYER_CARENTAN_OFFENSIVE_GER              LayerIdentifier = "carentan_offensive_ger"
+	LAYER_CARENTAN_OFFENSIVE_US               LayerIdentifier = "carentan_offensive_us"
 	LAYER_CARENTAN_WARFARE                    LayerIdentifier = "carentan_warfare"
 	LAYER_CARENTAN_WARFARE_NIGHT              LayerIdentifier = "carentan_warfare_night"
-	LAYER_CARENTAN_OFFENSIVE_US               LayerIdentifier = "carentan_offensive_us"
-	LAYER_CARENTAN_OFFENSIVE_GER              LayerIdentifier = "carentan_offensive_ger"
 	LAYER_CAR_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "CAR_S_1944_Day_P_Skirmish"
-	LAYER_CAR_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "CAR_S_1944_Rain_P_Skirmish"
 	LAYER_CAR_S_1944_DUSK_P_SKIRMISH          LayerIdentifier = "CAR_S_1944_Dusk_P_Skirmish"
+	LAYER_CAR_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "CAR_S_1944_Rain_P_Skirmish"
+	LAYER_DRIEL_OFFENSIVE_GER                 LayerIdentifier = "driel_offensive_ger"
+	LAYER_DRIEL_OFFENSIVE_US                  LayerIdentifier = "driel_offensive_us"
 	LAYER_DRIEL_WARFARE                       LayerIdentifier = "driel_warfare"
 	LAYER_DRIEL_WARFARE_NIGHT                 LayerIdentifier = "driel_warfare_night"
-	LAYER_DRIEL_OFFENSIVE_US                  LayerIdentifier = "driel_offensive_us"
-	LAYER_DRIEL_OFFENSIVE_GER                 LayerIdentifier = "driel_offensive_ger"
-	LAYER_DRL_S_1944_P_SKIRMISH               LayerIdentifier = "DRL_S_1944_P_Skirmish"
-	LAYER_DRL_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "DRL_S_1944_Night_P_Skirmish"
 	LAYER_DRL_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "DRL_S_1944_Day_P_Skirmish"
-	LAYER_ELALAMEIN_WARFARE                   LayerIdentifier = "elalamein_warfare"
-	LAYER_ELALAMEIN_WARFARE_NIGHT             LayerIdentifier = "elalamein_warfare_night"
+	LAYER_DRL_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "DRL_S_1944_Night_P_Skirmish"
+	LAYER_DRL_S_1944_P_SKIRMISH               LayerIdentifier = "DRL_S_1944_P_Skirmish"
 	LAYER_ELALAMEIN_OFFENSIVE_CW              LayerIdentifier = "elalamein_offensive_CW"
 	LAYER_ELALAMEIN_OFFENSIVE_GER             LayerIdentifier = "elalamein_offensive_ger"
-	LAYER_ELA_S_1942_P_SKIRMISH               LayerIdentifier = "ELA_S_1942_P_Skirmish"
+	LAYER_ELALAMEIN_WARFARE                   LayerIdentifier = "elalamein_warfare"
+	LAYER_ELALAMEIN_WARFARE_NIGHT             LayerIdentifier = "elalamein_warfare_night"
 	LAYER_ELA_S_1942_NIGHT_P_SKIRMISH         LayerIdentifier = "ELA_S_1942_Night_P_Skirmish"
-	LAYER_ELSENBORNRIDGE_WARFARE_DAY          LayerIdentifier = "elsenbornridge_warfare_day"
-	LAYER_ELSENBORNRIDGE_WARFARE_MORNING      LayerIdentifier = "elsenbornridge_warfare_morning"
-	LAYER_ELSENBORNRIDGE_WARFARE_NIGHT        LayerIdentifier = "elsenbornridge_warfare_night"
-	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_DAY      LayerIdentifier = "elsenbornridge_offensiveUS_day"
-	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_MORNING  LayerIdentifier = "elsenbornridge_offensiveUS_morning"
-	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_NIGHT    LayerIdentifier = "elsenbornridge_offensiveUS_night"
+	LAYER_ELA_S_1942_P_SKIRMISH               LayerIdentifier = "ELA_S_1942_P_Skirmish"
 	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_DAY     LayerIdentifier = "elsenbornridge_offensiveger_day"
 	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_MORNING LayerIdentifier = "elsenbornridge_offensiveger_morning"
 	LAYER_ELSENBORNRIDGE_OFFENSIVEGER_NIGHT   LayerIdentifier = "elsenbornridge_offensiveger_night"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_DAY      LayerIdentifier = "elsenbornridge_offensiveUS_day"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_MORNING  LayerIdentifier = "elsenbornridge_offensiveUS_morning"
+	LAYER_ELSENBORNRIDGE_OFFENSIVEUS_NIGHT    LayerIdentifier = "elsenbornridge_offensiveUS_night"
 	LAYER_ELSENBORNRIDGE_SKIRMISH_DAY         LayerIdentifier = "elsenbornridge_skirmish_day"
 	LAYER_ELSENBORNRIDGE_SKIRMISH_MORNING     LayerIdentifier = "elsenbornridge_skirmish_morning"
 	LAYER_ELSENBORNRIDGE_SKIRMISH_NIGHT       LayerIdentifier = "elsenbornridge_skirmish_night"
+	LAYER_ELSENBORNRIDGE_WARFARE_DAY          LayerIdentifier = "elsenbornridge_warfare_day"
+	LAYER_ELSENBORNRIDGE_WARFARE_MORNING      LayerIdentifier = "elsenbornridge_warfare_morning"
+	LAYER_ELSENBORNRIDGE_WARFARE_NIGHT        LayerIdentifier = "elsenbornridge_warfare_night"
+	LAYER_FOY_OFFENSIVE_GER                   LayerIdentifier = "foy_offensive_ger"
+	LAYER_FOY_OFFENSIVE_US                    LayerIdentifier = "foy_offensive_us"
 	LAYER_FOY_WARFARE                         LayerIdentifier = "foy_warfare"
 	LAYER_FOY_WARFARE_NIGHT                   LayerIdentifier = "foy_warfare_night"
-	LAYER_FOY_OFFENSIVE_US                    LayerIdentifier = "foy_offensive_us"
-	LAYER_FOY_OFFENSIVE_GER                   LayerIdentifier = "foy_offensive_ger"
-	LAYER_HURTGENFOREST_WARFARE_V2            LayerIdentifier = "hurtgenforest_warfare_V2"
-	LAYER_HURTGENFOREST_WARFARE_V2_NIGHT      LayerIdentifier = "hurtgenforest_warfare_V2_night"
-	LAYER_HURTGENFOREST_OFFENSIVE_US          LayerIdentifier = "hurtgenforest_offensive_US"
-	LAYER_HURTGENFOREST_OFFENSIVE_GER         LayerIdentifier = "hurtgenforest_offensive_ger"
-	LAYER_HILL400_WARFARE                     LayerIdentifier = "hill400_warfare"
-	LAYER_HILL400_OFFENSIVE_US                LayerIdentifier = "hill400_offensive_US"
 	LAYER_HILL400_OFFENSIVE_GER               LayerIdentifier = "hill400_offensive_ger"
+	LAYER_HILL400_OFFENSIVE_US                LayerIdentifier = "hill400_offensive_US"
+	LAYER_HILL400_WARFARE                     LayerIdentifier = "hill400_warfare"
 	LAYER_HIL_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "HIL_S_1944_Day_P_Skirmish"
 	LAYER_HIL_S_1944_DUSK_P_SKIRMISH          LayerIdentifier = "HIL_S_1944_Dusk_P_Skirmish"
+	LAYER_HURTGENFOREST_OFFENSIVE_GER         LayerIdentifier = "hurtgenforest_offensive_ger"
+	LAYER_HURTGENFOREST_OFFENSIVE_US          LayerIdentifier = "hurtgenforest_offensive_US"
+	LAYER_HURTGENFOREST_WARFARE_V2            LayerIdentifier = "hurtgenforest_warfare_V2"
+	LAYER_HURTGENFOREST_WARFARE_V2_NIGHT      LayerIdentifier = "hurtgenforest_warfare_V2_night"
+	LAYER_JUNOBEACH_OFFENSIVECAN_DAY          LayerIdentifier = "junobeach_offensivecan_day"
+	LAYER_JUNOBEACH_OFFENSIVECAN_MORNING      LayerIdentifier = "junobeach_offensivecan_morning"
+	LAYER_JUNOBEACH_OFFENSIVECAN_NIGHT        LayerIdentifier = "junobeach_offensivecan_night"
+	LAYER_JUNOBEACH_OFFENSIVEGER_DAY          LayerIdentifier = "junobeach_offensiveger_day"
+	LAYER_JUNOBEACH_OFFENSIVEGER_MORNING      LayerIdentifier = "junobeach_offensiveger_morning"
+	LAYER_JUNOBEACH_OFFENSIVEGER_NIGHT        LayerIdentifier = "junobeach_offensiveger_night"
+	LAYER_JUNOBEACH_SKIRMISH_DAY              LayerIdentifier = "junobeach_skirmish_day"
+	LAYER_JUNOBEACH_SKIRMISH_MORNING          LayerIdentifier = "junobeach_skirmish_morning"
+	LAYER_JUNOBEACH_SKIRMISH_NIGHT            LayerIdentifier = "junobeach_skirmish_night"
+	LAYER_JUNOBEACH_WARFARE_DAY               LayerIdentifier = "junobeach_warfare_day"
+	LAYER_JUNOBEACH_WARFARE_MORNING           LayerIdentifier = "junobeach_warfare_morning"
+	LAYER_JUNOBEACH_WARFARE_NIGHT             LayerIdentifier = "junobeach_warfare_night"
+	LAYER_KHARKOV_OFFENSIVE_GER               LayerIdentifier = "kharkov_offensive_ger"
+	LAYER_KHARKOV_OFFENSIVE_RUS               LayerIdentifier = "kharkov_offensive_rus"
 	LAYER_KHARKOV_WARFARE                     LayerIdentifier = "kharkov_warfare"
 	LAYER_KHARKOV_WARFARE_NIGHT               LayerIdentifier = "kharkov_warfare_night"
-	LAYER_KHARKOV_OFFENSIVE_RUS               LayerIdentifier = "kharkov_offensive_rus"
-	LAYER_KHARKOV_OFFENSIVE_GER               LayerIdentifier = "kharkov_offensive_ger"
+	LAYER_KURSK_OFFENSIVE_GER                 LayerIdentifier = "kursk_offensive_ger"
+	LAYER_KURSK_OFFENSIVE_RUS                 LayerIdentifier = "kursk_offensive_rus"
 	LAYER_KURSK_WARFARE                       LayerIdentifier = "kursk_warfare"
 	LAYER_KURSK_WARFARE_NIGHT                 LayerIdentifier = "kursk_warfare_night"
-	LAYER_KURSK_OFFENSIVE_RUS                 LayerIdentifier = "kursk_offensive_rus"
-	LAYER_KURSK_OFFENSIVE_GER                 LayerIdentifier = "kursk_offensive_ger"
+	LAYER_MORTAIN_OFFENSIVEGER_DAY            LayerIdentifier = "mortain_offensiveger_day"
+	LAYER_MORTAIN_OFFENSIVEGER_DUSK           LayerIdentifier = "mortain_offensiveger_dusk"
+	LAYER_MORTAIN_OFFENSIVEGER_OVERCAST       LayerIdentifier = "mortain_offensiveger_overcast"
+	LAYER_MORTAIN_OFFENSIVEUS_DAY             LayerIdentifier = "mortain_offensiveUS_day"
+	LAYER_MORTAIN_OFFENSIVEUS_DUSK            LayerIdentifier = "mortain_offensiveUS_dusk"
+	LAYER_MORTAIN_OFFENSIVEUS_OVERCAST        LayerIdentifier = "mortain_offensiveUS_overcast"
+	LAYER_MORTAIN_SKIRMISH_DAY                LayerIdentifier = "mortain_skirmish_day"
+	LAYER_MORTAIN_SKIRMISH_DUSK               LayerIdentifier = "mortain_skirmish_dusk"
+	LAYER_MORTAIN_SKIRMISH_OVERCAST           LayerIdentifier = "mortain_skirmish_overcast"
 	LAYER_MORTAIN_WARFARE_DAY                 LayerIdentifier = "mortain_warfare_day"
 	LAYER_MORTAIN_WARFARE_DUSK                LayerIdentifier = "mortain_warfare_dusk"
 	LAYER_MORTAIN_WARFARE_OVERCAST            LayerIdentifier = "mortain_warfare_overcast"
-	LAYER_MORTAIN_OFFENSIVEUS_DAY             LayerIdentifier = "mortain_offensiveUS_day"
-	LAYER_MORTAIN_OFFENSIVEUS_OVERCAST        LayerIdentifier = "mortain_offensiveUS_overcast"
-	LAYER_MORTAIN_OFFENSIVEUS_DUSK            LayerIdentifier = "mortain_offensiveUS_dusk"
-	LAYER_MORTAIN_OFFENSIVEGER_DAY            LayerIdentifier = "mortain_offensiveger_day"
-	LAYER_MORTAIN_OFFENSIVEGER_OVERCAST       LayerIdentifier = "mortain_offensiveger_overcast"
-	LAYER_MORTAIN_OFFENSIVEGER_DUSK           LayerIdentifier = "mortain_offensiveger_dusk"
-	LAYER_MORTAIN_SKIRMISH_DAY                LayerIdentifier = "mortain_skirmish_day"
-	LAYER_MORTAIN_SKIRMISH_OVERCAST           LayerIdentifier = "mortain_skirmish_overcast"
-	LAYER_MORTAIN_SKIRMISH_DUSK               LayerIdentifier = "mortain_skirmish_dusk"
+	LAYER_OMAHABEACH_OFFENSIVE_GER            LayerIdentifier = "omahabeach_offensive_ger"
+	LAYER_OMAHABEACH_OFFENSIVE_US             LayerIdentifier = "omahabeach_offensive_us"
 	LAYER_OMAHABEACH_WARFARE                  LayerIdentifier = "omahabeach_warfare"
 	LAYER_OMAHABEACH_WARFARE_NIGHT            LayerIdentifier = "omahabeach_warfare_night"
-	LAYER_OMAHABEACH_OFFENSIVE_US             LayerIdentifier = "omahabeach_offensive_us"
-	LAYER_OMAHABEACH_OFFENSIVE_GER            LayerIdentifier = "omahabeach_offensive_ger"
+	LAYER_PHL_L_1944_OFFENSIVEGER             LayerIdentifier = "PHL_L_1944_OffensiveGER"
+	LAYER_PHL_L_1944_OFFENSIVEUS              LayerIdentifier = "PHL_L_1944_OffensiveUS"
 	LAYER_PHL_L_1944_WARFARE                  LayerIdentifier = "PHL_L_1944_Warfare"
 	LAYER_PHL_L_1944_WARFARE_NIGHT            LayerIdentifier = "PHL_L_1944_Warfare_Night"
-	LAYER_PHL_L_1944_OFFENSIVEUS              LayerIdentifier = "PHL_L_1944_OffensiveUS"
-	LAYER_PHL_L_1944_OFFENSIVEGER             LayerIdentifier = "PHL_L_1944_OffensiveGER"
-	LAYER_PHL_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "PHL_S_1944_Rain_P_Skirmish"
 	LAYER_PHL_S_1944_MORNING_P_SKIRMISH       LayerIdentifier = "PHL_S_1944_Morning_P_Skirmish"
 	LAYER_PHL_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "PHL_S_1944_Night_P_Skirmish"
+	LAYER_PHL_S_1944_RAIN_P_SKIRMISH          LayerIdentifier = "PHL_S_1944_Rain_P_Skirmish"
+	LAYER_REM_L_1945_OFFENSIVEGER             LayerIdentifier = "REM_L_1945_OffensiveGER"
+	LAYER_REM_L_1945_OFFENSIVEUS              LayerIdentifier = "REM_L_1945_OffensiveUS"
 	LAYER_REM_L_1945_WARFARE                  LayerIdentifier = "REM_L_1945_Warfare"
 	LAYER_REM_L_1945_WARFARENIGHT             LayerIdentifier = "REM_L_1945_WarfareNight"
-	LAYER_REM_L_1945_OFFENSIVEUS              LayerIdentifier = "REM_L_1945_OffensiveUS"
-	LAYER_REM_L_1945_OFFENSIVEGER             LayerIdentifier = "REM_L_1945_OffensiveGER"
 	LAYER_REM_S_1945_P_SKIRMISH_DAY           LayerIdentifier = "REM_S_1945_P_Skirmish_Day"
 	LAYER_REM_S_1945_P_SKIRMISH_NIGHT         LayerIdentifier = "REM_S_1945_P_Skirmish_Night"
-	LAYER_SMOLENSK_WARFARE_DAY                LayerIdentifier = "smolensk_warfare_day"
-	LAYER_SMOLENSK_WARFARE_DUSK               LayerIdentifier = "smolensk_warfare_dusk"
-	LAYER_SMOLENSK_WARFARE_NIGHT              LayerIdentifier = "smolensk_warfare_night"
-	LAYER_SMOLENSK_OFFENSIVERUS_DAY           LayerIdentifier = "smolensk_offensiveRus_day"
-	LAYER_SMOLENSK_OFFENSIVERUS_DUSK          LayerIdentifier = "smolensk_offensiveRus_dusk"
-	LAYER_SMOLENSK_OFFENSIVERUS_NIGHT         LayerIdentifier = "smolensk_offensiveRus_night"
-	LAYER_SMOLENSK_OFFENSIVEGER_DAY           LayerIdentifier = "smolensk_offensiveGer_Day"
-	LAYER_SMOLENSK_OFFENSIVEGER_DUSK          LayerIdentifier = "smolensk_offensiveGer_dusk"
-	LAYER_SMOLENSK_OFFENSIVEGER_NIGHT         LayerIdentifier = "smolensk_offensiveGer_night"
-	LAYER_SMOLENSK_SKIRMISH_DAY               LayerIdentifier = "smolensk_skirmish_day"
-	LAYER_SMOLENSK_SKIRMISH_DUSK              LayerIdentifier = "smolensk_skirmish_dusk"
-	LAYER_SMOLENSK_SKIRMISH_NIGHT             LayerIdentifier = "smolensk_skirmish_night"
-	LAYER_STA_L_1942_WARFARE                  LayerIdentifier = "STA_L_1942_Warfare"
-	LAYER_STA_L_1942_WARFARE_NIGHT            LayerIdentifier = "STA_L_1942_Warfare_Night"
-	LAYER_STA_L_1942_OFFENSIVERUS             LayerIdentifier = "STA_L_1942_OffensiveRUS"
-	LAYER_STA_L_1942_OFFENSIVEGER             LayerIdentifier = "STA_L_1942_OffensiveGER"
-	LAYER_STA_S_1942_P_SKIRMISH_DUSK          LayerIdentifier = "STA_S_1942_P_Skirmish_Dusk"
-	LAYER_STA_S_1942_P_SKIRMISH_OVERCAST      LayerIdentifier = "STA_S_1942_P_Skirmish_Overcast"
-	LAYER_STMARIEDUMONT_WARFARE               LayerIdentifier = "stmariedumont_warfare"
-	LAYER_STMARIEDUMONT_WARFARE_NIGHT         LayerIdentifier = "stmariedumont_warfare_night"
-	LAYER_STMARIEDUMONT_OFF_US                LayerIdentifier = "stmariedumont_off_us"
-	LAYER_STMARIEDUMONT_OFF_GER               LayerIdentifier = "stmariedumont_off_ger"
 	LAYER_SMDM_S_1944_DAY_P_SKIRMISH          LayerIdentifier = "SMDM_S_1944_Day_P_Skirmish"
 	LAYER_SMDM_S_1944_NIGHT_P_SKIRMISH        LayerIdentifier = "SMDM_S_1944_Night_P_Skirmish"
 	LAYER_SMDM_S_1944_RAIN_P_SKIRMISH         LayerIdentifier = "SMDM_S_1944_Rain_P_Skirmish"
-	LAYER_STMEREEGLISE_WARFARE                LayerIdentifier = "stmereeglise_warfare"
-	LAYER_STMEREEGLISE_WARFARE_NIGHT          LayerIdentifier = "stmereeglise_warfare_night"
-	LAYER_STMEREEGLISE_OFFENSIVE_US           LayerIdentifier = "stmereeglise_offensive_us"
-	LAYER_STMEREEGLISE_OFFENSIVE_GER          LayerIdentifier = "stmereeglise_offensive_ger"
 	LAYER_SME_S_1944_DAY_P_SKIRMISH           LayerIdentifier = "SME_S_1944_Day_P_Skirmish"
 	LAYER_SME_S_1944_MORNING_P_SKIRMISH       LayerIdentifier = "SME_S_1944_Morning_P_Skirmish"
 	LAYER_SME_S_1944_NIGHT_P_SKIRMISH         LayerIdentifier = "SME_S_1944_Night_P_Skirmish"
-	LAYER_TOBRUK_WARFARE_DAY                  LayerIdentifier = "tobruk_warfare_day"
-	LAYER_TOBRUK_WARFARE_DUSK                 LayerIdentifier = "tobruk_warfare_dusk"
-	LAYER_TOBRUK_WARFARE_MORNING              LayerIdentifier = "tobruk_warfare_morning"
+	LAYER_SMOLENSK_OFFENSIVEGER_DAY           LayerIdentifier = "smolensk_offensiveGer_Day"
+	LAYER_SMOLENSK_OFFENSIVEGER_DUSK          LayerIdentifier = "smolensk_offensiveGer_dusk"
+	LAYER_SMOLENSK_OFFENSIVEGER_NIGHT         LayerIdentifier = "smolensk_offensiveGer_night"
+	LAYER_SMOLENSK_OFFENSIVERUS_DAY           LayerIdentifier = "smolensk_offensiveRus_day"
+	LAYER_SMOLENSK_OFFENSIVERUS_DUSK          LayerIdentifier = "smolensk_offensiveRus_dusk"
+	LAYER_SMOLENSK_OFFENSIVERUS_NIGHT         LayerIdentifier = "smolensk_offensiveRus_night"
+	LAYER_SMOLENSK_SKIRMISH_DAY               LayerIdentifier = "smolensk_skirmish_day"
+	LAYER_SMOLENSK_SKIRMISH_DUSK              LayerIdentifier = "smolensk_skirmish_dusk"
+	LAYER_SMOLENSK_SKIRMISH_NIGHT             LayerIdentifier = "smolensk_skirmish_night"
+	LAYER_SMOLENSK_WARFARE_DAY                LayerIdentifier = "smolensk_warfare_day"
+	LAYER_SMOLENSK_WARFARE_DUSK               LayerIdentifier = "smolensk_warfare_dusk"
+	LAYER_SMOLENSK_WARFARE_NIGHT              LayerIdentifier = "smolensk_warfare_night"
+	LAYER_STA_L_1942_OFFENSIVEGER             LayerIdentifier = "STA_L_1942_OffensiveGER"
+	LAYER_STA_L_1942_OFFENSIVERUS             LayerIdentifier = "STA_L_1942_OffensiveRUS"
+	LAYER_STA_L_1942_WARFARE                  LayerIdentifier = "STA_L_1942_Warfare"
+	LAYER_STA_L_1942_WARFARE_NIGHT            LayerIdentifier = "STA_L_1942_Warfare_Night"
+	LAYER_STA_S_1942_P_SKIRMISH_DUSK          LayerIdentifier = "STA_S_1942_P_Skirmish_Dusk"
+	LAYER_STA_S_1942_P_SKIRMISH_OVERCAST      LayerIdentifier = "STA_S_1942_P_Skirmish_Overcast"
+	LAYER_STMARIEDUMONT_OFF_GER               LayerIdentifier = "stmariedumont_off_ger"
+	LAYER_STMARIEDUMONT_OFF_US                LayerIdentifier = "stmariedumont_off_us"
+	LAYER_STMARIEDUMONT_WARFARE               LayerIdentifier = "stmariedumont_warfare"
+	LAYER_STMARIEDUMONT_WARFARE_NIGHT         LayerIdentifier = "stmariedumont_warfare_night"
+	LAYER_STMEREEGLISE_OFFENSIVE_GER          LayerIdentifier = "stmereeglise_offensive_ger"
+	LAYER_STMEREEGLISE_OFFENSIVE_US           LayerIdentifier = "stmereeglise_offensive_us"
+	LAYER_STMEREEGLISE_WARFARE                LayerIdentifier = "stmereeglise_warfare"
+	LAYER_STMEREEGLISE_WARFARE_NIGHT          LayerIdentifier = "stmereeglise_warfare_night"
 	LAYER_TOBRUK_OFFENSIVEBRITISH_DAY         LayerIdentifier = "tobruk_offensivebritish_day"
-	LAYER_TOBRUK_OFFENSIVEGER_DAY             LayerIdentifier = "tobruk_offensiveger_day"
 	LAYER_TOBRUK_OFFENSIVEBRITISH_DUSK        LayerIdentifier = "tobruk_offensivebritish_dusk"
-	LAYER_TOBRUK_OFFENSIVEGER_DUSK            LayerIdentifier = "tobruk_offensiveger_dusk"
 	LAYER_TOBRUK_OFFENSIVEBRITISH_MORNING     LayerIdentifier = "tobruk_offensivebritish_morning"
+	LAYER_TOBRUK_OFFENSIVEGER_DAY             LayerIdentifier = "tobruk_offensiveger_day"
+	LAYER_TOBRUK_OFFENSIVEGER_DUSK            LayerIdentifier = "tobruk_offensiveger_dusk"
 	LAYER_TOBRUK_OFFENSIVEGER_MORNING         LayerIdentifier = "tobruk_offensiveger_morning"
 	LAYER_TOBRUK_SKIRMISH_DAY                 LayerIdentifier = "tobruk_skirmish_day"
 	LAYER_TOBRUK_SKIRMISH_DUSK                LayerIdentifier = "tobruk_skirmish_dusk"
 	LAYER_TOBRUK_SKIRMISH_MORNING             LayerIdentifier = "tobruk_skirmish_morning"
+	LAYER_TOBRUK_WARFARE_DAY                  LayerIdentifier = "tobruk_warfare_day"
+	LAYER_TOBRUK_WARFARE_DUSK                 LayerIdentifier = "tobruk_warfare_dusk"
+	LAYER_TOBRUK_WARFARE_MORNING              LayerIdentifier = "tobruk_warfare_morning"
+	LAYER_UTAHBEACH_OFFENSIVE_GER             LayerIdentifier = "utahbeach_offensive_ger"
+	LAYER_UTAHBEACH_OFFENSIVE_US              LayerIdentifier = "utahbeach_offensive_us"
 	LAYER_UTAHBEACH_WARFARE                   LayerIdentifier = "utahbeach_warfare"
 	LAYER_UTAHBEACH_WARFARE_NIGHT             LayerIdentifier = "utahbeach_warfare_night"
-	LAYER_UTAHBEACH_OFFENSIVE_US              LayerIdentifier = "utahbeach_offensive_us"
-	LAYER_UTAHBEACH_OFFENSIVE_GER             LayerIdentifier = "utahbeach_offensive_ger"
 )
 
 type GridCoordinate struct {
@@ -1135,6 +1147,246 @@ var layerMap = map[LayerIdentifier]Layer{
 			Max:     GridCoordinate{X: 4, Y: 4},
 		},
 		SectorsIdentifier: SECTORS_HILL400_SMALL,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_WARFARE_DAY: {
+		ID:                 LAYER_JUNOBEACH_WARFARE_DAY,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Warfare",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_WARFARE_MORNING: {
+		ID:                 LAYER_JUNOBEACH_WARFARE_MORNING,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Warfare (Dawn)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_WARFARE_NIGHT: {
+		ID:                 LAYER_JUNOBEACH_WARFARE_NIGHT,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_WARFARE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Warfare (Night)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_OFFENSIVEGER_DAY: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVEGER_DAY,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. GER",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_AXIS,
+		DefendingTeam:     TEAM_ALLIES,
+		AttackingFaction:  FACTION_GER,
+		DefendingFaction:  FACTION_CAN,
+	},
+	LAYER_JUNOBEACH_OFFENSIVEGER_MORNING: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVEGER_MORNING,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. GER (Dawn)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_AXIS,
+		DefendingTeam:     TEAM_ALLIES,
+		AttackingFaction:  FACTION_GER,
+		DefendingFaction:  FACTION_CAN,
+	},
+	LAYER_JUNOBEACH_OFFENSIVEGER_NIGHT: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVEGER_NIGHT,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. GER (Night)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_AXIS,
+		DefendingTeam:     TEAM_ALLIES,
+		AttackingFaction:  FACTION_GER,
+		DefendingFaction:  FACTION_CAN,
+	},
+	LAYER_JUNOBEACH_OFFENSIVECAN_DAY: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVECAN_DAY,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. CAN",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_ALLIES,
+		DefendingTeam:     TEAM_AXIS,
+		AttackingFaction:  FACTION_CAN,
+		DefendingFaction:  FACTION_GER,
+	},
+	LAYER_JUNOBEACH_OFFENSIVECAN_MORNING: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVECAN_MORNING,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. (Dawn)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_OFFENSIVECAN_NIGHT: {
+		ID:                 LAYER_JUNOBEACH_OFFENSIVECAN_NIGHT,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_OFFENSIVE,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Off. CAN (Night)",
+		Grid: Grid{
+			Scale:   20000.0,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_LARGE,
+		AttackingTeam:     TEAM_ALLIES,
+		DefendingTeam:     TEAM_AXIS,
+		AttackingFaction:  FACTION_CAN,
+		DefendingFaction:  FACTION_GER,
+	},
+	LAYER_JUNOBEACH_SKIRMISH_DAY: {
+		ID:                 LAYER_JUNOBEACH_SKIRMISH_DAY,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAY,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Skirmish",
+		Grid: Grid{
+			Scale:   13926.4,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_SMALL,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_SKIRMISH_MORNING: {
+		ID:                 LAYER_JUNOBEACH_SKIRMISH_MORNING,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_DAWN,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Skirmish (Dawn)",
+		Grid: Grid{
+			Scale:   13926.4,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_SMALL,
+		AttackingTeam:     TEAM_NONE,
+		DefendingTeam:     TEAM_NONE,
+		AttackingFaction:  FACTION_UNASSIGNED,
+		DefendingFaction:  FACTION_UNASSIGNED,
+	},
+	LAYER_JUNOBEACH_SKIRMISH_NIGHT: {
+		ID:                 LAYER_JUNOBEACH_SKIRMISH_NIGHT,
+		MapIdentifier:      MAP_JUNOBEACH,
+		GameModeIdentifier: GAMEMODE_SKIRMISH,
+		TimeOfDay:          TOD_NIGHT,
+		Weather:            WEATHER_CLEAR,
+		PrettyName:         "Juno Beach Skirmish (Night)",
+		Grid: Grid{
+			Scale:   13926.4,
+			OffsetX: 0.0,
+			OffsetY: 0.0,
+			Min:     GridCoordinate{X: -5, Y: -5},
+			Max:     GridCoordinate{X: 4, Y: 4},
+		},
+		SectorsIdentifier: SECTORS_JUNOBEACH_SMALL,
 		AttackingTeam:     TEAM_NONE,
 		DefendingTeam:     TEAM_NONE,
 		AttackingFaction:  FACTION_UNASSIGNED,
