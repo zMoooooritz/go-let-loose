@@ -4241,7 +4241,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 3,
 		Items: []LoadoutItem{
 			{Name: "Sten Gun Mk.II", Amount: 5},
-			{Name: "FN-Inglis No.2 MK I", Amount: 4},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 4},
 			{Name: "No.77", Amount: 2},
 			{Name: "Bandage", Amount: 2},
 			{Name: "Watch", Amount: 1},
@@ -4274,7 +4274,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 3,
 		Items: []LoadoutItem{
 			{Name: "Rifle No.4 Mk I", Amount: 6},
-			{Name: "FN-Inglis No.2 MK I", Amount: 4},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 4},
 			{Name: "Mills Bomb", Amount: 2},
 			{Name: "No.77", Amount: 2},
 			{Name: "Bandage", Amount: 2},
@@ -4322,8 +4322,8 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 3,
 		Items: []LoadoutItem{
 			{Name: "Rifle No.4 Mk I", Amount: 6},
-			{Name: "No.77", Amount: 2},
 			{Name: "Mills Bomb", Amount: 4},
+			{Name: "No.77", Amount: 2},
 			{Name: "Bandage", Amount: 2},
 			{Name: "Hammer", Amount: 1},
 			{Name: "Fairbairn–Sykes", Amount: 1},
@@ -4455,7 +4455,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		Role:          ROLE_MEDIC,
 		RequiredLevel: 3,
 		Items: []LoadoutItem{
-			{Name: "FN-Inglis No.2 MK I", Amount: 21},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 21},
 			{Name: "No.77", Amount: 6},
 			{Name: "Morphine", Amount: 20},
 			{Name: "Bandage", Amount: 20},
@@ -4502,7 +4502,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 8,
 		Items: []LoadoutItem{
 			{Name: "FLAMETHROWER", Amount: 1},
-			{Name: "FN-Inglis No.2 MK I", Amount: 4},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 4},
 			{Name: "No.77", Amount: 2},
 			{Name: "Hammer", Amount: 1},
 			{Name: "Bandage", Amount: 2},
@@ -4518,7 +4518,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 1,
 		Items: []LoadoutItem{
 			{Name: "Bren Gun", Amount: 14},
-			{Name: "FN-Inglis No.2 MK I", Amount: 4},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 4},
 			{Name: "Bandage", Amount: 2},
 			{Name: "Hammer", Amount: 1},
 			{Name: "Fairbairn–Sykes", Amount: 1},
@@ -4611,12 +4611,12 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 6,
 		Items: []LoadoutItem{
 			{Name: "Sten Gun Mk.II", Amount: 5},
-			{Name: "Mills Bomb", Amount: 2},
-			{Name: "No.77", Amount: 2},
+			{Name: "Bandage", Amount: 2},
 			{Name: "Wrench", Amount: 1},
 			{Name: "Hammer", Amount: 1},
+			{Name: "No.82 Grenade", Amount: 2},
+			{Name: "No.77", Amount: 2},
 			{Name: "Torch", Amount: 1},
-			{Name: "Bandage", Amount: 2},
 			{Name: "Fairbairn–Sykes", Amount: 1},
 		},
 	},
@@ -4741,7 +4741,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 			{Name: "Hammer", Amount: 1},
 			{Name: "Torch", Amount: 1},
 			{Name: "A.P. Shrapnel Mine Mk II", Amount: 1},
-			{Name: "Ordnance QF 6-pounder", Amount: 1},
+			{Name: "A.T. Mine G.S. Mk V", Amount: 1},
 			{Name: "Fairbairn–Sykes", Amount: 1},
 		},
 	},
@@ -4835,7 +4835,7 @@ var loadoutMap = map[LoadoutIdentifier]Loadout{
 		RequiredLevel: 1,
 		Items: []LoadoutItem{
 			{Name: "Rifle No.4 Mk I Sniper", Amount: 6},
-			{Name: "FN-Inglis No.2 MK I", Amount: 4},
+			{Name: "FN-Inglis No.2 Mk I", Amount: 4},
 			{Name: "Mills Bomb", Amount: 2},
 			{Name: "Bandage", Amount: 2},
 			{Name: "Hammer", Amount: 1},

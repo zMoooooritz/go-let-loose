@@ -113,7 +113,7 @@ const (
 	WEAPON_FLAMETHROWER                                 WeaponIdentifier = "FLAMETHROWER"
 	WEAPON_FLAMMENWERFER_41                             WeaponIdentifier = "FLAMMENWERFER 41"
 	WEAPON_FLARE_GUN                                    WeaponIdentifier = "FLARE GUN"
-	WEAPON_FN_INGLIS_NO_2_MK_I                          WeaponIdentifier = "FN-Inglis No.2 MK I"
+	WEAPON_FN_INGLIS_NO_2_MK_I                          WeaponIdentifier = "FN-Inglis No.2 Mk I"
 	WEAPON_GAZ_67                                       WeaponIdentifier = "GAZ-67"
 	WEAPON_GEWEHR_43                                    WeaponIdentifier = "GEWEHR 43"
 	WEAPON_GMC_CCKW_353_SUPPLY                          WeaponIdentifier = "GMC CCKW 353 (Supply)"
